@@ -1,0 +1,127 @@
+//
+// Created by blazz on 05.11.2025.
+//
+
+#ifndef PROTO_FUNCTIONS_CLIENT_H
+#define PROTO_FUNCTIONS_CLIENT_H
+#include <grpcpp/grpcpp.h>
+#include "bot.grpc.pb.h"
+#include "const.h"
+#include "google/protobuf/empty.pb.h"
+using grpc::Channel;
+using grpc::ClientContext;
+using grpc::Status;
+using google::protobuf::Empty;
+using google::protobuf::UInt64Value;
+using google::protobuf::Int32Value;
+using namespace bot;
+
+#define proto BotClient::getInstance()
+
+
+class BotClient {
+private:
+    static BotClient* instance;
+    static std::mutex mutex;
+protected:
+    BotClient();
+    ~BotClient(){}
+public:
+    BotClient(BotClient const&) = delete;
+    void operator=(const BotClient&) = delete;
+    static BotClient* getInstance();
+
+    // Functions:
+    // Game
+    void walk(Otc::Direction direction, bool withPreWalk);
+    void turn(Otc::Direction direction);
+    void move(const uintptr_t &thing, const Position& toPos, int count);
+    void use(const uintptr_t &thing);
+    void useWith(const uintptr_t &item, const uintptr_t &toThing);
+    void useInventoryItem(const uint16_t itemId);
+    void useInventoryItemWith(const uint16_t itemId, const uintptr_t& toThing);
+    uintptr_t findItemInContainers(const uint32_t itemId, const int subType, const uint8_t tier);
+    int open(const uintptr_t &item, const uintptr_t &previousContainer);
+    void openParent(const uintptr_t &container);
+    void close(const uintptr_t &container);
+    void refreshContainer(const uintptr_t &container);
+    void attack(uintptr_t creature, bool cancel);
+    uintptr_t getLocalPlayer();
+    void equipItem(const uintptr_t &item);
+    void cancelAttack();
+    void talkChannel(Otc::MessageMode msgMode, int channelId, const std::string& message);
+    void talkPrivate(const Otc::MessageMode msgMode, const std::string& receiver, const std::string& message);
+    bool canPerformGameAction();
+    bool isAttacking();
+    uintptr_t getContainer(int index);
+    std::vector<uintptr_t> getContainers();
+    uintptr_t getAttackingCreature();
+
+    // Container
+    std::deque<uintptr_t> getItems(uintptr_t container);
+    int getItemsCount(uintptr_t container);
+    Position getSlotPosition(uintptr_t container, int slot);
+    std::string getName(uintptr_t container);
+    uintptr_t getContainerItem(uintptr_t container);
+    bool hasParent(uintptr_t container);
+    int getFirstIndex(uintptr_t container);
+
+    // Creature
+    std::string getCreatureName(uintptr_t creature);
+    uint8_t getHealthPercent(uintptr_t creature);
+    Otc::Direction getDirection(uintptr_t creature);
+    bool isDead(uintptr_t creature);
+    bool canBeSeen(uintptr_t creature);
+    bool isCovered(uintptr_t creature);
+    bool canShoot(uintptr_t creature);
+
+    // Item
+    int getCount(uintptr_t item);
+    uint32_t getItemId(uintptr_t item);
+
+    // LocalPlayer
+    uint32_t getStates(uintptr_t localPlayer);
+    double getHealth(uintptr_t localPlayer);
+    double getMaxHealth(uintptr_t localPlayer);
+    double getFreeCapacity(uintptr_t localPlayer);
+    uint16_t getLevel(uintptr_t localPlayer);
+    double getMana(uintptr_t localPlayer);
+    double getMaxMana(uintptr_t localPlayer);
+    uint8_t getSoul(uintptr_t localPlayer);
+    uint16_t getStamina(uintptr_t localPlayer);
+    bool hasSight(uintptr_t localPlayer, const Position &pos);
+    bool isAutoWalking(uintptr_t localPlayer);
+    void stopAutoWalk(uintptr_t localPlayer);
+    bool autoWalk(uintptr_t localPlayer, const Position& destination, bool retry = false);
+
+    // Map
+    uintptr_t getTile(const Position &tilePos);
+    std::vector<uintptr_t> getSpectators(const Position &centerPos, bool multiFloor = false);
+    std::vector<Otc::Direction> findPath(const Position& startPos, const Position& goalPos, int maxComplexity, int flags);
+    bool isWalkable(const Position& pos, bool ignoreCreatures);
+    bool isSightClear(const Position& fromPos, const Position& toPos);
+
+    // Thing
+    uint32_t getId(uintptr_t thing);
+    Position getPosition(uintptr_t thing);
+    uintptr_t getParentContainer(uintptr_t thing);
+    bool isMonster(uintptr_t thing);
+    bool isNpc(uintptr_t thing);
+    bool isPlayer(uintptr_t thing);
+    bool isLocalPlayer(uintptr_t thing);
+    bool isContainer(uintptr_t thing);
+    bool isUsable(uintptr_t thing);
+    bool isLyingCorpse(uintptr_t thing);
+
+    // Tile
+    uintptr_t getTopThing(uintptr_t tile);
+    uintptr_t getTopUseThing(uintptr_t tile);
+
+
+private:
+    std::unique_ptr<BotService::Stub> stub;
+};
+
+
+
+#endif //PROTO_FUNCTIONS_CLIENT_H

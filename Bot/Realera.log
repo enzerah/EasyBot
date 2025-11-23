@@ -1,0 +1,9 @@
+Nov 22 2025 00:59:00: GPU ANGLE (NVIDIA GeForce GTX 1660 Direct3D11 vs_5_0 ps_5_0) (Google Inc.)
+Nov 22 2025 00:59:00: OpenGL OpenGL ES 3.0.0 (ANGLE 2.1.0.54a3d7cbcadb)
+Nov 22 2025 00:59:00: [Atlas] Texture size is: 4096x4096 (max: 16384x16384)
+Nov 22 2025 00:59:01: Found work dir at 'C:\Users\Wojciech\AppData\Roaming\Realera\Realera\'
+Nov 22 2025 00:59:01: == application started at Nov 22 2025 00:59:01
+Nov 22 2025 00:59:01: Realera Client 6.46 - WIN32-EGL - rev 0 (dev) built on Oct 12 2025 for arch x86
+Nov 22 2025 00:59:01: Discord: Failed to instantiate core: 4
+Nov 22 2025 00:59:02: No discordRPC
+Nov 22 2025 00:59:18: Exiting application..
