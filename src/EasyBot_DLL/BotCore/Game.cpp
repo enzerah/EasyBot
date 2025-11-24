@@ -25,16 +25,15 @@ Game* Game::getInstance()
     return instance;
 }
 
-void Game::walk(Otc::Direction direction, bool withPreWalk)
+void Game::walk(Otc::Direction direction)
 {
     typedef void(gameCall* Walk)(
         uintptr_t RCX,
-        Otc::Direction RDX,
-        bool R8
+        Otc::Direction RDX
         );
     auto function = reinterpret_cast<Walk>(SingletonFunctions["g_game.walk"].first);
-    return g_dispatcher->scheduleEventEx([function, &direction, withPreWalk]() {
-        function(SingletonFunctions["g_game.walk"].second, direction, withPreWalk);
+    return g_dispatcher->scheduleEventEx([function, &direction]() {
+        function(SingletonFunctions["g_game.walk"].second, direction);
     });
 }
 

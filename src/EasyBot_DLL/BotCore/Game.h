@@ -30,7 +30,7 @@ public:
     void operator=(const Game&) = delete;
     static Game* getInstance();
 
-    void walk(Otc::Direction direction, bool withPreWalk);
+    void walk(Otc::Direction direction);
     void autoWalk(const std::vector<Otc::Direction> &dirs, const Position &startPos);
     void turn(Otc::Direction direction);
     void stop();
