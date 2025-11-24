@@ -33,8 +33,10 @@ public:
     void walk(Otc::Direction direction, bool withPreWalk);
     void autoWalk(const std::vector<Otc::Direction> &dirs, const Position &startPos);
     void turn(Otc::Direction direction);
+    void stop();
     void look(const uintptr_t& thing, const bool isBattleList);
     void move(const uintptr_t &thing, const Position& toPos, int count);
+    void moveToParentContainer(const uintptr_t& thing, const int count);
     void use(const uintptr_t &thing);
     void useWith(const uintptr_t &item, const uintptr_t &toThing);
     void useInventoryItem(const uint16_t itemId);
@@ -45,20 +47,32 @@ public:
     void close(const uintptr_t &container);
     void refreshContainer(const uintptr_t &container);
     void attack(const uintptr_t &creature, bool cancel);
-
-    uintptr_t getLocalPlayer();
-    void equipItem(const uintptr_t &item);
     void cancelAttack();
+    void follow(const uintptr_t &creature);
+    void cancelAttackAndFollow();
     void talk(const std::string& message);
     void talkChannel(const Otc::MessageMode mode, const uint16_t channelId, const std::string& message);
     void talkPrivate(const Otc::MessageMode msgMode, const std::string& receiver, const std::string& message);
+    void openPrivateChannel(const std::string& receiver);
+    void setChaseMode(Otc::ChaseModes mode);
+    void setFightMode(Otc::FightModes mode);
+    void buyItem(const uintptr_t& item, const uint16_t amount, const bool ignoreCapacity, const bool buyWithBackpack);
+    void sellItem(const uintptr_t& item, const uint16_t amount, const bool ignoreEquipped);
+    void equipItem(const uintptr_t &item);
+    void equipItemId(uint16_t itemId, uint8_t tier);
+    void mount(bool mountStatus);
+    void changeMapAwareRange(const uint8_t xrange, const uint8_t yrange);
     bool canPerformGameAction();
+    bool isOnline();
     bool isAttacking();
-
+    bool isFollowing();
     uintptr_t getContainer(int index);
     std::vector<uintptr_t> getContainers();
     uintptr_t getAttackingCreature();
-    uintptr_t getThingType(uint16_t id, ThingCategory category);
+    uintptr_t getFollowingCreature();
+    uintptr_t getLocalPlayer();
+    int getClientVersion();
+    std::string getCharacterName();
 
 
 };

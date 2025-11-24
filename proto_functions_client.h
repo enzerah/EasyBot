@@ -1,7 +1,3 @@
-//
-// Created by blazz on 05.11.2025.
-//
-
 #ifndef PROTO_FUNCTIONS_CLIENT_H
 #define PROTO_FUNCTIONS_CLIENT_H
 #include <grpcpp/grpcpp.h>

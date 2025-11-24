@@ -1,15 +1,20 @@
 #include "../../proto_functions_server.h"
+
+
 #include "hooks.h"
+#include "Item.h"
 #include "MinHook.h"
+#include "Container.h"
 #include "pattern_scan.h"
 
 DWORD WINAPI EasyBot(HMODULE hModule) {
     uintptr_t base_module = reinterpret_cast<uintptr_t>(GetModuleHandle(NULL));
-    /*
+
     FILE *f;
     AllocConsole();
     freopen_s(&f, "CONOUT$", "w", stdout);
-    */
+
+
     MH_Initialize();
     uintptr_t first_func = FindPattern(bindSingletonFunction_x86_PATTERN, bindSingletonFunction_x86_MASK);
     uintptr_t main_loop = FindPattern(realera_x86_PATTERN, realera_x86_MASK);
@@ -24,6 +29,20 @@ DWORD WINAPI EasyBot(HMODULE hModule) {
             MB_OK | MB_ICONINFORMATION
         );
     }
+    system("pause");
+    auto localPlayer = g_game->getLocalPlayer();
+    auto playerPos = g_thing->getPosition(localPlayer);
+    auto thingPos = playerPos;
+    thingPos.x = thingPos.x + 1;
+    auto sightClear = g_map->isSightClear(playerPos, thingPos);
+    std::cout << sightClear << std::endl;
+    system("pause");
+    thingPos.x = thingPos.x + 5;
+    sightClear = g_map->isSightClear(playerPos, thingPos);
+    std::cout << sightClear << std::endl;
+    system("pause");
+    system("pause");
+
     RunServer();
     return 0;
 }

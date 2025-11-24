@@ -60,6 +60,19 @@ uintptr_t Thing::getParentContainer(uintptr_t thing) {
     });
 }
 
+bool Thing::isItem(uintptr_t thing) {
+    if (!thing) return 0;
+    typedef bool(gameCall* IsItem)(
+        uintptr_t RCX,
+        void *RDX
+        );
+    auto function = reinterpret_cast<IsItem>(ClassMemberFunctions["Thing.isItem"]);
+    return g_dispatcher->scheduleEventEx([function, thing]() {
+        void* pMysteryPtr = nullptr;
+        return function(thing, &pMysteryPtr);
+    });
+}
+
 bool Thing::isMonster(uintptr_t thing) {
     if (!thing) return 0;
     typedef bool(gameCall* IsMonster)(
@@ -80,6 +93,19 @@ bool Thing::isNpc(uintptr_t thing) {
         void *RDX
         );
     auto function = reinterpret_cast<IsNpc>(ClassMemberFunctions["Thing.isNpc"]);
+    return g_dispatcher->scheduleEventEx([function, thing]() {
+        void* pMysteryPtr = nullptr;
+        return function(thing, &pMysteryPtr);
+    });
+}
+
+bool Thing::isCreature(uintptr_t thing) {
+    if (!thing) return 0;
+    typedef bool(gameCall* IsCreature)(
+        uintptr_t RCX,
+        void *RDX
+        );
+    auto function = reinterpret_cast<IsCreature>(ClassMemberFunctions["Thing.isCreature"]);
     return g_dispatcher->scheduleEventEx([function, thing]() {
         void* pMysteryPtr = nullptr;
         return function(thing, &pMysteryPtr);

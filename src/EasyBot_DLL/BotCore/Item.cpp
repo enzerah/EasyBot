@@ -97,6 +97,33 @@ uint32_t Item::getId(uintptr_t item) {
     });
 }
 
+std::string Item::getTooltip(uintptr_t item) {
+    if (!item) return 0;
+    typedef std::string*(gameCall* GetTooltip)(
+        uintptr_t RCX,
+        void *RDX
+        );
+    auto function = reinterpret_cast<GetTooltip>(ClassMemberFunctions["Item.getTooltip"]);
+    return g_dispatcher->scheduleEventEx([function, item]() {
+        void* pMysteryPtr = nullptr;
+        auto res = function(item, &pMysteryPtr);
+        return *res;
+    });
+}
+
+uint32_t Item::getDurationTime(uintptr_t item) {
+    if (!item) return 0;
+    typedef uint32_t(gameCall* GetDurationTime)(
+        uintptr_t RCX,
+        void *RDX
+        );
+    auto function = reinterpret_cast<GetDurationTime>(ClassMemberFunctions["Item.getDurationTime"]);
+    return g_dispatcher->scheduleEventEx([function, item]() {
+        void* pMysteryPtr = nullptr;
+        return function(item, &pMysteryPtr);
+    });
+}
+
 uint8_t Item::getTier(uintptr_t item) {
     if (!item) return 0;
     typedef uintptr_t*(gameCall* GetTier)(
