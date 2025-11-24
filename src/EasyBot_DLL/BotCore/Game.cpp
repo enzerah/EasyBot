@@ -63,6 +63,16 @@ void Game::turn(Otc::Direction direction)
     });
 }
 
+void Game::stop() {
+    typedef void(gameCall* Stop)(
+        uintptr_t RCX
+        );
+    auto function = reinterpret_cast<Stop>(SingletonFunctions["g_game.stop"].first);
+    return g_dispatcher->scheduleEventEx([function]() {
+        function(SingletonFunctions["g_game.stop"].second);
+    });
+}
+
 void Game::look(const uintptr_t &thing, const bool isBattleList) {
     typedef void(gameCall* Look)(
         uintptr_t RCX,
@@ -84,8 +94,21 @@ void Game::move(const uintptr_t &thing, const Position& toPos, int count) {
         int count
         );
     auto function = reinterpret_cast<Move>(SingletonFunctions["g_game.move"].first);
-    return g_dispatcher->scheduleEventEx([function, &thing, &toPos, count]() {
+    return g_dispatcher->scheduleEventEx([function, &thing, toPos, count]() {
         function(SingletonFunctions["g_game.move"].second, &thing, &toPos, count);
+    });
+}
+
+void Game::moveToParentContainer(const uintptr_t& thing, const int count) {
+    if (!thing) return;
+    typedef void(gameCall* MoveToParentContainer)(
+        uintptr_t RCX,
+        const uintptr_t *RDX,
+        const int count
+        );
+    auto function = reinterpret_cast<MoveToParentContainer>(SingletonFunctions["g_game.moveToParentContainer"].first);
+    return g_dispatcher->scheduleEventEx([function, &thing, count]() {
+        function(SingletonFunctions["g_game.moveToParentContainer"].second, &thing, count);
     });
 }
 
@@ -218,31 +241,6 @@ void Game::attack(const uintptr_t &creature, bool cancel = false) {
     });
 }
 
-uintptr_t Game::getLocalPlayer() {
-    typedef uintptr_t*(gameCall* GetLocalPlayer)(
-        uintptr_t RCX,
-        void *RDX
-        );
-    auto function = reinterpret_cast<GetLocalPlayer>(SingletonFunctions["g_game.getLocalPlayer"].first);
-    return g_dispatcher->scheduleEventEx([function]() {
-        void* pMysteryPtr = nullptr;
-        auto ret = function(SingletonFunctions["g_game.getLocalPlayer"].second, &pMysteryPtr);
-        return *ret;
-    });
-}
-
-void Game::equipItem(const uintptr_t &item) {
-    if (!item) return;
-    typedef void(gameCall* EquipItem)(
-        uintptr_t RCX,
-        const uintptr_t *item
-        );
-    auto function = reinterpret_cast<EquipItem>(SingletonFunctions["g_game.equipItem"].first);
-    return g_dispatcher->scheduleEventEx([function, &item]() {
-        function(SingletonFunctions["g_game.equipItem"].second, &item);
-    });
-}
-
 void Game::cancelAttack() {
     typedef void(gameCall* CancelAttack)(
         uintptr_t RCX
@@ -252,6 +250,30 @@ void Game::cancelAttack() {
         function(SingletonFunctions["g_game.cancelAttack"].second);
     });
 }
+
+void Game::follow(const uintptr_t& creature) {
+    if (!creature) return;
+    typedef void(gameCall* Follow)(
+        uintptr_t RCX,
+        const uintptr_t RDX
+        );
+    auto function = reinterpret_cast<Follow>(SingletonFunctions["g_game.follow"].first);
+    return g_dispatcher->scheduleEventEx([function, creature]() {
+        function(SingletonFunctions["g_game.follow"].second, creature);
+    });
+
+}
+
+void Game::cancelAttackAndFollow() {
+    typedef void(gameCall* CancelAttackAndFollow)(
+        uintptr_t RCX
+    );
+    auto function = reinterpret_cast<CancelAttackAndFollow>(SingletonFunctions["g_game.cancelAttackAndFollow"].first);
+    return g_dispatcher->scheduleEventEx([function]() {
+        function(SingletonFunctions["g_game.cancelAttackAndFollow"].second);
+    });
+}
+
 
 void Game::talk(const std::string& message) {
     typedef void(gameCall *Talk)(
@@ -283,19 +305,119 @@ void Game::talkPrivate(const Otc::MessageMode msgMode, const std::string& receiv
     typedef void(gameCall *TalkPrivate)(
         uintptr_t RCX,
         Otc::MessageMode RDX,
-        uintptr_t *receiver,
-        uintptr_t *message
+        const std::string& receiver,
+        const std::string& message
     );
     auto function = reinterpret_cast<TalkPrivate>(SingletonFunctions["g_game.talkPrivate"].first);
     return g_dispatcher->scheduleEventEx([function, msgMode, &receiver, &message]() {
-            uintptr_t rcv[2];
-            rcv[0] = reinterpret_cast<uintptr_t>(receiver.c_str());
-            rcv[1] = strlen(receiver.c_str());
+            function(SingletonFunctions["g_game.talkPrivate"].second, msgMode, receiver, message);
+    });
+}
 
-            uintptr_t msg[2];
-            msg[0] = reinterpret_cast<uintptr_t>(message.c_str());
-            msg[1] = strlen(message.c_str());
-            function(SingletonFunctions["g_game.talkPrivate"].second, msgMode, rcv, msg);
+void Game::openPrivateChannel(const std::string& receiver) {
+    typedef void(gameCall *OpenPrivateChannel)(
+        uintptr_t RCX,
+        const std::string& receiver
+    );
+    auto function = reinterpret_cast<OpenPrivateChannel>(SingletonFunctions["g_game.openPrivateChannel"].first);
+    return g_dispatcher->scheduleEventEx([function, &receiver]() {
+            function(SingletonFunctions["g_game.openPrivateChannel"].second, receiver);
+    });
+}
+
+void Game::setChaseMode(Otc::ChaseModes mode) {
+    typedef void(gameCall *SetChaseMode)(
+        uintptr_t RCX,
+        Otc::ChaseModes mode
+        );
+    auto function = reinterpret_cast<SetChaseMode>(SingletonFunctions["g_game.setChaseMode"].first);
+    return g_dispatcher->scheduleEventEx([function, mode]() {
+            function(SingletonFunctions["g_game.setChaseMode"].second, mode);
+    });
+}
+
+void Game::setFightMode(Otc::FightModes mode) {
+    typedef void(gameCall *SetFightMode)(
+        uintptr_t RCX,
+        Otc::FightModes mode
+        );
+    auto function = reinterpret_cast<SetFightMode>(SingletonFunctions["g_game.setFightMode"].first);
+    return g_dispatcher->scheduleEventEx([function, mode]() {
+            function(SingletonFunctions["g_game.setFightMode"].second, mode);
+    });
+}
+
+void Game::buyItem(const uintptr_t& item, const uint16_t amount, const bool ignoreCapacity = false, const bool buyWithBackpack = false) {
+    typedef void(gameCall *BuyItem)(
+        uintptr_t RCX,
+        const uintptr_t *item,
+        uint16_t amount,
+        bool ignoreCapacity,
+        bool buyWithBackpack
+        );
+    auto function = reinterpret_cast<BuyItem>(SingletonFunctions["g_game.buyItem"].first);
+    return g_dispatcher->scheduleEventEx([function, item, amount, ignoreCapacity, buyWithBackpack]() {
+            function(SingletonFunctions["g_game.buyItem"].second, &item, amount, ignoreCapacity, buyWithBackpack);
+    });
+}
+
+void Game::sellItem(const uintptr_t& item, const uint16_t amount, const bool ignoreEquipped = true) {
+    typedef void(gameCall *SellItem)(
+        uintptr_t RCX,
+        const uintptr_t *item,
+        uint16_t amount,
+        bool ignoreEquipped
+        );
+    auto function = reinterpret_cast<SellItem>(SingletonFunctions["g_game.sellItem"].first);
+    return g_dispatcher->scheduleEventEx([function, item, amount, ignoreEquipped]() {
+            function(SingletonFunctions["g_game.sellItem"].second, &item, amount, ignoreEquipped);
+    });
+}
+
+void Game::equipItem(const uintptr_t &item) {
+    if (!item) return;
+    typedef void(gameCall* EquipItem)(
+        uintptr_t RCX,
+        const uintptr_t *item
+        );
+    auto function = reinterpret_cast<EquipItem>(SingletonFunctions["g_game.equipItem"].first);
+    return g_dispatcher->scheduleEventEx([function, item]() {
+        function(SingletonFunctions["g_game.equipItem"].second, &item);
+    });
+}
+
+void Game::equipItemId(uint16_t itemId, uint8_t tier) {
+        typedef void(gameCall* EquipItemId)(
+        uintptr_t RCX,
+        uint16_t itemId,
+        uint8_t tier
+        );
+    auto function = reinterpret_cast<EquipItemId>(SingletonFunctions["g_game.equipItemId"].first);
+    return g_dispatcher->scheduleEventEx([function, itemId, tier]() {
+        function(SingletonFunctions["g_game.equipItemId"].second, itemId, tier);
+    });
+}
+
+void Game::mount(bool mountStatus) {
+    typedef void(gameCall* Mount)(
+        uintptr_t RCX,
+        bool mountStatus
+        );
+    auto function = reinterpret_cast<Mount>(SingletonFunctions["g_game.mount"].first);
+    return g_dispatcher->scheduleEventEx([function, mountStatus]() {
+        function(SingletonFunctions["g_game.mount"].second, mountStatus);
+    });
+}
+
+void Game::changeMapAwareRange(const uint8_t xrange, const uint8_t yrange) {
+    typedef void(gameCall* ChangeMapAwareRange)(
+        uintptr_t RCX,
+        uint8_t xrange,
+        uint8_t yrange
+    );
+    auto function = reinterpret_cast<ChangeMapAwareRange>(SingletonFunctions["g_game.changeMapAwareRange"].first);
+    return g_dispatcher->scheduleEventEx([function, xrange, yrange]() {
+        function(SingletonFunctions["g_game.changeMapAwareRange"].second, xrange, yrange);
     });
 }
 
@@ -312,6 +434,19 @@ bool Game::canPerformGameAction() {
     });
 }
 
+bool Game::isOnline() {
+    typedef bool(gameCall* IsOnline)(
+       uintptr_t RCX,
+       void *RDX
+       );
+    auto function = reinterpret_cast<IsOnline>(SingletonFunctions["g_game.isOnline"].first);
+    return g_dispatcher->scheduleEventEx([function]() {
+            void* pMysteryPtr = nullptr;
+            auto ret = function(SingletonFunctions["isOnline.isOnline"].second, &pMysteryPtr);
+            return ret;
+    });
+}
+
 bool Game::isAttacking() {
     typedef bool(gameCall* IsAttacking)(
        uintptr_t RCX,
@@ -324,6 +459,20 @@ bool Game::isAttacking() {
             return ret;
     });
 }
+
+bool Game::isFollowing() {
+    typedef bool(gameCall* IsFollowing)(
+       uintptr_t RCX,
+       void *RDX
+       );
+    auto function = reinterpret_cast<IsFollowing>(SingletonFunctions["g_game.isFollowing"].first);
+    return g_dispatcher->scheduleEventEx([function]() {
+            void* pMysteryPtr = nullptr;
+            auto ret = function(SingletonFunctions["g_game.isFollowing"].second, &pMysteryPtr);
+            return ret;
+    });
+}
+
 
 uintptr_t Game::getContainer(int index) {
     typedef uintptr_t*(gameCall* GetContainer)(
@@ -369,16 +518,49 @@ uintptr_t Game::getAttackingCreature() {
     });
 }
 
-uintptr_t Game::getThingType(uint16_t id, ThingCategory category)
-{
-    typedef uintptr_t*(gameCall* GetThingType)(
+uintptr_t Game::getFollowingCreature() {
+    typedef uintptr_t*(gameCall* GetFollowingCreature)(
         uintptr_t RCX,
-        uint16_t id,
-        ThingCategory category
+        void *RDX
         );
-    auto function = reinterpret_cast<GetThingType>(SingletonFunctions["g_things.getThingType"].first);
-    return g_dispatcher->scheduleEventEx([function, id, category]() {
-        auto ret = function(SingletonFunctions["g_things.getThingType"].second, id, category);
+    auto function = reinterpret_cast<GetFollowingCreature>(SingletonFunctions["g_game.getFollowingCreature"].first);
+    return g_dispatcher->scheduleEventEx([function]() {
+            void* pMysteryPtr = nullptr;
+            auto ret = function(SingletonFunctions["g_game.getFollowingCreature"].second, &pMysteryPtr);
+            return *ret;
+    });
+}
+
+uintptr_t Game::getLocalPlayer() {
+    typedef uintptr_t*(gameCall* GetLocalPlayer)(
+        uintptr_t RCX,
+        void *RDX
+        );
+    auto function = reinterpret_cast<GetLocalPlayer>(SingletonFunctions["g_game.getLocalPlayer"].first);
+    return g_dispatcher->scheduleEventEx([function]() {
+        void* pMysteryPtr = nullptr;
+        auto ret = function(SingletonFunctions["g_game.getLocalPlayer"].second, &pMysteryPtr);
+        return *ret;
+    });
+}
+
+int Game::getClientVersion() {
+    typedef int(gameCall* GetClientVersion)(
+        uintptr_t RCX
+        );
+    auto function = reinterpret_cast<GetClientVersion>(SingletonFunctions["g_game.getClientVersion"].first);
+    return g_dispatcher->scheduleEventEx([function]() {
+        return function(SingletonFunctions["g_game.getClientVersion"].second);
+    });
+}
+
+std::string Game::getCharacterName() {
+    typedef std::string*(gameCall* GetCharacterName)(
+        uintptr_t RCX
+        );
+    auto function = reinterpret_cast<GetCharacterName>(SingletonFunctions["g_game.getCharacterName"].first);
+    return g_dispatcher->scheduleEventEx([function]() {
+        auto ret = function(SingletonFunctions["g_game.getCharacterName"].second);
         return *ret;
     });
 }

@@ -100,6 +100,19 @@ std::string Container::getName(uintptr_t container) {
     });
 }
 
+int Container::getId(uintptr_t container) {
+    if (!container) return 0;
+    typedef int(gameCall* GetId)(
+        uintptr_t RCX,
+        void *RDX
+        );
+    auto function = reinterpret_cast<GetId>(ClassMemberFunctions["Container.getId"]);
+    return g_dispatcher->scheduleEventEx([function, container]() {
+        void* pMysteryPtr = nullptr;
+        return function(container, &pMysteryPtr);
+    });
+}
+
 uintptr_t Container::getContainerItem(uintptr_t container) {
     if (!container) return 0;
     typedef uintptr_t*(gameCall* GetContainerItem)(
@@ -124,6 +137,19 @@ bool Container::hasParent(uintptr_t container) {
     return g_dispatcher->scheduleEventEx([function, container]() {
         void* pMysteryPtr = nullptr;
         return function(container, &pMysteryPtr);
+    });
+}
+
+int Container::getSize(uintptr_t container) {
+    if (!container) return 0;
+    typedef int(gameCall* GetSize)(
+        uintptr_t RCX,
+        void *RDX
+        );
+    auto function = reinterpret_cast<GetSize>(ClassMemberFunctions["Container.getSize"]);
+    return g_dispatcher->scheduleEventEx([function, container]() {
+            void* pMysteryPtr = nullptr;
+            return function(container, &pMysteryPtr);
     });
 }
 

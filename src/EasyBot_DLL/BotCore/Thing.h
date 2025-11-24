@@ -23,10 +23,11 @@ public:
 
     uint32_t getId(uintptr_t thing);
     Position getPosition(uintptr_t thing);
-
     uintptr_t getParentContainer(uintptr_t thing);
+    bool isItem(uintptr_t thing);
     bool isMonster(uintptr_t thing);
     bool isNpc(uintptr_t thing);
+    bool isCreature(uintptr_t thing);
     bool isPlayer(uintptr_t thing);
     bool isLocalPlayer(uintptr_t thing);
     bool isContainer(uintptr_t thing);

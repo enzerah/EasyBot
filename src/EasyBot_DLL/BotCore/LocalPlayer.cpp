@@ -19,6 +19,19 @@ LocalPlayer* LocalPlayer::getInstance()
     return instance;
 }
 
+bool LocalPlayer::isWalkLocked(uintptr_t localPlayer) {
+    if (!localPlayer) return 0;
+    typedef bool(gameCall* IsWalkLocked)(
+        uintptr_t RCX,
+        void *RDX
+        );
+    auto function = reinterpret_cast<IsWalkLocked>(ClassMemberFunctions["LocalPlayer.isWalkLocked"]);
+    return g_dispatcher->scheduleEventEx([function, localPlayer]() {
+        void* pMysteryPtr = nullptr;
+        return function(localPlayer, &pMysteryPtr);
+    });
+}
+
 uint32_t LocalPlayer::getStates(uintptr_t localPlayer) {
     if (!localPlayer) return 0;
     typedef uint32_t(gameCall* GetStates)(
@@ -110,6 +123,19 @@ double LocalPlayer::getMaxMana(uintptr_t localPlayer) {
     });
 }
 
+uint32_t LocalPlayer::getManaShield(uintptr_t localPlayer) {
+    if (!localPlayer) return 0;
+    typedef uint32_t(gameCall* GetManaShield)(
+        uintptr_t RCX,
+        void *RDX
+        );
+    auto function = reinterpret_cast<GetManaShield>(ClassMemberFunctions["LocalPlayer.getManaShield"]);
+    return g_dispatcher->scheduleEventEx([function, localPlayer]() {
+        void* pMysteryPtr = nullptr;
+        return function(localPlayer, &pMysteryPtr);
+    });
+}
+
 uint8_t LocalPlayer::getSoul(uintptr_t localPlayer) {
     if (!localPlayer) return 0;
     typedef uint8_t(gameCall* GetSoul)(
@@ -133,6 +159,50 @@ uint16_t LocalPlayer::getStamina(uintptr_t localPlayer) {
     return g_dispatcher->scheduleEventEx([function, localPlayer]() {
         void* pMysteryPtr = nullptr;
         return function(localPlayer, &pMysteryPtr);
+    });
+}
+
+uintptr_t LocalPlayer::getInventoryItem(uintptr_t localPlayer, Otc::InventorySlot inventorySlot) {
+    if (!localPlayer) return 0;
+    typedef uintptr_t*(gameCall* GetInventoryItem)(
+        uintptr_t RCX,
+        void *RDX,
+        Otc::InventorySlot inventorySlot
+        );
+    auto function = reinterpret_cast<GetInventoryItem>(ClassMemberFunctions["LocalPlayer.getInventoryItem"]);
+    return g_dispatcher->scheduleEventEx([function, localPlayer, inventorySlot]() {
+        void* pMysteryPtr = nullptr;
+        return *function(localPlayer, &pMysteryPtr, inventorySlot);
+    });
+}
+
+bool LocalPlayer::hasEquippedItemId(uintptr_t localPlayer, uint16_t itemId, uint8_t tier) {
+    if (!localPlayer) return 0;
+    typedef bool(gameCall* HasEquippedItemId)(
+        uintptr_t RCX,
+        void *RDX,
+        uint16_t itemId,
+        uint8_t tier
+        );
+    auto function = reinterpret_cast<HasEquippedItemId>(ClassMemberFunctions["LocalPlayer.hasEquippedItemId"]);
+    return g_dispatcher->scheduleEventEx([function, localPlayer, itemId, tier]() {
+        void* pMysteryPtr = nullptr;
+        return function(localPlayer, &pMysteryPtr, itemId, tier);
+    });
+}
+
+uint16_t LocalPlayer::getInventoryCount(uintptr_t localPlayer, uint16_t itemId, uint8_t tier) {
+    if (!localPlayer) return 0;
+    typedef bool(gameCall* GetInventoryCount)(
+        uintptr_t RCX,
+        void *RDX,
+        uint16_t itemId,
+        uint8_t tier
+        );
+    auto function = reinterpret_cast<GetInventoryCount>(ClassMemberFunctions["LocalPlayer.getInventoryCount"]);
+    return g_dispatcher->scheduleEventEx([function, localPlayer, itemId, tier]() {
+        void* pMysteryPtr = nullptr;
+        return function(localPlayer, &pMysteryPtr, itemId, tier);
     });
 }
 

@@ -1,7 +1,3 @@
-//
-// Created by blazz on 05.11.2025.
-//
-
 #include "proto_functions_client.h"
 BotClient* BotClient::instance{nullptr};
 std::mutex BotClient::mutex;

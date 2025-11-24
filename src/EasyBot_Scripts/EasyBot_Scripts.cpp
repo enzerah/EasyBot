@@ -4,13 +4,18 @@
 #include "../../const.h"
 //python -m grpc_tools.protoc -IC:\Users\Wojciech\Desktop\Projects\EasyBot_x86 --python_out=. --grpc_python_out=. C:\Users\Wojciech\Desktop\Projects\EasyBot_x86\bot.proto
 int main() {
-    std::cout << "Starting scripts" << std::endl;
-    auto localPlayer = proto->getLocalPlayer();
-    proto->talkChannel(Otc::MessageSay, 1, "Pozdro Xanaved");
-    std::cout << std::hex << localPlayer << std::endl;
-    auto hp = proto->getHealth(localPlayer);
-    std::cout << hp << std::endl;
-    auto localPlayerPos = proto->getPosition(localPlayer);
-    std::cout << localPlayerPos.x  << ", " << localPlayerPos.y << std::endl;
+    auto containers = proto->getContainers();
+    for (auto container : containers)
+    {
+        auto items = proto->getItems(container);
+        for (auto item : items)
+        {
+            auto itemId = proto->getItemId(item);
+            //std::cout << itemId << std::endl;
+        }
+    }
+    auto item = proto->findItemInContainers(2874, 0, 0);
+    std::cout << std::hex << item << std::endl;
+
     return 0;
 }

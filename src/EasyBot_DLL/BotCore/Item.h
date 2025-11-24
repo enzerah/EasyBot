@@ -19,11 +19,16 @@ public:
     Item(Item const&) = delete;
     void operator=(const Item&) = delete;
     static Item* getInstance();
-    std::string getName(uintptr_t item);
-    std::string getDescription(uintptr_t item);
+
     int getCount(uintptr_t item);
     int getSubType(uintptr_t item);
     uint32_t getId(uintptr_t item);
+    std::string getTooltip(uintptr_t item);
+    uint32_t getDurationTime(uintptr_t item);
+
+    std::string getName(uintptr_t item);
+    std::string getDescription(uintptr_t item);
+
     uint8_t getTier(uintptr_t item);
     std::string getText(uintptr_t item);
 
