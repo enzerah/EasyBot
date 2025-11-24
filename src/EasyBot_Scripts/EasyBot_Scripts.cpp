@@ -2,7 +2,7 @@
 
 #include "../../proto_functions_client.h"
 #include "../../const.h"
-//python -m grpc_tools.protoc -IC:\Users\Wojciech\Desktop\Projects\EasyBot_x86 --python_out=. --grpc_python_out=. C:\Users\Wojciech\Desktop\Projects\EasyBot_x86\bot.proto
+//python -m grpc_tools.protoc -IC:\Users\Wojciech\Desktop\Projects\EasyBot86 --python_out=. --grpc_python_out=. C:\Users\Wojciech\Desktop\Projects\EasyBot86\bot.proto
 int main() {
     while (true) {
         auto containers = proto->getContainers();
