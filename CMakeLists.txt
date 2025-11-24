@@ -1,20 +1,12 @@
 cmake_minimum_required(VERSION 3.16)
 
-if(NOT DEFINED VCPKG_BUILD_TYPE)
-    set(VCPKG_BUILD_TYPE "release" CACHE STRING "vcpkg build type (release/debug)" FORCE)
-endif()
-
-
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded")
 set(CMAKE_TOOLCHAIN_FILE "${CMAKE_SOURCE_DIR}/third_party/vcpkg/scripts/buildsystems/vcpkg.cmake")
+set(VCPKG_BUILD_TYPE ${CMAKE_BUILD_TYPE})
 
 set(VCPKG_TARGET_TRIPLET "x86-windows-static" CACHE STRING "VCPKG target triplet" FORCE)
 set(VCPKG_HOST_TRIPLET "x86-windows-static" CACHE STRING "VCPKG host triplet" FORCE)
 set(GRPC_CPP_PLUGIN_EXECUTABLE "${CMAKE_SOURCE_DIR}/third_party/vcpkg/packages/grpc_x86-windows-static/tools/grpc/grpc_cpp_plugin.exe")
-
-message(STATUS "VCPKG_BUILD_TYPE=${VCPKG_BUILD_TYPE}")
-message(STATUS "VCPKG_TARGET_TRIPLET=${VCPKG_TARGET_TRIPLET}")
-message(STATUS "CMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}")
 
 project(EasyBot)
 set(CMAKE_CXX_STANDARD 17)
