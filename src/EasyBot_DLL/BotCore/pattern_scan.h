@@ -22,6 +22,9 @@ static LPCSTR bindSingletonFunction_x86_MASK = "xxxxx?xx????xxxx????xx????x????x
 static const BYTE* callGlobalField_PATTERN = reinterpret_cast<const BYTE*>("\x55\x8b\xec\x8b\x45\x00\x83\x78\x00\x00\x72\x00\x8b\x00\x50\x68\x00\x00\x00\x00\xff\x35\x00\x00\x00\x00\xe8\x00\x00\x00\x00\x6a");
 static LPCSTR callGlobalField_MASK = "xxxxx?xx??x?xxxx????xx????x????x";
 
+static const BYTE* callLuaField_PATTERN = reinterpret_cast<const BYTE*>("\x55\x8b\xec\x6a\x00\x68\x00\x00\x00\x00\x64\xa1\x00\x00\x00\x00\x50\x51\x56\xa1\x00\x00\x00\x00\x33\xc5\x50\x8d\x45\x00\x64\xa3\x00\x00\x00\x00\x51");
+static LPCSTR callLuaField_MASK = "xxxx?x????xx????xxxx????xxxxx?xx????x";
+
 
 /*
 static const BYTE* realera_x86_PATTERN = reinterpret_cast<const BYTE*>("\x8b\x54\x24\x00\x8b\x44\x24\x00\x53\x56\x8b\x72");

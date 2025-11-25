@@ -1,6 +1,6 @@
 #include "hooks.h"
 
-#include "custom_functions.h"
+#include "CustomFunctions.h"
 
 
 bool has_weird(const std::string& s) {
@@ -38,8 +38,14 @@ void __stdcall hooked_bindSingletonFunction(uintptr_t a1, uintptr_t a2, uintptr_
     }
     original_bindSingletonFunction(a1,a2,a3);
 }
+
+void __stdcall hooked_callLuaField(uintptr_t* a1) {
+    original_callLuaField(a1);
+}
+
+
 #pragma optimize( "", off )
-void __stdcall hooked_callGlobalField(uintptr_t** a1, uintptr_t** a2) {
+void __stdcall hooked_callGlobalField(uintptr_t **a1, uintptr_t **a2) {
     CONTEXT ctx;
     RtlCaptureContext(&ctx);
     uintptr_t ebp = ctx.Ebp;
@@ -70,7 +76,7 @@ void __stdcall hooked_callGlobalField(uintptr_t** a1, uintptr_t** a2) {
         }
         if (strcmp(msg2, "onTalk") == 0) {
             auto args = reinterpret_cast<StackArgs*>(ebp + 0x10);
-            processTalk(
+            g_custom->onTalk(
                 *args->name,
                 (uint16_t)args->level,
                 *args->mode,
@@ -79,11 +85,10 @@ void __stdcall hooked_callGlobalField(uintptr_t** a1, uintptr_t** a2) {
                 *args->pos
             );
         }
-        if (strcmp(msg2, "onPingBack")) {
-        }
     }
     original_callGlobalField(a1, a2);
 }
+
 #pragma optimize( "", on )
 
 int hkMainLoop(int a1) {

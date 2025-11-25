@@ -5,6 +5,7 @@
 #include "Item.h"
 #include "MinHook.h"
 #include "Container.h"
+#include "CustomFunctions.h"
 #include "pattern_scan.h"
 
 DWORD WINAPI EasyBot(HMODULE hModule) {
@@ -13,12 +14,14 @@ DWORD WINAPI EasyBot(HMODULE hModule) {
     AllocConsole();
     freopen_s(&f, "CONOUT$", "w", stdout);
     MH_Initialize();
-    uintptr_t first_func = FindPattern(bindSingletonFunction_x86_PATTERN, bindSingletonFunction_x86_MASK);
-    uintptr_t second_func = FindPattern(callGlobalField_PATTERN, callGlobalField_MASK);
+    uintptr_t bindSingletonFunction_func = FindPattern(bindSingletonFunction_x86_PATTERN, bindSingletonFunction_x86_MASK);
+    uintptr_t callGlobalField_func = FindPattern(callGlobalField_PATTERN, callGlobalField_MASK);
+    //uintptr_t callLuaField_func = FindPattern(callLuaField_PATTERN, callLuaField_MASK);
+    uintptr_t callLuaField_func = base_module + 0x1BCC00;
     uintptr_t main_loop = FindPattern(realera_x86_PATTERN, realera_x86_MASK);
-    std::cout << std::hex << second_func << '\n';
-    MH_CreateHook(reinterpret_cast<LPVOID>(first_func), &hooked_bindSingletonFunction, reinterpret_cast<LPVOID*>(&original_bindSingletonFunction));
-    MH_CreateHook(reinterpret_cast<LPVOID>(second_func), &hooked_callGlobalField, reinterpret_cast<LPVOID*>(&original_callGlobalField));
+    MH_CreateHook(reinterpret_cast<LPVOID>(bindSingletonFunction_func), &hooked_bindSingletonFunction, reinterpret_cast<LPVOID*>(&original_bindSingletonFunction));
+    MH_CreateHook(reinterpret_cast<LPVOID>(callGlobalField_func), &hooked_callGlobalField, reinterpret_cast<LPVOID*>(&original_callGlobalField));
+    MH_CreateHook(reinterpret_cast<LPVOID>(callLuaField_func), &hooked_callLuaField, reinterpret_cast<LPVOID*>(&original_callLuaField));
     MH_CreateHook(reinterpret_cast<LPVOID>(main_loop), &hkMainLoop, reinterpret_cast<LPVOID*>(&mainLoop_original));
     /*
     uintptr_t first_func = base_module + 0x70900;
@@ -29,13 +32,26 @@ DWORD WINAPI EasyBot(HMODULE hModule) {
     MH_CreateHook(reinterpret_cast<LPVOID>(main_loop), &hkMainLoopAltaron, reinterpret_cast<LPVOID*>(&mainLoop_originalAltaron));
     */
     MH_EnableHook(MH_ALL_HOOKS);
-    if (first_func && main_loop) {
+    if (bindSingletonFunction_func &&
+        callGlobalField_func &&
+        callLuaField_func &&
+        main_loop) {
         MessageBoxA(
             NULL,
             "Bot is running... :) Enjoy",
             "EasyBot",
             MB_OK | MB_ICONINFORMATION
         );
+    }
+    system("pause");
+    auto messages = g_custom->getMessages(5);
+    for (auto message : messages) {
+        std::cout << message.name << " " << message.text << std::endl;
+    }
+    system("pause");
+    messages = g_custom->getMessages(1);
+    for (auto message : messages) {
+        std::cout << message.name << " " << message.text << std::endl;
     }
     RunServer();
     return 0;

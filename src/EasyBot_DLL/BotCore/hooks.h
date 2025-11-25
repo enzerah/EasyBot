@@ -27,6 +27,10 @@ typedef void(__stdcall* callGlobalField_t)(uintptr_t**, uintptr_t**);
 inline callGlobalField_t original_callGlobalField = nullptr;
 void __stdcall hooked_callGlobalField(uintptr_t**, uintptr_t**);
 
+typedef void(__stdcall* callLuaField_t)(uintptr_t*);
+inline callLuaField_t original_callLuaField = nullptr;
+void __stdcall hooked_callLuaField(uintptr_t*);
+
 
 typedef int (__cdecl* mainLoop)(int a1);
 inline mainLoop mainLoop_original = nullptr;
