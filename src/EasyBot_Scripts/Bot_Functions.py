@@ -183,7 +183,7 @@ def find_item_in_containers(itemId, subType, tier):
 def open(item, previousContainer):
     request = bot_pb2.bot_OpenRequest()
     request.item = item
-    request.previouscontainer = previousContainer
+    request.previousContainer = previousContainer
     response = stub.Open(request)
     return response.value
 
@@ -224,13 +224,13 @@ def talk(message):
 def talk_channel(mode, channelId, message):
     request = bot_pb2.bot_TalkChannelRequest()
     request.mode = mode
-    request.channelid = channelId
+    request.channelId = channelId
     request.message = message
     response = stub.TalkChannel(request)
 
 def talk_private(msgMode, receiver, message):
     request = bot_pb2.bot_TalkPrivateRequest()
-    request.msgmode = msgMode
+    request.msgMode = msgMode
     request.receiver = receiver
     request.message = message
     response = stub.TalkPrivate(request)
@@ -251,15 +251,15 @@ def buy_item(item, amount, ignoreCapacity, buyWithBackpack):
     request = bot_pb2.bot_BuyItemRequest()
     request.item = item
     request.amount = amount
-    request.ignorecapacity = ignoreCapacity
-    request.buywithbackpack = buyWithBackpack
+    request.ignoreCapacity = ignoreCapacity
+    request.buyWithBackpack = buyWithBackpack
     response = stub.BuyItem(request)
 
 def sell_item(item, amount, ignoreEquipped):
     request = bot_pb2.bot_SellItemRequest()
     request.item = item
     request.amount = amount
-    request.ignoreequipped = ignoreEquipped
+    request.ignoreEquipped = ignoreEquipped
     response = stub.SellItem(request)
 
 def equip_item(item):
@@ -439,14 +439,14 @@ def get_stamina(value):
 
 def get_inventory_item(localPlayer, inventorySlot):
     request = bot_pb2.bot_GetInventoryItemRequest()
-    request.localplayer = localPlayer
-    request.inventoryslot = inventorySlot
+    request.localPlayer = localPlayer
+    request.inventorySlot = inventorySlot
     response = stub.GetInventoryItem(request)
     return response.value
 
 def has_equipped_item_id(localPlayer, itemId, tier):
     request = bot_pb2.bot_HasEquippedItemIdRequest()
-    request.localplayer = localPlayer
+    request.localPlayer = localPlayer
     request.itemid = itemId
     request.tier = tier
     response = stub.HasEquippedItemId(request)
@@ -454,7 +454,7 @@ def has_equipped_item_id(localPlayer, itemId, tier):
 
 def get_inventory_count(localPlayer, itemId, tier):
     request = bot_pb2.bot_GetInventoryCountRequest()
-    request.localplayer = localPlayer
+    request.localPlayer = localPlayer
     request.itemid = itemId
     request.tier = tier
     response = stub.GetInventoryCount(request)
@@ -462,7 +462,7 @@ def get_inventory_count(localPlayer, itemId, tier):
 
 def has_sight(localPlayer, pos):
     request = bot_pb2.bot_HasSightRequest()
-    request.localplayer = localPlayer
+    request.localPlayer = localPlayer
     request.pos.x = pos['x']
     request.pos.y = pos['y']
     request.pos.z = pos['z']
@@ -519,7 +519,7 @@ def find_path(startpos, goalpos, maxComplexity, flags):
 
 def is_walkable(pos, ignoreCreatures):
     request = bot_pb2.bot_IsWalkableRequest()
-    request.ignorecreatures = ignoreCreatures
+    request.ignoreCreatures = ignoreCreatures
     request.pos.x = pos['x']
     request.pos.y = pos['y']
     request.pos.z = pos['z']
