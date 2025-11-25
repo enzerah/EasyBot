@@ -22,7 +22,7 @@ def useManas():
                         use_with(items[0], get_local_player())
 
                         break
-        time.sleep(0.1)
+        time.sleep(0.2)
 
 def healSd():
     while True:
