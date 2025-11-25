@@ -23,6 +23,10 @@ typedef void(__stdcall* bindSingletonFunction_t)(uintptr_t, uintptr_t, uintptr_t
 inline bindSingletonFunction_t original_bindSingletonFunction = nullptr;
 void __stdcall hooked_bindSingletonFunction(uintptr_t, uintptr_t, uintptr_t);
 
+typedef void(__stdcall* callGlobalField_t)(uintptr_t**, uintptr_t**);
+inline callGlobalField_t original_callGlobalField = nullptr;
+void __stdcall hooked_callGlobalField(uintptr_t**, uintptr_t**);
+
 
 typedef int (__cdecl* mainLoop)(int a1);
 inline mainLoop mainLoop_original = nullptr;
