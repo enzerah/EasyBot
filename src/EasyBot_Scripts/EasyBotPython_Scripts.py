@@ -52,7 +52,7 @@ def healSd():
         time.sleep(0.1)
 
 
-
+'''
 t1 = threading.Thread(target=useManas)
 t2 = threading.Thread(target=healSd)
 t1.start()
@@ -60,4 +60,7 @@ t2.start()
 
 t1.join()
 t2.join()
+'''
+print(get_character_name())
+
 

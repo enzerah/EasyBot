@@ -13,7 +13,7 @@
 #include "MinHook.h"
 
 
-//static std::ofstream g_log("GameAddress.txt",  std::ios::trunc);
+static std::ofstream g_log("GameAddress.txt",  std::ios::trunc);
 
 inline std::map<std::string, std::pair<uintptr_t, uintptr_t>> SingletonFunctions;
 inline std::map<std::string, uintptr_t> ClassMemberFunctions;
@@ -27,5 +27,20 @@ void __stdcall hooked_bindSingletonFunction(uintptr_t, uintptr_t, uintptr_t);
 typedef int (__cdecl* mainLoop)(int a1);
 inline mainLoop mainLoop_original = nullptr;
 int __cdecl hkMainLoop(int a1);
+
+typedef DWORD(__stdcall* bindSingletonFunction_Altaron)(uintptr_t, uintptr_t, uintptr_t);
+inline bindSingletonFunction_Altaron original_bindSingletonFunctionAltaron = nullptr;
+void __stdcall hooked_bindSingletonFunctionAltaron(uintptr_t, uintptr_t, uintptr_t);
+
+typedef DWORD(__stdcall* bindClassFunction_Altaron)(uintptr_t, uintptr_t, uintptr_t);
+inline bindClassFunction_Altaron original_bindClassFunction_Altaron = nullptr;
+void __stdcall hooked_bindClassFunction_Altaron(uintptr_t, uintptr_t, uintptr_t);
+
+typedef int (__fastcall* mainLoopAltaron)();
+inline mainLoopAltaron mainLoop_originalAltaron = nullptr;
+int __fastcall hkMainLoopAltaron();
+
+
+
 
 #endif //HOOKS_H

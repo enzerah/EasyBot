@@ -8,19 +8,25 @@
 #include "pattern_scan.h"
 
 DWORD WINAPI EasyBot(HMODULE hModule) {
-    uintptr_t base_module = reinterpret_cast<uintptr_t>(GetModuleHandle(NULL));
-    /*
+    auto base_module = reinterpret_cast<uintptr_t>(GetModuleHandle(NULL));
     FILE *f;
     AllocConsole();
     freopen_s(&f, "CONOUT$", "w", stdout);
-    */
     MH_Initialize();
+    /*
     uintptr_t first_func = FindPattern(bindSingletonFunction_x86_PATTERN, bindSingletonFunction_x86_MASK);
     uintptr_t main_loop = FindPattern(realera_x86_PATTERN, realera_x86_MASK);
     MH_CreateHook(reinterpret_cast<LPVOID>(first_func), &hooked_bindSingletonFunction, reinterpret_cast<LPVOID*>(&original_bindSingletonFunction));
     MH_CreateHook(reinterpret_cast<LPVOID>(main_loop), &hkMainLoop, reinterpret_cast<LPVOID*>(&mainLoop_original));
+    */
+    uintptr_t first_func = base_module + 0x70900;
+    uintptr_t second_func = base_module + 0x6FF20;
+    uintptr_t main_loop = base_module + 0x5F800;
+    MH_CreateHook(reinterpret_cast<LPVOID>(first_func), &hooked_bindSingletonFunctionAltaron, reinterpret_cast<LPVOID*>(&original_bindSingletonFunctionAltaron));
+    MH_CreateHook(reinterpret_cast<LPVOID>(second_func), &hooked_bindClassFunction_Altaron, reinterpret_cast<LPVOID*>(&original_bindClassFunction_Altaron));
+    MH_CreateHook(reinterpret_cast<LPVOID>(main_loop), &hkMainLoopAltaron, reinterpret_cast<LPVOID*>(&mainLoop_originalAltaron));
     MH_EnableHook(MH_ALL_HOOKS);
-    if (first_func && main_loop) {
+    if (second_func && main_loop) {
         MessageBoxA(
             NULL,
             "Bot is running... :) Enjoy",
