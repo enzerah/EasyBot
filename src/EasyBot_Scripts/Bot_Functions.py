@@ -606,3 +606,16 @@ def get_top_use_thing(value):
     request = UInt64Value(value=value)
     response = stub.GetTopUseThing(request)
     return response.value
+
+def get_messages(value):
+    request = UInt32Value(value=value)
+    response = stub.GetMessages(request)
+    return response.messages
+
+def clear_messages():
+    request = Empty()
+    stub.ClearMessages(request)
+
+def drop_messages(value):
+    request = UInt32Value(value=value)
+    stub.DropMessages(request)
