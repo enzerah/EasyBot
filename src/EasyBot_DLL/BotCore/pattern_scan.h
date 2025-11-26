@@ -19,8 +19,25 @@ static LPCSTR bindClassMemberFunction_MASK = "xxxxxx?xxxxxxxxxxxx??x?xxxxxx????x
 static const BYTE* bindSingletonFunction_x86_PATTERN = reinterpret_cast<const BYTE*>("\x55\x8b\xec\x8b\x45\x00\x83\x78\x00\x00\x00\x00\x8b\x00\x50\x68\x00\x00\x00\x00\xff\x35\x00\x00\x00\x00\xe8\x00\x00\x00\x00\x83\xc4");
 static LPCSTR bindSingletonFunction_x86_MASK = "xxxxx?xx????xxxx????xx????x????xx";
 
-static const BYTE* callGlobalField_PATTERN = reinterpret_cast<const BYTE*>("\x55\x8b\xec\x8b\x45\x00\x83\x78\x00\x00\x00\x00\x8b\x00\x50\x68\x00\x00\x00\x00\xff\x35\x00\x00\x00\x00\xe8\x00\x00\x00\x00\x6a");
-static LPCSTR callGlobalField_MASK = "xxxxx?xx????xxxx????xx????x????x";
+
+#define TEST 2
+#if TEST == 1
+#define EASY_OFFSET 0x10
+#define EASY_VAR uintptr_t**
+#define EASY_PTR *
+static const BYTE* callGlobalField_PATTERN = reinterpret_cast<const BYTE*>("\x55\x8b\xec\x8b\x45\x00\x83\x78\x00\x00\x72\x00\x8b\x00\x50\x68\x00\x00\x00\x00\xff\x35\x00\x00\x00\x00\xe8\x00\x00\x00\x00\x6a");
+static LPCSTR callGlobalField_MASK = "xxxxx?xx??x?xxxx????xx????x????x";
+#elif TEST == 2
+#define EASY_OFFSET 0x8
+#define EASY_VAR uintptr_t*
+#define EASY_PTR
+#define EASY_VAR_MESSAGE uintptr_t**
+static const BYTE* callGlobalField_PATTERN = reinterpret_cast<const BYTE*>("\x55\x8b\xec\x8b\x45\x00\x83\x78\x00\x00\x76\x00\x8b\x00\x56\x50");
+static LPCSTR callGlobalField_MASK = "xxxxx?xx??x?xxxx";
+#endif
+
+
+
 
 
 static const BYTE* callLuaField_PATTERN = reinterpret_cast<const BYTE*>("\x55\x8b\xec\x6a\x00\x68\x00\x00\x00\x00\x64\xa1\x00\x00\x00\x00\x50\x51\x56\xa1\x00\x00\x00\x00\x33\xc5\x50\x8d\x45\x00\x64\xa3\x00\x00\x00\x00\x51");

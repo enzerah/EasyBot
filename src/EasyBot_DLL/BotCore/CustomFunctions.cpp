@@ -22,6 +22,11 @@ CustomFunctions* CustomFunctions::getInstance()
 
 void CustomFunctions::onTalk(std::string name, uint16_t level, Otc::MessageMode mode, std::string text,
     uint16_t channelId, const Position &pos) {
+    std::cout << "onTalk: " << name << std::endl;
+    std::cout << "onTalk: " << level << std::endl;
+    std::cout << "onTalk: " << mode << std::endl;
+    std::cout << "onTalk: " << text << std::endl;
+    std::cout << "onTalk: " << channelId << std::endl;
     if (messages.size() >= MAX_MESSAGES) {
         messages.erase(messages.begin());
     }
