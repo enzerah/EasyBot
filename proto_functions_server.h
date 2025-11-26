@@ -130,6 +130,12 @@ public:
     Status GetTopThing(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::UInt64Value* response) override;
     Status GetTopUseThing(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::UInt64Value* response) override;
 
+    // --- CustomFunctions.h ---
+    Status GetMessages(ServerContext* context, const google::protobuf::UInt32Value* request, bot::bot_GetMessages* response) override;
+    Status ClearMessages(ServerContext* context, const google::protobuf::Empty* request, google::protobuf::Empty* response) override;
+    Status DropMessages(ServerContext* context, const google::protobuf::UInt32Value* request, google::protobuf::Empty* response) override;
+
+
 };
 
 void RunServer();

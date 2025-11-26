@@ -16,7 +16,7 @@ struct StackArgs {
     Position* pos;
 };
 
-struct Message {
+struct MessageStruct {
     std::string name;
     uint16_t level;
     Otc::MessageMode mode;
@@ -25,7 +25,7 @@ struct Message {
     Position pos;
 };
 
-struct Channel
+struct ChannelStruct
 {
     uint16_t channelId;
     std::string channelName;
@@ -35,8 +35,8 @@ class CustomFunctions{
 private:
     static CustomFunctions* instance;
     static std::mutex mutex;
-    std::vector<Message> messages;
-    std::vector<Channel> channels;
+    std::vector<MessageStruct> messages;
+    std::vector<ChannelStruct> channels;
 
     const size_t MAX_MESSAGES = 100;
     const size_t MAX_CHANNELS = 15;
@@ -53,8 +53,13 @@ public:
     void onOpenChannel(uint16_t channelId, std::string name);
     void onCloseChannel(uint16_t channelId);
 
-    std::vector<Message> getMessages(int messageNumber);
-    std::vector<Channel> getChannels();
+    std::vector<MessageStruct> getMessages(int messageNumber);
+    void clearMessages();
+    void dropMessages(int messageNumber);
+    std::vector<ChannelStruct> getChannels();
+
+    uintptr_t* getModePtr(uintptr_t mode_address);
+    uintptr_t* getMessagePtr(uintptr_t message_address);
 };
 
 

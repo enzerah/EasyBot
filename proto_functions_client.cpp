@@ -1135,3 +1135,45 @@ uintptr_t BotClient::getTopUseThing(uintptr_t value)
     return response.value();
 }
 
+// Custom Functions
+std::vector<MessageStruct> BotClient::getMessages(int messageNumber) {
+    google::protobuf::UInt32Value request;
+    request.set_value(messageNumber);
+    bot_GetMessages response;
+    ClientContext context;
+    Status status = stub->GetMessages(&context, request, &response);
+    std::vector<MessageStruct> result;
+    if (status.ok()) {
+        result.reserve(response.messages_size());
+        for (const auto& proto_msg : response.messages()) {
+            MessageStruct msg;
+            msg.name = proto_msg.name();
+            msg.text = proto_msg.text();
+            msg.level = static_cast<uint16_t>(proto_msg.level());
+            msg.channelId = static_cast<uint16_t>(proto_msg.channel_id());
+            msg.mode = static_cast<Otc::MessageMode>(proto_msg.mode());
+            const auto& proto_pos = proto_msg.pos();
+            msg.pos.x = proto_pos.x();
+            msg.pos.y = proto_pos.y();
+            msg.pos.z = proto_pos.z();
+            result.push_back(msg);
+        }
+    }
+    return result;
+}
+
+void BotClient::clearMessages() {
+    Empty request;
+    Empty response;
+    ClientContext context;
+    Status status = stub->ClearMessages(&context, request, &response);
+}
+
+void BotClient::dropMessages(int messageNumber) {
+    google::protobuf::UInt32Value request;
+    request.set_value(messageNumber);
+    Empty response;
+    ClientContext context;
+    Status status = stub->DropMessages(&context, request, &response);
+}
+

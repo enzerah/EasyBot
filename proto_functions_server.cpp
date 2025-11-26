@@ -7,6 +7,7 @@
 #include "Thing.h"
 #include "LocalPlayer.h"
 #include "Creature.h"
+#include "CustomFunctions.h"
 #include "Item.h"
 
 // Functions:
@@ -687,6 +688,38 @@ Status BotServiceImpl::GetTopUseThing(ServerContext* context, const google::prot
     auto result = g_tile->getTopUseThing(request->value());
     response->set_value(result);
     return Status::OK;
+}
+
+
+// =================  CustomFunctions.h =================
+Status BotServiceImpl::GetMessages(ServerContext *context, const google::protobuf::UInt32Value *request,
+    bot::bot_GetMessages *response) {
+    auto result = g_custom->getMessages(request->value());
+    for (auto cpp_msg : result) {
+        bot::bot_Message* proto_msg = response->add_messages();
+        proto_msg->set_name(cpp_msg.name);
+        proto_msg->set_level(cpp_msg.level);
+        proto_msg->set_mode(static_cast<uint32_t>(cpp_msg.mode));
+        proto_msg->set_text(cpp_msg.text);
+        proto_msg->set_channel_id(cpp_msg.channelId);
+        bot::bot_Position* proto_pos = proto_msg->mutable_pos();
+        proto_pos->set_x(cpp_msg.pos.x);
+        proto_pos->set_y(cpp_msg.pos.y);
+        proto_pos->set_z(cpp_msg.pos.z);
+    }
+    return grpc::Status::OK;
+}
+
+Status BotServiceImpl::ClearMessages(ServerContext *context, const google::protobuf::Empty *request,
+    google::protobuf::Empty *response) {
+    g_custom->clearMessages();
+    return grpc::Status::OK;
+}
+
+Status BotServiceImpl::DropMessages(ServerContext *context, const google::protobuf::UInt32Value *request,
+    google::protobuf::Empty *response) {
+    g_custom->dropMessages(request->value());
+    return grpc::Status::OK;
 }
 
 

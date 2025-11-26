@@ -126,9 +126,27 @@ service BotService {
   rpc GetTopThing(google.protobuf.UInt64Value) returns (google.protobuf.UInt64Value);
   rpc GetTopUseThing(google.protobuf.UInt64Value) returns (google.protobuf.UInt64Value);
 
+  // --- CustomFunctions.h ---
+  rpc GetMessages(google.protobuf.UInt32Value) returns (bot_GetMessages);
+  rpc ClearMessages(google.protobuf.Empty) returns (google.protobuf.Empty);
+  rpc DropMessages(google.protobuf.UInt32Value) returns (google.protobuf.Empty);
+
 }
 
-// --- Generated Messages (Copy these below service) ---
+// --- Generated Messages ---
+
+message bot_Message {
+  string name = 1;
+  uint32 level = 2;
+  uint32 mode = 3;
+  string text = 4;
+  uint32 channel_id = 5;
+  bot_Position pos = 6;
+}
+
+message bot_GetMessages {
+  repeated bot_Message messages = 1;
+}
 
 message bot_GetItemRequest {
   uint64 container = 1;

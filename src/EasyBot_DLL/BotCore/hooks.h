@@ -18,7 +18,6 @@
 inline std::map<std::string, std::pair<uintptr_t, uintptr_t>> SingletonFunctions;
 inline std::map<std::string, uintptr_t> ClassMemberFunctions;
 
-bool has_weird(const std::string& s);
 typedef void(__stdcall* bindSingletonFunction_t)(uintptr_t, uintptr_t, uintptr_t);
 inline bindSingletonFunction_t original_bindSingletonFunction = nullptr;
 void __stdcall hooked_bindSingletonFunction(uintptr_t, uintptr_t, uintptr_t);
@@ -38,6 +37,10 @@ int __cdecl hkMainLoop(int a1);
 typedef void(__stdcall* look_t)(const uintptr_t *RDX,const bool isBattleList);
 inline look_t look_original = nullptr;
 void __stdcall hkLook(const uintptr_t& thing, const bool isBattleList);;
+
+typedef void(__stdcall* setMinimumAmbientLight_t)(const float intensity);
+inline setMinimumAmbientLight_t setMinimumAmbientLight_original = nullptr;
+void __stdcall hksetMinimumAmbientLight(const float intensity);
 
 
 

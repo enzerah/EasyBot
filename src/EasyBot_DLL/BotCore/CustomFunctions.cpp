@@ -1,6 +1,8 @@
 #include "CustomFunctions.h"
 #include <iostream>
 
+#include "BuildConfig.h"
+
 
 CustomFunctions* CustomFunctions::instance{nullptr};
 std::mutex CustomFunctions::mutex;
@@ -22,15 +24,10 @@ CustomFunctions* CustomFunctions::getInstance()
 
 void CustomFunctions::onTalk(std::string name, uint16_t level, Otc::MessageMode mode, std::string text,
     uint16_t channelId, const Position &pos) {
-    std::cout << "onTalk: " << name << std::endl;
-    std::cout << "onTalk: " << level << std::endl;
-    std::cout << "onTalk: " << mode << std::endl;
-    std::cout << "onTalk: " << text << std::endl;
-    std::cout << "onTalk: " << channelId << std::endl;
     if (messages.size() >= MAX_MESSAGES) {
         messages.erase(messages.begin());
     }
-    Message record = {name, level, mode, text, channelId, pos};
+    MessageStruct record = {name, level, mode, text, channelId, pos};
     messages.push_back(std::move(record));
 }
 
@@ -39,7 +36,7 @@ void CustomFunctions::onOpenChannel(const uint16_t channelId, const std::string 
         return;
     }
     auto exists = std::find_if(channels.begin(), channels.end(),
-        [&](const Channel& ch) {
+        [&](const ChannelStruct& ch) {
             return ch.channelId == channelId || ch.channelName == name;
         });
 
@@ -54,7 +51,7 @@ void CustomFunctions::onCloseChannel(uint16_t channelId) {
         std::remove_if(
             channels.begin(),
             channels.end(),
-            [&](const Channel& ch) {
+            [&](const ChannelStruct& ch) {
                 return ch.channelId == channelId;
             }
         ),
@@ -63,7 +60,7 @@ void CustomFunctions::onCloseChannel(uint16_t channelId) {
 }
 
 
-std::vector<Message> CustomFunctions::getMessages(int messageNumber) {
+std::vector<MessageStruct> CustomFunctions::getMessages(int messageNumber) {
     size_t count = static_cast<size_t>(messageNumber);
     size_t actual_size = messages.size();
     size_t start_index;
@@ -72,15 +69,48 @@ std::vector<Message> CustomFunctions::getMessages(int messageNumber) {
     } else {
         start_index = actual_size - count;
     }
-    return std::vector<Message>(
+    return std::vector<MessageStruct>(
         messages.begin() + start_index,
         messages.end()
     );
 }
 
-std::vector<Channel> CustomFunctions::getChannels() {
+void CustomFunctions::clearMessages() {
+    messages.clear();
+}
+
+void CustomFunctions::dropMessages(int messageNumber) {
+    size_t count = static_cast<size_t>(messageNumber);
+    size_t current_size = messages.size();
+    if (count >= current_size) {
+        messages.clear();
+    } else {
+        messages.resize(current_size - count);
+    }
+}
+
+
+std::vector<ChannelStruct> CustomFunctions::getChannels() {
     return channels;
 }
+
+uintptr_t * CustomFunctions::getModePtr(uintptr_t mode_address) {
+    if (BuildOption == Miracle || BuildOption == Realera) {
+        return *reinterpret_cast<uintptr_t**>(mode_address);
+    } else if (BuildOption == Dbwots) {
+        return reinterpret_cast<uintptr_t*>(mode_address);
+    }
+    return {};
+}
+
+uintptr_t * CustomFunctions::getMessagePtr(uintptr_t message_address) {
+    if (BuildOption == Miracle || BuildOption == Realera || BuildOption == Dbwots) {
+        return *reinterpret_cast<uintptr_t**>(message_address);
+    }
+    return {};
+}
+
+
 
 
 

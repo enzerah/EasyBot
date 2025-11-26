@@ -4,6 +4,7 @@
 #include "bot.grpc.pb.h"
 #include "const.h"
 #include "google/protobuf/empty.pb.h"
+#include "src/EasyBot_DLL/BotCore/CustomFunctions.h"
 using grpc::Channel;
 using grpc::ClientContext;
 using grpc::Status;
@@ -149,6 +150,11 @@ public:
     // Tile
     uintptr_t getTopThing(uintptr_t tile);
     uintptr_t getTopUseThing(uintptr_t tile);
+
+    // Custom Functions
+    std::vector<MessageStruct> getMessages(int messageNumber);
+    void clearMessages();
+    void dropMessages(int messageNumber);
 
 
 private:

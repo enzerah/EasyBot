@@ -1,28 +1,27 @@
+
 #include "../../proto_functions_server.h"
-
-
 #include "hooks.h"
-#include "Item.h"
 #include "MinHook.h"
-#include "Container.h"
-#include "CustomFunctions.h"
+#include "BuildConfig.h"
 #include "pattern_scan.h"
 
 DWORD WINAPI EasyBot(HMODULE hModule) {
     auto base_module = reinterpret_cast<uintptr_t>(GetModuleHandle(NULL));
-    FILE *f;
-    AllocConsole();
-    freopen_s(&f, "CONOUT$", "w", stdout);
     MH_Initialize();
     uintptr_t bindSingletonFunction_func = FindPattern(bindSingletonFunction_x86_PATTERN, bindSingletonFunction_x86_MASK);
     uintptr_t callGlobalField_func = FindPattern(callGlobalField_PATTERN, callGlobalField_MASK);
-    uintptr_t main_loop = FindPattern(realera_x86_PATTERN, realera_x86_MASK);
+    uintptr_t main_loop = FindPattern(mainLoop_x86_PATTERN, mainLoop_x86_MASK);
     MH_CreateHook(reinterpret_cast<LPVOID>(bindSingletonFunction_func), &hooked_bindSingletonFunction, reinterpret_cast<LPVOID*>(&original_bindSingletonFunction));
     MH_CreateHook(reinterpret_cast<LPVOID>(callGlobalField_func), &hooked_callGlobalField, reinterpret_cast<LPVOID*>(&original_callGlobalField));
     MH_CreateHook(reinterpret_cast<LPVOID>(main_loop), &hkMainLoop, reinterpret_cast<LPVOID*>(&mainLoop_original));
+    /*
+    FILE *f;
+    AllocConsole();
+    freopen_s(&f, "CONOUT$", "w", stdout);
     std::cout << std::hex <<bindSingletonFunction_func << std::endl;
     std::cout << std::hex <<callGlobalField_func << std::endl;
     std::cout << std::hex <<main_loop << std::endl;
+    */
     MH_EnableHook(MH_ALL_HOOKS);
     while (!SingletonFunctions["g_game.look"].first)
     {
