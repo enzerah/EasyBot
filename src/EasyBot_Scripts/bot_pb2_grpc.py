@@ -561,6 +561,21 @@ class BotServiceStub(object):
                 request_serializer=google_dot_protobuf_dot_wrappers__pb2.UInt64Value.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_wrappers__pb2.UInt64Value.FromString,
                 _registered_method=True)
+        self.GetMessages = channel.unary_unary(
+                '/bot.BotService/GetMessages',
+                request_serializer=google_dot_protobuf_dot_wrappers__pb2.UInt32Value.SerializeToString,
+                response_deserializer=bot__pb2.bot_GetMessages.FromString,
+                _registered_method=True)
+        self.ClearMessages = channel.unary_unary(
+                '/bot.BotService/ClearMessages',
+                request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                _registered_method=True)
+        self.DropMessages = channel.unary_unary(
+                '/bot.BotService/DropMessages',
+                request_serializer=google_dot_protobuf_dot_wrappers__pb2.UInt32Value.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                _registered_method=True)
 
 
 class BotServiceServicer(object):
@@ -1204,6 +1219,25 @@ class BotServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetMessages(self, request, context):
+        """--- CustomFunctions.h ---
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ClearMessages(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DropMessages(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_BotServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -1731,6 +1765,21 @@ def add_BotServiceServicer_to_server(servicer, server):
                     servicer.GetTopUseThing,
                     request_deserializer=google_dot_protobuf_dot_wrappers__pb2.UInt64Value.FromString,
                     response_serializer=google_dot_protobuf_dot_wrappers__pb2.UInt64Value.SerializeToString,
+            ),
+            'GetMessages': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetMessages,
+                    request_deserializer=google_dot_protobuf_dot_wrappers__pb2.UInt32Value.FromString,
+                    response_serializer=bot__pb2.bot_GetMessages.SerializeToString,
+            ),
+            'ClearMessages': grpc.unary_unary_rpc_method_handler(
+                    servicer.ClearMessages,
+                    request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            ),
+            'DropMessages': grpc.unary_unary_rpc_method_handler(
+                    servicer.DropMessages,
+                    request_deserializer=google_dot_protobuf_dot_wrappers__pb2.UInt32Value.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -4568,6 +4617,87 @@ class BotService(object):
             '/bot.BotService/GetTopUseThing',
             google_dot_protobuf_dot_wrappers__pb2.UInt64Value.SerializeToString,
             google_dot_protobuf_dot_wrappers__pb2.UInt64Value.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetMessages(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/bot.BotService/GetMessages',
+            google_dot_protobuf_dot_wrappers__pb2.UInt32Value.SerializeToString,
+            bot__pb2.bot_GetMessages.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ClearMessages(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/bot.BotService/ClearMessages',
+            google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def DropMessages(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/bot.BotService/DropMessages',
+            google_dot_protobuf_dot_wrappers__pb2.UInt32Value.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options,
             channel_credentials,
             insecure,
