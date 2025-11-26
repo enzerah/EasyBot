@@ -257,3 +257,4 @@ bool LocalPlayer::autoWalk(uintptr_t localPlayer, const Position &destination, b
     });
 }
 
+

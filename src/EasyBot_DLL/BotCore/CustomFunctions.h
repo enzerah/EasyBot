@@ -25,11 +25,21 @@ struct Message {
     Position pos;
 };
 
+struct Channel
+{
+    uint16_t channelId;
+    std::string channelName;
+};
+
 class CustomFunctions{
 private:
     static CustomFunctions* instance;
     static std::mutex mutex;
     std::vector<Message> messages;
+    std::vector<Channel> channels;
+
+    const size_t MAX_MESSAGES = 100;
+    const size_t MAX_CHANNELS = 15;
 protected:
         CustomFunctions();
     ~CustomFunctions(){}
@@ -40,8 +50,11 @@ public:
 
 
     void onTalk(std::string name, uint16_t level, Otc::MessageMode mode, std::string text, uint16_t channelId, const Position& pos);
+    void onOpenChannel(uint16_t channelId, std::string name);
+    void onCloseChannel(uint16_t channelId);
 
     std::vector<Message> getMessages(int messageNumber);
+    std::vector<Channel> getChannels();
 };
 
 

@@ -74,7 +74,6 @@ public:
     int getClientVersion();
     std::string getCharacterName();
 
-
 };
 
 

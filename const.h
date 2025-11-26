@@ -352,7 +352,7 @@ namespace Otc
         IconHungry = 65536
     };
 
-    enum MessageMode {
+    enum MessageMode : uint8_t{
         MessageNone                    = 0,
         MessageSay                     = 1,
         MessageWhisper                 = 2,

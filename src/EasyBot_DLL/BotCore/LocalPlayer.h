@@ -39,6 +39,7 @@ public:
     bool isAutoWalking(uintptr_t localPlayer);
     void stopAutoWalk(uintptr_t localPlayer);
     bool autoWalk(uintptr_t localPlayer, const Position& destination, bool retry = false);
+
 };
 
 

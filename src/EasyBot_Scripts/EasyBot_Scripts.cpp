@@ -4,21 +4,12 @@
 #include "../../const.h"
 //python -m grpc_tools.protoc -IC:\Users\Wojciech\Desktop\Projects\EasyBot86 --python_out=. --grpc_python_out=. C:\Users\Wojciech\Desktop\Projects\EasyBot86\bot.proto
 int main() {
-    while (true) {
-        auto containers = proto->getContainers();
-
-        for (auto container : containers) {
-            auto item = proto->getItem(container, 0);
-            auto creature = proto->getAttackingCreature();
-            if (creature) {
-                auto creaturePos = proto->getPosition(creature);
-                auto tile = proto->getTile(creaturePos);
-                auto thing = proto->getTopUseThing(tile);
-                proto->useWith(item, thing);
-                Sleep(1200);
-                break;
-            }
-        }
-    }
+    auto localPlayer = proto->getLocalPlayer();
+    std::cout << std::hex << localPlayer << std::endl;
+    auto hp = proto->getHealth(localPlayer);
+    std::cout << hp << std::endl;
+    proto->talk("Siema");
+    auto pos = proto->getPosition(localPlayer);
+    std::cout << pos.x << ", " << pos.y << std::endl;
     return 0;
 }
