@@ -55,7 +55,7 @@ void __stdcall hooked_callGlobalField(uintptr_t **a1, uintptr_t **a2) {
             uintptr_t addr_mode = ebp + EASY_OFFSET;
             uintptr_t addr_message = ebp + EASY_OFFSET + 0x04;
             auto ptr_to_mode = EASY_PTR reinterpret_cast<EASY_VAR>(addr_mode);
-            auto ptr_to_message = *reinterpret_cast<EASY_VAR_MESSAGE>(addr_message);
+            auto ptr_to_message = *reinterpret_cast<uintptr_t**>(addr_message);
             if (*ptr_to_mode == Otc::MessageStatus) {
                 *ptr_to_mode = Otc::MessageMode::MessageFailure;
                 auto message_address = reinterpret_cast<std::string*>(ptr_to_message);

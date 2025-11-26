@@ -20,18 +20,18 @@ static const BYTE* bindSingletonFunction_x86_PATTERN = reinterpret_cast<const BY
 static LPCSTR bindSingletonFunction_x86_MASK = "xxxxx?xx????xxxx????xx????x????xx";
 
 
-#define TEST 2
+
+#define TEST 1
 #if TEST == 1
 #define EASY_OFFSET 0x10
 #define EASY_VAR uintptr_t**
 #define EASY_PTR *
-static const BYTE* callGlobalField_PATTERN = reinterpret_cast<const BYTE*>("\x55\x8b\xec\x8b\x45\x00\x83\x78\x00\x00\x72\x00\x8b\x00\x50\x68\x00\x00\x00\x00\xff\x35\x00\x00\x00\x00\xe8\x00\x00\x00\x00\x6a");
-static LPCSTR callGlobalField_MASK = "xxxxx?xx??x?xxxx????xx????x????x";
+static const BYTE* callGlobalField_PATTERN = reinterpret_cast<const BYTE*>("\x55\x8b\xec\x8b\x45\x00\x83\x78\x00\x00\x00\x00\x8b\x00\x50\x68\x00\x00\x00\x00\xff\x35\x00\x00\x00\x00\xe8\x00\x00\x00\x00\x6a");
+static LPCSTR callGlobalField_MASK = "xxxxx?xx????xxxx????xx????x????x";
 #elif TEST == 2
 #define EASY_OFFSET 0x8
 #define EASY_VAR uintptr_t*
 #define EASY_PTR
-#define EASY_VAR_MESSAGE uintptr_t**
 static const BYTE* callGlobalField_PATTERN = reinterpret_cast<const BYTE*>("\x55\x8b\xec\x8b\x45\x00\x83\x78\x00\x00\x76\x00\x8b\x00\x56\x50");
 static LPCSTR callGlobalField_MASK = "xxxxx?xx??x?xxxx";
 #endif
