@@ -50,15 +50,6 @@ void __stdcall hooked_callGlobalField(uintptr_t **a1, uintptr_t **a2) {
             uintptr_t addr_message = ebp + globalFieldOffset + 0x04;
             auto ptr_messageMode = g_custom->getModePtr(addr_mode);
             auto ptr_messageText = g_custom->getMessagePtr(addr_message);
-            /*
-            if (*ptr_messageMode == Otc::MessageStatus) {
-                *ptr_messageMode = Otc::MessageMode::MessageFailure;
-                std::cout << std::hex << ptr_messageText << std::endl;
-                system("pause");
-                auto message_address = reinterpret_cast<std::string*>(ptr_messageText);
-                *message_address = "Welcome to EasyBot. Enjoy. Join our discord https://discord.com/invite/7MTnc2ueyM";
-            }
-            */
             if (*ptr_messageMode == Otc::MessageLook)
             {
                 auto message_address = reinterpret_cast<std::string*>(ptr_messageText);
@@ -76,17 +67,6 @@ void __stdcall hooked_callGlobalField(uintptr_t **a1, uintptr_t **a2) {
                 *args->pos
             );
         }
-        /*
-        if (field == "onOpenChannel") {
-            auto channelId = *reinterpret_cast<uintptr_t**>(ebp + globalFieldOffset);
-            auto channelName = *reinterpret_cast<uintptr_t**>(ebp + globalFieldOffset + 0x04);
-            g_custom->onOpenChannel(*reinterpret_cast<uint16_t*>(channelId), *reinterpret_cast<std::string*>(channelName));
-        }
-        if (field == "onCloseChannel") {
-            auto channelId = *reinterpret_cast<uintptr_t**>(ebp + globalFieldOffset + 0x04);
-            g_custom->onCloseChannel(*reinterpret_cast<uint16_t*>(channelId));
-        }
-        */
     }
     original_callGlobalField(a1, a2);
 }

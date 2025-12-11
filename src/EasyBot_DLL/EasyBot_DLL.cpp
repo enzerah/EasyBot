@@ -1,9 +1,11 @@
-
 #include "../../proto_functions_server.h"
 #include "hooks.h"
 #include "MinHook.h"
 #include "BuildConfig.h"
+#include "Creature.h"
+#include "Game.h"
 #include "pattern_scan.h"
+#include "Thing.h"
 
 DWORD WINAPI EasyBot(HMODULE hModule) {
     auto base_module = reinterpret_cast<uintptr_t>(GetModuleHandle(NULL));
@@ -14,14 +16,12 @@ DWORD WINAPI EasyBot(HMODULE hModule) {
     MH_CreateHook(reinterpret_cast<LPVOID>(bindSingletonFunction_func), &hooked_bindSingletonFunction, reinterpret_cast<LPVOID*>(&original_bindSingletonFunction));
     MH_CreateHook(reinterpret_cast<LPVOID>(callGlobalField_func), &hooked_callGlobalField, reinterpret_cast<LPVOID*>(&original_callGlobalField));
     MH_CreateHook(reinterpret_cast<LPVOID>(main_loop), &hkMainLoop, reinterpret_cast<LPVOID*>(&mainLoop_original));
-    /*
     FILE *f;
     AllocConsole();
     freopen_s(&f, "CONOUT$", "w", stdout);
     std::cout << std::hex <<bindSingletonFunction_func << std::endl;
     std::cout << std::hex <<callGlobalField_func << std::endl;
     std::cout << std::hex <<main_loop << std::endl;
-    */
     MH_EnableHook(MH_ALL_HOOKS);
     while (!SingletonFunctions["g_game.look"].first)
     {
@@ -39,6 +39,14 @@ DWORD WINAPI EasyBot(HMODULE hModule) {
             MB_OK | MB_ICONINFORMATION
         );
     }
+    system("pause");
+    auto creature = g_game->getAttackingCreature();
+    auto canShoot = g_creature->canShoot(creature, 7);
+    std::cout << "Can shoot = " << canShoot << std::endl;
+    system("pause");
+    creature = g_game->getAttackingCreature();
+    canShoot = g_creature->canShoot(creature, 7);
+    std::cout << "Can shoot = " << canShoot << std::endl;
     RunServer();
     return 0;
 }

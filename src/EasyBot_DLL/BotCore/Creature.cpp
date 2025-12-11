@@ -103,16 +103,17 @@ bool Creature::isCovered(uintptr_t creature) {
     });
 }
 
-bool Creature::canShoot(uintptr_t creature) {
+bool Creature::canShoot(uintptr_t creature, int distance) {
     if (!creature) return 0;
     typedef bool(gameCall* CanShoot)(
         uintptr_t RCX,
-        void *RDX
+        void *RDX,
+        int distance
         );
     auto function = reinterpret_cast<CanShoot>(ClassMemberFunctions["Creature.canShoot"]);
-    return g_dispatcher->scheduleEventEx([function, creature]() {
+    return g_dispatcher->scheduleEventEx([function, creature, distance]() {
             void* pMysteryPtr = nullptr;
-            return function(creature, &pMysteryPtr);
+            return function(creature, &pMysteryPtr, distance);
     });
 }
 

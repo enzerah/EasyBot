@@ -24,7 +24,7 @@ service BotService {
   rpc IsDead(google.protobuf.UInt64Value) returns (google.protobuf.BoolValue);
   rpc CanBeSeen(google.protobuf.UInt64Value) returns (google.protobuf.BoolValue);
   rpc IsCovered(google.protobuf.UInt64Value) returns (google.protobuf.BoolValue);
-  rpc CanShoot(google.protobuf.UInt64Value) returns (google.protobuf.BoolValue);
+  rpc CanShoot(bot_CanShootRequest) returns (google.protobuf.BoolValue);
 
   // --- Game.h ---
   rpc Walk(google.protobuf.Int32Value) returns (google.protobuf.Empty);
@@ -160,6 +160,11 @@ message bot_GetSlotPositionRequest {
 
 message bot_WalkRequest {
   int32 direction = 1;
+}
+
+message bot_CanShootRequest {
+  uint64 creature = 1;
+  int32 distance = 2;
 }
 
 message bot_AutoWalkGameRequest {

@@ -28,7 +28,7 @@ public:
     Status IsDead(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::BoolValue* response) override;
     Status CanBeSeen(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::BoolValue* response) override;
     Status IsCovered(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::BoolValue* response) override;
-    Status CanShoot(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::BoolValue* response) override;
+    Status CanShoot(ServerContext* context, const bot::bot_CanShootRequest* request, google::protobuf::BoolValue* response) override;
 
     // --- Game.h ---
     Status Walk(ServerContext* context, const google::protobuf::Int32Value* request, google::protobuf::Empty* response) override;

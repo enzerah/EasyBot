@@ -197,10 +197,11 @@ bool BotClient::isCovered(uintptr_t value)
     return response.value();
 }
 
-bool BotClient::canShoot(uintptr_t value)
+bool BotClient::canShoot(uintptr_t value, int distance)
 {
-    UInt64Value request;
-    request.set_value(value);
+    bot_CanShootRequest request;
+    request.set_creature(value);
+    request.set_distance(distance);
     google::protobuf::BoolValue response;
     ClientContext context;
     Status status = stub->CanShoot(&context, request, &response);

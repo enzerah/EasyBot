@@ -27,7 +27,7 @@ public:
     bool isDead(uintptr_t creature);
     bool canBeSeen(uintptr_t creature);
     bool isCovered(uintptr_t creature);
-    bool canShoot(uintptr_t creature);
+    bool canShoot(uintptr_t creature, int distance);
 
 };
 

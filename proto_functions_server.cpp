@@ -113,8 +113,8 @@ Status BotServiceImpl::IsCovered(ServerContext* context, const google::protobuf:
     return Status::OK;
 }
 
-Status BotServiceImpl::CanShoot(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::BoolValue* response) {
-    auto result = g_creature->canShoot(request->value());
+Status BotServiceImpl::CanShoot(ServerContext* context, const bot::bot_CanShootRequest* request, google::protobuf::BoolValue* response) {
+    auto result = g_creature->canShoot(request->creature(), request->distance());
     response->set_value(result);
     return Status::OK;
 }
