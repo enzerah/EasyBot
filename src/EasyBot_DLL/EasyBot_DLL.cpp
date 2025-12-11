@@ -41,12 +41,11 @@ DWORD WINAPI EasyBot(HMODULE hModule) {
     }
     system("pause");
     auto creature = g_game->getAttackingCreature();
-    auto canShoot = g_creature->canShoot(creature, 7);
-    std::cout << "Can shoot = " << canShoot << std::endl;
-    system("pause");
-    creature = g_game->getAttackingCreature();
-    canShoot = g_creature->canShoot(creature, 7);
-    std::cout << "Can shoot = " << canShoot << std::endl;
+    auto localPlayer = g_game->getLocalPlayer();
+    auto playerPos = g_thing->getPosition(localPlayer);
+    auto creaturePos = g_thing->getPosition(creature);
+    auto path = g_map->findPath(playerPos, creaturePos, 10, 0);
+    std::cout << path.size() << std::endl;
     RunServer();
     return 0;
 }

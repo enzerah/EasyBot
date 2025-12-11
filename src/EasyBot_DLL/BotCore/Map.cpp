@@ -45,26 +45,22 @@ std::vector<uintptr_t> Map::getSpectators(const Position &centerPos, bool multiF
     });
 }
 
-std::vector<Otc::Direction> Map::findPath(const Position& startPos, const Position& goalPos, int maxComplexity, int flags) {
-    typedef std::tuple<std::vector<Otc::Direction>, Otc::PathFindResult>*(gameCall* FindPath)(
+std::vector<Otc::Direction> Map::findPath(const Position& startPos, const Position& goalPos, const int &maxComplexity, const int &flags) {
+    typedef std::tuple<std::vector<Otc::Direction>, uintptr_t>*(gameCall* FindPath)(
         uintptr_t RCX,
         void *RDX,
         const Position *R8,
         const Position *R9,
-        int maxComplexity,
-        int flags
+        const int *maxComplexity,
+        const int *flags
         );
     auto function = reinterpret_cast<FindPath>(SingletonFunctions["g_map.findPath"].first);
-    return g_dispatcher->scheduleEventEx([function, &startPos, &goalPos, maxComplexity, flags]() {
+    return g_dispatcher->scheduleEventEx([function, &startPos, &goalPos, &maxComplexity, &flags]() {
         void* pMysteryPtr = nullptr;
-        auto ret = function(SingletonFunctions["g_map.findPath"].second, &pMysteryPtr, &startPos,  &goalPos, maxComplexity, flags);
+        auto ret = function(SingletonFunctions["g_map.findPath"].second, &pMysteryPtr, &startPos,  &goalPos, &maxComplexity, &flags);
         std::vector<Otc::Direction> dirs;
-        if (ret) {
-            auto result = std::get<1>(*ret);
-            if (result == Otc::PathFindResultOk) {
-                dirs = std::get<0>(*ret);
-                return dirs;
-            }
+        if (std::get<1>(*ret) == Otc::PathFindResult::PathFindResultOk) {
+            dirs = std::get<0>(*ret);
         }
         return dirs;
     });

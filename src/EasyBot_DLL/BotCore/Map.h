@@ -24,7 +24,7 @@ public:
 
     uintptr_t getTile(Position tilePos);
     std::vector<uintptr_t> getSpectators(const Position &centerPos, bool multiFloor = false);
-    std::vector<Otc::Direction> findPath(const Position& startPos, const Position& goalPos, int maxComplexity, int flags);
+    std::vector<Otc::Direction> findPath(const Position &startPos, const Position &goalPos, const int &maxComplexity, const int &flags);
     bool isWalkable(const Position& pos, bool ignoreCreatures);
     bool isSightClear(const Position& fromPos, const Position& toPos);
 };
