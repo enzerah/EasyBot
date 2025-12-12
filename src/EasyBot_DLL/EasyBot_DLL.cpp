@@ -16,12 +16,14 @@ DWORD WINAPI EasyBot(HMODULE hModule) {
     MH_CreateHook(reinterpret_cast<LPVOID>(bindSingletonFunction_func), &hooked_bindSingletonFunction, reinterpret_cast<LPVOID*>(&original_bindSingletonFunction));
     MH_CreateHook(reinterpret_cast<LPVOID>(callGlobalField_func), &hooked_callGlobalField, reinterpret_cast<LPVOID*>(&original_callGlobalField));
     MH_CreateHook(reinterpret_cast<LPVOID>(main_loop), &hkMainLoop, reinterpret_cast<LPVOID*>(&mainLoop_original));
+    /*
     FILE *f;
     AllocConsole();
     freopen_s(&f, "CONOUT$", "w", stdout);
     std::cout << std::hex <<bindSingletonFunction_func << std::endl;
     std::cout << std::hex <<callGlobalField_func << std::endl;
     std::cout << std::hex <<main_loop << std::endl;
+    */
     MH_EnableHook(MH_ALL_HOOKS);
     while (!SingletonFunctions["g_game.look"].first)
     {
@@ -39,13 +41,6 @@ DWORD WINAPI EasyBot(HMODULE hModule) {
             MB_OK | MB_ICONINFORMATION
         );
     }
-    system("pause");
-    auto creature = g_game->getAttackingCreature();
-    auto localPlayer = g_game->getLocalPlayer();
-    auto playerPos = g_thing->getPosition(localPlayer);
-    auto creaturePos = g_thing->getPosition(creature);
-    auto path = g_map->findPath(playerPos, creaturePos, 10, 0);
-    std::cout << path.size() << std::endl;
     RunServer();
     return 0;
 }
