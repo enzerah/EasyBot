@@ -38,11 +38,9 @@ typedef void(__stdcall* look_t)(const uintptr_t *RDX,const bool isBattleList);
 inline look_t look_original = nullptr;
 void __stdcall hkLook(const uintptr_t& thing, const bool isBattleList);;
 
-typedef void(__stdcall* setMinimumAmbientLight_t)(const float intensity);
-inline setMinimumAmbientLight_t setMinimumAmbientLight_original = nullptr;
-void __stdcall hksetMinimumAmbientLight(const float intensity);
-
-
+typedef uintptr_t(__stdcall* onCreatureDisappear)(uintptr_t a1);
+inline onCreatureDisappear onCreatureDisappear_original = nullptr;
+void __stdcall hkOnCreatureDisappear(uintptr_t a1);
 
 
 

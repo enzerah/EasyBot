@@ -148,8 +148,8 @@ int Container::getSize(uintptr_t container) {
         );
     auto function = reinterpret_cast<GetSize>(ClassMemberFunctions["Container.getSize"]);
     return g_dispatcher->scheduleEventEx([function, container]() {
-            void* pMysteryPtr = nullptr;
-            return function(container, &pMysteryPtr);
+        void* pMysteryPtr = nullptr;
+        return function(container, &pMysteryPtr);
     });
 }
 

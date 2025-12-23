@@ -1,7 +1,10 @@
 #include "hooks.h"
 #include "BuildConfig.h"
 #include "CustomFunctions.h"
+#include "Game.h"
 #include "pattern_scan.h"
+#include "Thing.h"
+#include "Tile.h"
 
 void __stdcall hooked_bindSingletonFunction(uintptr_t a1, uintptr_t a2, uintptr_t a3) {
     CONTEXT ctx;
@@ -74,8 +77,8 @@ void __stdcall hooked_callGlobalField(uintptr_t **a1, uintptr_t **a2) {
 #pragma optimize( "", on )
 
 int hkMainLoop(int a1) {
-    g_dispatcher->executeEvent();
     auto result = mainLoop_original(a1);
+    g_dispatcher->executeEvent();
     return result;
 }
 
@@ -91,8 +94,16 @@ void __stdcall hkLook(const uintptr_t& thing, const bool isBattleList) {
     itemId = function(thing, &pMysteryPtr);
 }
 
-void __stdcall hksetMinimumAmbientLight(const float intensity) {
-    setMinimumAmbientLight_original(1.0);
+void __stdcall hkOnCreatureDisappear(uintptr_t a1) {
+    if (g_thing->isMonster(a1)) {
+        auto pos= g_thing->getPosition(a1);
+        auto tile = g_map->getTile(pos);
+        auto topItem = g_tile->getTopUseThing(tile);
+        if (topItem && g_thing->isContainer(topItem)) {
+            std::cout << std::hex << topItem << std::endl;
+        }
+    }
+    onCreatureDisappear_original(a1);
 }
 
 
