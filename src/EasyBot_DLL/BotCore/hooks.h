@@ -36,12 +36,15 @@ int __cdecl hkMainLoop(int a1);
 
 typedef void(__stdcall* look_t)(const uintptr_t *RDX,const bool isBattleList);
 inline look_t look_original = nullptr;
-void __stdcall hkLook(const uintptr_t& thing, const bool isBattleList);;
+void __stdcall hkLook(const uintptr_t& thing, const bool isBattleList);
 
-typedef uintptr_t(__stdcall* onCreatureDisappear)(uintptr_t a1);
+
+// Definicja oryginału jako __thiscall
+typedef void* (__thiscall* onCreatureDisappear)(void* pList, void* pWhere, void** pData);
 inline onCreatureDisappear onCreatureDisappear_original = nullptr;
-void __stdcall hkOnCreatureDisappear(uintptr_t a1);
 
+// Hook zadeklarowany jako __stdcall - to pozwoli nam kontrolować rejestry ręcznie
+void* __stdcall hkOnCreatureDisappear(void* pWhere, void** pData);
 
 
 

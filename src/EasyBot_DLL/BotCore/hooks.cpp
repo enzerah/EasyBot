@@ -94,17 +94,30 @@ void __stdcall hkLook(const uintptr_t& thing, const bool isBattleList) {
     itemId = function(thing, &pMysteryPtr);
 }
 
-void __stdcall hkOnCreatureDisappear(uintptr_t a1) {
-    if (g_thing->isMonster(a1)) {
-        auto pos= g_thing->getPosition(a1);
-        auto tile = g_map->getTile(pos);
-        auto topItem = g_tile->getTopUseThing(tile);
-        if (topItem && g_thing->isContainer(topItem)) {
-            std::cout << std::hex << topItem << std::endl;
-        }
+void* __stdcall hkOnCreatureDisappear(void* pWhere, void** pData) {
+    void* pList;
+
+    // Pobieramy adres listy (this) bezpośrednio z rejestru ECX
+    // zanim jakakolwiek inna instrukcja go nadpisze.
+    __asm {
+        mov pList, ecx
     }
-    onCreatureDisappear_original(a1);
+
+    // Sprawdzenie bezpieczeństwa
+    if (!pList) {
+        return nullptr;
+    }
+
+    /* TUTAJ MOŻESZ DODAĆ LOGIKĘ
+       Np. if (pData) { ... }
+    */
+
+    // Wywołujemy oryginał przekazując pList jako pierwszy argument.
+    // Kompilator widząc __thiscall w definicji onCreatureDisappear,
+    // automatycznie wrzuci pList z powrotem do ECX.
+    return onCreatureDisappear_original(pList, pWhere, pData);
 }
+
 
 
 

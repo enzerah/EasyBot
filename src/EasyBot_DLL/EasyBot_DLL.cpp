@@ -13,7 +13,7 @@ DWORD WINAPI EasyBot(HMODULE hModule) {
     uintptr_t bindSingletonFunction_func = FindPattern(bindSingletonFunction_x86_PATTERN, bindSingletonFunction_x86_MASK);
     uintptr_t callGlobalField_func = FindPattern(callGlobalField_PATTERN, callGlobalField_MASK);
     uintptr_t main_loop = FindPattern(mainLoop_x86_PATTERN, mainLoop_x86_MASK);
-    uintptr_t onCreatureDisappear_func = base_module + 0x1CF5F0;
+    uintptr_t onCreatureDisappear_func = base_module + 0x1CF900;
     MH_CreateHook(reinterpret_cast<LPVOID>(bindSingletonFunction_func), &hooked_bindSingletonFunction, reinterpret_cast<LPVOID*>(&original_bindSingletonFunction));
     MH_CreateHook(reinterpret_cast<LPVOID>(callGlobalField_func), &hooked_callGlobalField, reinterpret_cast<LPVOID*>(&original_callGlobalField));
     MH_CreateHook(reinterpret_cast<LPVOID>(main_loop), &hkMainLoop, reinterpret_cast<LPVOID*>(&mainLoop_original));
