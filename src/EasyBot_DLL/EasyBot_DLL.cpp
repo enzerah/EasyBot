@@ -15,7 +15,7 @@ DWORD WINAPI EasyBot(HMODULE hModule) {
     uintptr_t main_loop = FindPattern(mainLoop_x86_PATTERN, mainLoop_x86_MASK);
     MH_CreateHook(reinterpret_cast<LPVOID>(bindSingletonFunction_func), &hooked_bindSingletonFunction, reinterpret_cast<LPVOID*>(&original_bindSingletonFunction));
     MH_CreateHook(reinterpret_cast<LPVOID>(callGlobalField_func), &hooked_callGlobalField, reinterpret_cast<LPVOID*>(&original_callGlobalField));
-    //MH_CreateHook(reinterpret_cast<LPVOID>(main_loop), &hkMainLoop, reinterpret_cast<LPVOID*>(&mainLoop_original));
+    MH_CreateHook(reinterpret_cast<LPVOID>(main_loop), &hkMainLoop, reinterpret_cast<LPVOID*>(&mainLoop_original));
     FILE *f;
     AllocConsole();
     freopen_s(&f, "CONOUT$", "w", stdout);

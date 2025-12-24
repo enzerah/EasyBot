@@ -77,8 +77,8 @@ void __stdcall hooked_callGlobalField(uintptr_t **a1, uintptr_t **a2) {
 #pragma optimize( "", on )
 
 int hkMainLoop(int a1) {
-    auto result = mainLoop_original(a1);
     g_dispatcher->executeEvent();
+    auto result = mainLoop_original(a1);
     return result;
 }
 
