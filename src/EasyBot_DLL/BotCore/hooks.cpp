@@ -94,30 +94,6 @@ void __stdcall hkLook(const uintptr_t& thing, const bool isBattleList) {
     itemId = function(thing, &pMysteryPtr);
 }
 
-void* __stdcall hkOnCreatureDisappear(void* pWhere, void** pData) {
-    void* pList;
-
-    // Pobieramy adres listy (this) bezpośrednio z rejestru ECX
-    // zanim jakakolwiek inna instrukcja go nadpisze.
-    __asm {
-        mov pList, ecx
-    }
-
-    // Sprawdzenie bezpieczeństwa
-    if (!pList) {
-        return nullptr;
-    }
-
-    /* TUTAJ MOŻESZ DODAĆ LOGIKĘ
-       Np. if (pData) { ... }
-    */
-
-    // Wywołujemy oryginał przekazując pList jako pierwszy argument.
-    // Kompilator widząc __thiscall w definicji onCreatureDisappear,
-    // automatycznie wrzuci pList z powrotem do ECX.
-    return onCreatureDisappear_original(pList, pWhere, pData);
-}
-
 
 
 
