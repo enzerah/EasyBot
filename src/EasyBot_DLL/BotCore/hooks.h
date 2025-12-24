@@ -39,13 +39,6 @@ inline look_t look_original = nullptr;
 void __stdcall hkLook(const uintptr_t& thing, const bool isBattleList);
 
 
-// Definicja oryginału jako __thiscall
-typedef void* (__thiscall* onCreatureDisappear)(void* pList, void* pWhere, void** pData);
-inline onCreatureDisappear onCreatureDisappear_original = nullptr;
-
-// Hook zadeklarowany jako __stdcall - to pozwoli nam kontrolować rejestry ręcznie
-void* __stdcall hkOnCreatureDisappear(void* pWhere, void** pData);
-
 
 
 
