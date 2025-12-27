@@ -32,11 +32,15 @@ void __stdcall hooked_callLuaField(uintptr_t*);
 
 typedef int(__cdecl* mainLoop)(int a1);
 inline mainLoop mainLoop_original = nullptr;
-int __cdecl hkMainLoop(int a1);
+int __cdecl hooked_MainLoop(int a1);
 
 typedef void(__stdcall* look_t)(const uintptr_t *RDX,const bool isBattleList);
 inline look_t look_original = nullptr;
-void __stdcall hkLook(const uintptr_t& thing, const bool isBattleList);
+void __stdcall hooked_Look(const uintptr_t& thing, const bool isBattleList);
+
+typedef void(__thiscall* onDisappear)(uintptr_t);
+inline onDisappear onDisappear_original = nullptr;
+void __fastcall hooked_onDisappear(uintptr_t);
 
 
 

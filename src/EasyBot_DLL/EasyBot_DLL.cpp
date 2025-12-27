@@ -12,26 +12,29 @@ DWORD WINAPI EasyBot(HMODULE hModule) {
     MH_Initialize();
     uintptr_t bindSingletonFunction_func = FindPattern(bindSingletonFunction_x86_PATTERN, bindSingletonFunction_x86_MASK);
     uintptr_t callGlobalField_func = FindPattern(callGlobalField_PATTERN, callGlobalField_MASK);
-    uintptr_t main_loop = FindPattern(mainLoop_x86_PATTERN, mainLoop_x86_MASK);
+    uintptr_t mainLoop_func = FindPattern(mainLoop_x86_PATTERN, mainLoop_x86_MASK);
+    uintptr_t onDisappear_func = 0x00C14F10;
     MH_CreateHook(reinterpret_cast<LPVOID>(bindSingletonFunction_func), &hooked_bindSingletonFunction, reinterpret_cast<LPVOID*>(&original_bindSingletonFunction));
     MH_CreateHook(reinterpret_cast<LPVOID>(callGlobalField_func), &hooked_callGlobalField, reinterpret_cast<LPVOID*>(&original_callGlobalField));
-    MH_CreateHook(reinterpret_cast<LPVOID>(main_loop), &hkMainLoop, reinterpret_cast<LPVOID*>(&mainLoop_original));
+    MH_CreateHook(reinterpret_cast<LPVOID>(mainLoop_func), &hooked_MainLoop, reinterpret_cast<LPVOID*>(&mainLoop_original));
+    MH_CreateHook(reinterpret_cast<LPVOID>(onDisappear_func), &hooked_onDisappear, reinterpret_cast<LPVOID*>(&onDisappear_original));
     FILE *f;
     AllocConsole();
     freopen_s(&f, "CONOUT$", "w", stdout);
     std::cout << "Singleton " << std::hex <<bindSingletonFunction_func << std::endl;
     std::cout << "Call global " << std::hex <<callGlobalField_func << std::endl;
-    std::cout << "Main Loop " << std::hex << main_loop << std::endl;
+    std::cout << "Main Loop " << std::hex << mainLoop_func << std::endl;
+    std::cout << "onDisappear_func " << std::hex << onDisappear_func << std::endl;
     MH_EnableHook(MH_ALL_HOOKS);
     while (!SingletonFunctions["g_game.look"].first)
     {
         Sleep(10);
     }
-    MH_CreateHook(reinterpret_cast<LPVOID>(SingletonFunctions["g_game.look"].first), &hkLook, reinterpret_cast<LPVOID*>(&look_original));
+    MH_CreateHook(reinterpret_cast<LPVOID>(SingletonFunctions["g_game.look"].first), &hooked_Look, reinterpret_cast<LPVOID*>(&look_original));
     MH_EnableHook(reinterpret_cast<LPVOID>(SingletonFunctions["g_game.look"].first));
     if (bindSingletonFunction_func &&
         callGlobalField_func &&
-        main_loop) {
+        mainLoop_func) {
         MessageBoxA(
             NULL,
             "Bot is running... :) Enjoy",
