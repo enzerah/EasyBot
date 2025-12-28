@@ -281,7 +281,6 @@ void Game::talk(const std::string& message) {
     );
     auto function = reinterpret_cast<Talk>(SingletonFunctions["g_game.talk"].first);
     return g_dispatcher->scheduleEventEx([function, message]() {
-
         function(SingletonFunctions["g_game.talk"].second, message);
     });
 }
@@ -308,8 +307,11 @@ void Game::talkPrivate(const Otc::MessageMode msgMode, const std::string& receiv
         const std::string& message
     );
     auto function = reinterpret_cast<TalkPrivate>(SingletonFunctions["g_game.talkPrivate"].first);
-    return g_dispatcher->scheduleEventEx([function, msgMode, &receiver, &message]() {
-            function(SingletonFunctions["g_game.talkPrivate"].second, msgMode, receiver, message);
+    return g_dispatcher->scheduleEventEx([function, msgMode, receiver, message]() {
+        auto mMode = msgMode;
+        const std::string& r = receiver.c_str();
+        const std::string& m = message.c_str();
+        function(SingletonFunctions["g_game.talkPrivate"].second, mMode, r, m);
     });
 }
 
