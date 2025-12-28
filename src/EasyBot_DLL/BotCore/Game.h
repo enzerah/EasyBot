@@ -52,7 +52,7 @@ public:
     void cancelAttackAndFollow();
     void talk(const std::string& message);
     void talkChannel(const Otc::MessageMode mode, const uint16_t channelId, const std::string& message);
-    void talkPrivate(const Otc::MessageMode msgMode, const std::string& receiver, const std::string& message);
+    void talkPrivate(Otc::MessageMode msgMode, const std::string &receiver, const std::string &message);
     void openPrivateChannel(const std::string& receiver);
     void setChaseMode(Otc::ChaseModes mode);
     void setFightMode(Otc::FightModes mode);

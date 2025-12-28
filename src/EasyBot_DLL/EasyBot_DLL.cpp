@@ -43,21 +43,23 @@ DWORD WINAPI EasyBot(HMODULE hModule) {
         );
     }
     typedef void(gameCall *TalkPrivate)(
-    uintptr_t RCX,
-    Otc::MessageMode RDX,
+    uintptr_t first_param,
+    Otc::MessageMode msgMode,
     const std::string& receiver,
     const std::string& message
     );
     auto function = reinterpret_cast<TalkPrivate>(SingletonFunctions["g_game.talkPrivate"].first);
+    auto rcx = SingletonFunctions["g_game.talkPrivate"].second;
+    auto msgMode = Otc::MessageMode::MessagePrivateTo;
+    std::string receiver = "Shopping";
+    std::string message  = "Siema";
     system("pause");
-    g_dispatcher->scheduleEventEx([function]() {
-        auto msgMode = Otc::MessageMode::MessagePrivateTo;
-        const std::string& r = "Shopping";
-        const std::string& m = "Siema";
-        function(SingletonFunctions["g_game.talkPrivate"].second, msgMode, r, m);
+    g_dispatcher->scheduleEventEx([function, rcx, msgMode, &receiver, &message](){
+        function(rcx, msgMode, receiver, message);
     });
     system("pause");
-    g_game->talkPrivate(Otc::MessageMode::MessagePrivateTo, "Shopping", "Siema");
+    system("pause");
+    g_game->talkPrivate(msgMode, "Shopping", "Siema");
     RunServer();
     return 0;
 }
