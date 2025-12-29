@@ -54,9 +54,13 @@ void __stdcall hooked_callGlobalField(uintptr_t **a1, uintptr_t **a2) {
             uintptr_t addr_message = ebp + globalFieldOffset + 0x04;
             auto ptr_messageMode = g_custom->getModePtr(addr_mode);
             auto ptr_messageText = g_custom->getMessagePtr(addr_message);
+            std::cout << "Ptr" << std::endl;
+            std::cout << *ptr_messageMode << std::endl;
             if (*ptr_messageMode == Otc::MessageLook)
             {
+                std::cout << "Szef" << std::endl;
                 auto message_address = reinterpret_cast<std::string*>(ptr_messageText);
+                std::cout << *message_address << std::endl;
                 *message_address = "ID: " + std::to_string(itemId) + "\n" + *reinterpret_cast<std::string*>(ptr_messageText);
             }
         }
