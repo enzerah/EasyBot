@@ -299,16 +299,17 @@ void Game::talkChannel(const Otc::MessageMode mode, const uint16_t channelId, co
     });
 }
 
-void Game::talkPrivate(Otc::MessageMode msgMode,const std::string& receiver,const std::string& message) {
+void Game::talkPrivate(Otc::MessageMode msgMode,std::string receiver,std::string message) {
     typedef void(gameCall *TalkPrivate)(
-        uintptr_t RCX,
-        Otc::MessageMode RDX,
-        const std::string& receiver,
-        const std::string& message
+        uintptr_t first_param,
+        Otc::MessageMode msgMode,
+        std::string *receiver,
+        std::string *message
     );
     auto function = reinterpret_cast<TalkPrivate>(SingletonFunctions["g_game.talkPrivate"].first);
-    g_dispatcher->scheduleEventEx([function, msgMode, receiver, message](){
-        function(SingletonFunctions["g_game.talkPrivate"].second, msgMode, receiver, message);
+    g_dispatcher->scheduleEventEx([function, &receiver, &message](){
+        Otc::MessageMode m = Otc::MessageMode::MessagePrivateTo;
+        function(SingletonFunctions["g_game.talkPrivate"].second, m, &receiver, &message);
     });
 }
 

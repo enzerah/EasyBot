@@ -97,50 +97,11 @@ void __stdcall hooked_Look(const uintptr_t& thing, const bool isBattleList) {
 
 }
 
-typedef bool(gameCall* IsMonster)(
-    uintptr_t RCX,
-    void *RDX
-    );
 
-typedef Position*(gameCall* GetPosition)(
-    uintptr_t RCX,
-    void *RDX
-    );
-typedef bool(gameCall* IsDead)(
-    uintptr_t RCX,
-    void *RDX
-    );
-typedef int(gameCall* Open)(
-    uintptr_t RCX,
-    const uintptr_t *RDX,
-    const uintptr_t *R8
-    );
-
-typedef uintptr_t*(gameCall* GetTile)(
-    uintptr_t RCX,
-    const Position *RDX
-    );
-
-typedef uintptr_t*(gameCall* GetTopThing)(
-    uintptr_t RCX,
-    void *RDX
-    );
 
 #pragma optimize( "", off )
 void __fastcall hooked_onDisappear(uintptr_t a1) {
-    CONTEXT ctx;
-    RtlCaptureContext(&ctx);
-    uintptr_t ecx = ctx.Ecx;
     onDisappear_original(a1);
-    void* pMysteryPtr = nullptr;
-    auto isMonster = reinterpret_cast<IsMonster>(ClassMemberFunctions["Thing.isMonster"]);
-
-    if (isMonster(ecx, &pMysteryPtr)) {
-        auto isDead = reinterpret_cast<IsDead>(ClassMemberFunctions["Creature.isDead"]);
-        if (isDead(ecx, &pMysteryPtr)) {
-
-        }
-    }
 }
 #pragma optimize( "", on )
 
