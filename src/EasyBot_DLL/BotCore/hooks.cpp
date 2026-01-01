@@ -48,6 +48,8 @@ void __stdcall hooked_callGlobalField(uintptr_t **a1, uintptr_t **a2) {
     uintptr_t ebp = ctx.Ebp;
     auto global = *reinterpret_cast<std::string*>(a1);
     auto field = *reinterpret_cast<std::string*>(a2);
+    std::cout << global << std::endl;
+    std::cout << field << std::endl;
     if (global == "g_game") {
         if (field == "onTextMessage") {
             uintptr_t addr_mode = ebp + globalFieldOffset;

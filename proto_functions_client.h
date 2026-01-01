@@ -150,6 +150,7 @@ public:
     // Tile
     uintptr_t getTopThing(uintptr_t tile);
     uintptr_t getTopUseThing(uintptr_t tile);
+    std::vector<uintptr_t> getTileItems(uintptr_t tile);
 
     // Custom Functions
     std::vector<MessageStruct> getMessages(int messageNumber);

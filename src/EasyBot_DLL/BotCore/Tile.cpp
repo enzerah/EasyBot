@@ -40,8 +40,21 @@ uintptr_t Tile::getTopUseThing(uintptr_t tile) {
     uintptr_t RCX,
     void *RDX
     );
-    void* pMysteryPtr = nullptr;
     auto function = reinterpret_cast<GetTopUseThing>(ClassMemberFunctions["Tile.getTopUseThing"]);
+    return g_dispatcher->scheduleEventEx([function, tile]() {
+        void* pMysteryPtr = nullptr;
+        auto ret = function(tile, &pMysteryPtr);
+        return *ret;
+    });
+}
+
+std::vector<uintptr_t> Tile::getItems(uintptr_t tile) {
+    if (!tile) return {};
+    typedef std::vector<uintptr_t>*(gameCall* GetItems)(
+        uintptr_t RCX,
+        void *RDX
+    );
+    auto function = reinterpret_cast<GetItems>(ClassMemberFunctions["Tile.getItems"]);
     return g_dispatcher->scheduleEventEx([function, tile]() {
         void* pMysteryPtr = nullptr;
         auto ret = function(tile, &pMysteryPtr);

@@ -690,6 +690,15 @@ Status BotServiceImpl::GetTopUseThing(ServerContext* context, const google::prot
     return Status::OK;
 }
 
+Status BotServiceImpl::GetTileItems(ServerContext *context, const google::protobuf::UInt64Value *request,
+    bot::bot_Uint64List *response) {
+    auto result = g_tile->getItems(request->value());
+    for(const auto& val : result) {
+        response->add_items(val);
+    }
+    return Status::OK;
+}
+
 
 // =================  CustomFunctions.h =================
 Status BotServiceImpl::GetMessages(ServerContext *context, const google::protobuf::UInt32Value *request,

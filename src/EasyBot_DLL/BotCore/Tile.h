@@ -21,6 +21,7 @@ public:
 
     uintptr_t getTopThing(uintptr_t tile);
     uintptr_t getTopUseThing(uintptr_t tile);
+    std::vector<uintptr_t> getItems(uintptr_t tile);
 };
 
 
