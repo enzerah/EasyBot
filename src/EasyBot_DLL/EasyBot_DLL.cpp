@@ -15,7 +15,7 @@ DWORD WINAPI EasyBot(HMODULE hModule) {
     uintptr_t mainLoop_func = FindPattern(mainLoop_x86_PATTERN, mainLoop_x86_MASK);
     MH_CreateHook(reinterpret_cast<LPVOID>(bindSingletonFunction_func), &hooked_bindSingletonFunction, reinterpret_cast<LPVOID*>(&original_bindSingletonFunction));
     MH_CreateHook(reinterpret_cast<LPVOID>(callGlobalField_func), &hooked_callGlobalField, reinterpret_cast<LPVOID*>(&original_callGlobalField));
-    MH_CreateHook(reinterpret_cast<LPVOID>(mainLoop_func), &hooked_MainLoop, reinterpret_cast<LPVOID*>(&mainLoop_original));
+    MH_CreateHook(reinterpret_cast<LPVOID>(mainLoop_func), &hooked_MainLoop, reinterpret_cast<LPVOID*>(&original_mainLoop));
     /*
     FILE *f;
     AllocConsole();
@@ -31,6 +31,15 @@ DWORD WINAPI EasyBot(HMODULE hModule) {
     }
     MH_CreateHook(reinterpret_cast<LPVOID>(SingletonFunctions["g_game.look"].first), &hooked_Look, reinterpret_cast<LPVOID*>(&look_original));
     MH_EnableHook(reinterpret_cast<LPVOID>(SingletonFunctions["g_game.look"].first));
+
+    while (!SingletonFunctions["g_game.checkBotProtection"].first)
+    {
+        Sleep(10);
+    }
+    MH_CreateHook(reinterpret_cast<LPVOID>(SingletonFunctions["g_game.checkBotProtection"].first), &hooked_checkBotProtection, reinterpret_cast<LPVOID*>(original_checkBotProtection));
+    MH_EnableHook(reinterpret_cast<LPVOID>(SingletonFunctions["g_game.checkBotProtection"].first));
+
+
     if (bindSingletonFunction_func &&
         callGlobalField_func &&
         mainLoop_func) {
