@@ -31,16 +31,20 @@ inline callLuaField_t original_callLuaField = nullptr;
 void __stdcall hooked_callLuaField(uintptr_t*);
 
 typedef int(__cdecl* mainLoop)(int a1);
-inline mainLoop mainLoop_original = nullptr;
+inline mainLoop original_mainLoop = nullptr;
 int __cdecl hooked_MainLoop(int a1);
 
 typedef void(__stdcall* look_t)(const uintptr_t *RDX,const bool isBattleList);
 inline look_t look_original = nullptr;
 void __stdcall hooked_Look(const uintptr_t& thing, const bool isBattleList);
 
-typedef void(__thiscall* onDisappear)(uintptr_t);
-inline onDisappear onDisappear_original = nullptr;
-void __fastcall hooked_onDisappear(uintptr_t);
+typedef void(__thiscall* checkBotProtection)(uintptr_t);
+inline checkBotProtection original_checkBotProtection = nullptr;
+void __fastcall hooked_checkBotProtection(uintptr_t);
+
+typedef int(__thiscall* updateExecutable)(void* pThis, int a2);
+inline updateExecutable original_updateExecutable = nullptr;
+int __fastcall hooked_updateExecutable(void* pThis, void* _edx, int a2);
 
 
 

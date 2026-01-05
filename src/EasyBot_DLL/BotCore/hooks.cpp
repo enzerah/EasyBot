@@ -48,8 +48,6 @@ void __stdcall hooked_callGlobalField(uintptr_t **a1, uintptr_t **a2) {
     uintptr_t ebp = ctx.Ebp;
     auto global = *reinterpret_cast<std::string*>(a1);
     auto field = *reinterpret_cast<std::string*>(a2);
-    std::cout << global << std::endl;
-    std::cout << field << std::endl;
     if (global == "g_game") {
         if (field == "onTextMessage") {
             uintptr_t addr_mode = ebp + globalFieldOffset;
@@ -81,7 +79,7 @@ void __stdcall hooked_callGlobalField(uintptr_t **a1, uintptr_t **a2) {
 
 int hooked_MainLoop(int a1) {
     g_dispatcher->executeEvent();
-    auto result = mainLoop_original(a1);
+    auto result = original_mainLoop(a1);
     return result;
 }
 
@@ -101,11 +99,13 @@ void __stdcall hooked_Look(const uintptr_t& thing, const bool isBattleList) {
 
 
 
-#pragma optimize( "", off )
-void __fastcall hooked_onDisappear(uintptr_t a1) {
-    onDisappear_original(a1);
+void __fastcall hooked_checkBotProtection(uintptr_t a1) {
+    std::cout << "Hooked checkBotProtection skipped" << std::endl;
 }
-#pragma optimize( "", on )
+
+int __fastcall hooked_updateExecutable(void* pThis, void* _edx, int a2) {
+    return 0;
+}
 
 
 
