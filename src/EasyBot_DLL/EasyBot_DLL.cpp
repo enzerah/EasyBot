@@ -2,13 +2,9 @@
 #include "hooks.h"
 #include "MinHook.h"
 #include "BuildConfig.h"
-#include "Creature.h"
-#include "Game.h"
 #include "pattern_scan.h"
-#include "Thing.h"
 
 DWORD WINAPI EasyBot(HMODULE hModule) {
-    auto base_module = reinterpret_cast<uintptr_t>(GetModuleHandle(NULL));
     MH_Initialize();
     uintptr_t bindSingletonFunction_func = FindPattern(bindSingletonFunction_x86_PATTERN, bindSingletonFunction_x86_MASK);
     uintptr_t callGlobalField_func = FindPattern(callGlobalField_PATTERN, callGlobalField_MASK);
@@ -39,30 +35,18 @@ DWORD WINAPI EasyBot(HMODULE hModule) {
     MH_CreateHook(reinterpret_cast<LPVOID>(SingletonFunctions["g_game.checkBotProtection"].first), &hooked_checkBotProtection, reinterpret_cast<LPVOID*>(original_checkBotProtection));
     MH_EnableHook(reinterpret_cast<LPVOID>(SingletonFunctions["g_game.checkBotProtection"].first));
 
-
-    if (bindSingletonFunction_func &&
-        callGlobalField_func &&
-        mainLoop_func) {
-        MessageBoxA(
-            NULL,
-            "Bot is running... :) Enjoy",
-            "EasyBot",
-            MB_OK | MB_ICONINFORMATION
-        );
-    }
     RunServer();
     return 0;
 }
 
-BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved) {
-    switch (ul_reason_for_call) {
-    case DLL_PROCESS_ATTACH:
-            CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)EasyBot,  NULL, 0, NULL);
-            break;
-    case DLL_THREAD_ATTACH:
-    case DLL_THREAD_DETACH:
-    case DLL_PROCESS_DETACH:
-        break;
+// Point 1: Move thread creation out of DllMain to avoid basic heuristics/traps
+struct BotLoader {
+    BotLoader() {
+        CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)EasyBot, NULL, 0, NULL);
     }
+};
+static BotLoader loader;
+
+BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved) {
     return TRUE;
 }

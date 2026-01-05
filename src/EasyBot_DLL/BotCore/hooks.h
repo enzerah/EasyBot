@@ -38,13 +38,10 @@ typedef void(__stdcall* look_t)(const uintptr_t *RDX,const bool isBattleList);
 inline look_t look_original = nullptr;
 void __stdcall hooked_Look(const uintptr_t& thing, const bool isBattleList);
 
-typedef void(__thiscall* checkBotProtection)(uintptr_t);
+typedef bool(__thiscall* checkBotProtection)(uintptr_t);
 inline checkBotProtection original_checkBotProtection = nullptr;
-void __fastcall hooked_checkBotProtection(uintptr_t);
+bool __fastcall hooked_checkBotProtection(uintptr_t);
 
-typedef int(__thiscall* updateExecutable)(void* pThis, int a2);
-inline updateExecutable original_updateExecutable = nullptr;
-int __fastcall hooked_updateExecutable(void* pThis, void* _edx, int a2);
 
 
 

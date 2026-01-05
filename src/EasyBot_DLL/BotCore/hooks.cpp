@@ -99,16 +99,7 @@ void __stdcall hooked_Look(const uintptr_t& thing, const bool isBattleList) {
 
 
 
-void __fastcall hooked_checkBotProtection(uintptr_t a1) {
-    std::cout << "Hooked checkBotProtection skipped" << std::endl;
+bool __fastcall hooked_checkBotProtection(uintptr_t a1) {
+    return true;
 }
-
-int __fastcall hooked_updateExecutable(void* pThis, void* _edx, int a2) {
-    return 0;
-}
-
-
-
-
-
 
