@@ -18,7 +18,7 @@ enum {
     Outcast,
     Thirus,
     Exordion,
-    Dbl
+    Yurevo
 };
 #define BUILD_MIRACLE 1
 #define BUILD_REALERA 2
@@ -26,9 +26,10 @@ enum {
 #define BUILD_OUTCAST 4
 #define BUILD_THIRUS  5
 #define BUILD_EXORDION  6
+#define BUILD_YUREVO 7
 
 
-#define BuildOption BUILD_MIRACLE
+#define BuildOption BUILD_DBWOTS
 #if BuildOption == BUILD_MIRACLE
     static const BYTE* callGlobalField_PATTERN = reinterpret_cast<const BYTE*>("\x55\x8b\xec\x8b\x45\x00\x83\x78\x00\x00\x00\x00\x8b\x00\x50\x68\x00\x00\x00\x00\xff\x35\x00\x00\x00\x00\xe8\x00\x00\x00\x00\x6a");
     static LPCSTR callGlobalField_MASK = "xxxxx?xx????xxxx????xx????x????x";
@@ -63,6 +64,12 @@ enum {
     static const BYTE* callGlobalField_PATTERN = reinterpret_cast<const BYTE*>("\x55\x8b\xec\x8b\x45\x00\x83\x78\x00\x00\x00\x00\x8b\x00\x50\x68\x00\x00\x00\x00\xff\x35\x00\x00\x00\x00\xe8\x00\x00\x00\x00\x6a");
     static LPCSTR callGlobalField_MASK = "xxxxx?xx????xxxx????xx????x????x";
     #define classFunctionOffset 0x58
+    #define singletonFunctionOffset 0x10
+    #define globalFieldOffset 0x10
+#elif BuildOption == BUILD_YUREVO
+    static const BYTE* callGlobalField_PATTERN = reinterpret_cast<const BYTE*>("\x55\x8b\xec\x8b\x45\x00\x83\x78\x00\x00\x00\x00\x8b\x00\x50\x68\x00\x00\x00\x00\xff\x35\x00\x00\x00\x00\xe8\x00\x00\x00\x00\x6a");
+    static LPCSTR callGlobalField_MASK = "xxxxx?xx????xxxx????xx????x????x";
+    #define classFunctionOffset 0x50
     #define singletonFunctionOffset 0x10
     #define globalFieldOffset 0x10
 #endif

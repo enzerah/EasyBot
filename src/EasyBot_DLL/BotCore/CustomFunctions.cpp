@@ -61,7 +61,7 @@ void CustomFunctions::dropMessages(int messageNumber) {
 
 uintptr_t * CustomFunctions::getModePtr(uintptr_t mode_address) {
     if (BuildOption == Miracle || BuildOption == Realera || BuildOption == Outcast
-        || BuildOption == Thirus || BuildOption == Exordion) {
+        || BuildOption == Thirus || BuildOption == Exordion || BuildOption == Yurevo) {
         return *reinterpret_cast<uintptr_t**>(mode_address);
     } else if (BuildOption == Dbwots) {
         return reinterpret_cast<uintptr_t*>(mode_address);
@@ -71,7 +71,7 @@ uintptr_t * CustomFunctions::getModePtr(uintptr_t mode_address) {
 
 uintptr_t * CustomFunctions::getMessagePtr(uintptr_t message_address) {
     if (BuildOption == Miracle || BuildOption == Realera || BuildOption == Dbwots
-        || BuildOption == Outcast || BuildOption == Thirus || BuildOption == Exordion) {
+        || BuildOption == Outcast || BuildOption == Thirus || BuildOption == Exordion || BuildOption == Yurevo) {
         return *reinterpret_cast<uintptr_t**>(message_address);
     }
     return {};
