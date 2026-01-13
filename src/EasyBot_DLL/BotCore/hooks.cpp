@@ -60,7 +60,6 @@ void __stdcall hooked_callGlobalField(uintptr_t **a1, uintptr_t **a2) {
                 *message_address = "ID: " + std::to_string(itemId) + "\n" + *reinterpret_cast<std::string*>(ptr_messageText);
             }
         }
-        /*
         if (field == "onTalk") {
             auto args = reinterpret_cast<StackArgs*>(ebp + globalFieldOffset);
             g_custom->onTalk(
@@ -72,7 +71,6 @@ void __stdcall hooked_callGlobalField(uintptr_t **a1, uintptr_t **a2) {
                 *args->pos
             );
         }
-        */
     }
     original_callGlobalField(a1, a2);
 }
