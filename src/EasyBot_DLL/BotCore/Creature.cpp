@@ -16,58 +16,95 @@ Creature* Creature::getInstance()
 
 std::string Creature::getName(CreaturePtr creature) {
     if (!creature) return "";
-    typedef void*(gameCall* GetName)(
+    typedef void(gameCall* GetName)(
         uintptr_t RCX,
-        std::string* result
+        std::string *RDX
         );
     auto function = reinterpret_cast<GetName>(ClassMemberFunctions["Creature.getName"]);
     return g_dispatcher->scheduleEventEx([function, creature]() {
         std::string result;
-        function(reinterpret_cast<uintptr_t>(creature.address), &result);
+        function(creature, &result);
         return result;
     });
 }
 
 uint8_t Creature::getHealthPercent(CreaturePtr creature) {
     if (!creature) return 0;
-    typedef uint8_t(gameCall* GetHealthPercent)(uintptr_t RCX);
+    typedef uint8_t(gameCall* GetHealthPercent)(
+        uintptr_t RCX,
+        void *RDX
+        );
     auto function = reinterpret_cast<GetHealthPercent>(ClassMemberFunctions["Creature.getHealthPercent"]);
-    return g_dispatcher->scheduleEventEx([function, creature]() { return function(reinterpret_cast<uintptr_t>(creature.address)); });
+    return g_dispatcher->scheduleEventEx([function, creature]() {
+        void* pMysteryPtr = nullptr;
+        return function(creature, &pMysteryPtr);
+    });
 }
 
 Otc::Direction Creature::getDirection(CreaturePtr creature) {
     if (!creature) return {};
-    typedef Otc::Direction(gameCall* GetDirection)(uintptr_t RCX);
+    typedef Otc::Direction(gameCall* GetDirection)(
+        uintptr_t RCX,
+        void *RDX
+        );
     auto function = reinterpret_cast<GetDirection>(ClassMemberFunctions["Creature.getDirection"]);
-    return g_dispatcher->scheduleEventEx([function, creature]() { return function(reinterpret_cast<uintptr_t>(creature.address)); });
+    return g_dispatcher->scheduleEventEx([function, creature]() {
+            void* pMysteryPtr = nullptr;
+            return function(creature, &pMysteryPtr);
+    });
 }
 
 bool Creature::isDead(CreaturePtr creature) {
     if (!creature) return 0;
-    typedef bool(gameCall* IsDead)(uintptr_t RCX);
+    typedef bool(gameCall* IsDead)(
+        uintptr_t RCX,
+        void *RDX
+        );
     auto function = reinterpret_cast<IsDead>(ClassMemberFunctions["Creature.isDead"]);
-    return g_dispatcher->scheduleEventEx([function, creature]() { return function(reinterpret_cast<uintptr_t>(creature.address)); });
+    return g_dispatcher->scheduleEventEx([function, creature]() {
+            void* pMysteryPtr = nullptr;
+            return function(creature, &pMysteryPtr);
+    });
 }
 
 bool Creature::canBeSeen(CreaturePtr creature) {
     if (!creature) return 0;
-    typedef bool(gameCall* CanBeSeen)(uintptr_t RCX);
+    typedef bool(gameCall* CanBeSeen)(
+        uintptr_t RCX,
+        void *RDX
+        );
     auto function = reinterpret_cast<CanBeSeen>(ClassMemberFunctions["Creature.canBeSeen"]);
-    return g_dispatcher->scheduleEventEx([function, creature]() { return function(reinterpret_cast<uintptr_t>(creature.address)); });
+    return g_dispatcher->scheduleEventEx([function, creature]() {
+            void* pMysteryPtr = nullptr;
+            return function(creature, &pMysteryPtr);
+    });
 }
 
 bool Creature::isCovered(CreaturePtr creature) {
     if (!creature) return 0;
-    typedef bool(gameCall* IsCovered)(uintptr_t RCX);
+    typedef bool(gameCall* IsCovered)(
+        uintptr_t RCX,
+        void *RDX
+        );
     auto function = reinterpret_cast<IsCovered>(ClassMemberFunctions["Creature.isCovered"]);
-    return g_dispatcher->scheduleEventEx([function, creature]() { return function(reinterpret_cast<uintptr_t>(creature.address)); });
+    return g_dispatcher->scheduleEventEx([function, creature]() {
+            void* pMysteryPtr = nullptr;
+            return function(creature, &pMysteryPtr);
+    });
 }
 
 bool Creature::canShoot(CreaturePtr creature, int distance) {
     if (!creature) return 0;
-    typedef bool(gameCall* CanShoot)(uintptr_t RCX, int distance);
+    typedef bool(gameCall* CanShoot)(
+        uintptr_t RCX,
+        void *RDX,
+        int distance
+        );
     auto function = reinterpret_cast<CanShoot>(ClassMemberFunctions["Creature.canShoot"]);
-    return g_dispatcher->scheduleEventEx([function, creature, distance]() { return function(reinterpret_cast<uintptr_t>(creature.address), distance); });
+    return g_dispatcher->scheduleEventEx([function, creature, distance]() {
+            void* pMysteryPtr = nullptr;
+            return function(creature, &pMysteryPtr, distance);
+    });
 }
 
 

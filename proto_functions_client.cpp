@@ -358,10 +358,11 @@ void BotClient::refreshContainer(const uintptr_t &container)
     Status status = stub->RefreshContainer(&context, request, &response);
 }
 
-void BotClient::attack(const uintptr_t &creature)
+void BotClient::attack(const uintptr_t &creature, bool cancel = false)
 {
     bot_AttackRequest request;
     request.set_creature(creature);
+    request.set_cancel(cancel);
     Empty response;
     ClientContext context;
     Status status = stub->Attack(&context, request, &response);
@@ -769,6 +770,17 @@ uint16_t BotClient::getLevel(uintptr_t value)
     return response.value();
 }
 
+void BotClient::setLightHack(uintptr_t localPlayer, uint16_t lightLevel)
+{
+    bot::bot_SetLightHackRequest request;
+    request.set_localplayer(localPlayer);
+    request.set_lightlevel(lightLevel);
+    google::protobuf::Empty response;
+    ClientContext context;
+    Status status = stub->SetLightHack(&context, request, &response);
+    if (!status.ok()) std::cout << "SetLightHack failed: " << status.error_message() << std::endl;
+}
+
 double BotClient::getMana(uintptr_t value)
 {
     UInt64Value request;
@@ -842,7 +854,7 @@ bool BotClient::hasEquippedItemId(uintptr_t localPlayer, uint16_t itemId, uint8_
     return response.value();
 }
 
-uint16_t BotClient::getInventoryCount(uintptr_t localPlayer, uint16_t itemId, uint8_t tier)
+int BotClient::getInventoryCount(uintptr_t localPlayer, uint16_t itemId, uint8_t tier)
 {
     bot_GetInventoryCountRequest request;
     request.set_localplayer(localPlayer);

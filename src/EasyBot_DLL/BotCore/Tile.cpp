@@ -15,43 +15,43 @@ Tile* Tile::getInstance()
 }
 
 ThingPtr Tile::getTopThing(TilePtr tile) {
-    if (!tile) return {};
-    typedef void*(gameCall* GetTopThing)(
+    if (!tile) return 0;
+    typedef void(gameCall* GetTopThing)(
         uintptr_t RCX,
-        ThingPtr *result
+        ThingPtr *RDX
         );
     auto function = reinterpret_cast<GetTopThing>(ClassMemberFunctions["Tile.getTopThing"]);
     return g_dispatcher->scheduleEventEx([function, tile]() {
         ThingPtr result;
-        function(reinterpret_cast<uintptr_t>(tile.address), &result);
+        function(tile.address, &result);
         return result;
     });
 }
 
 ThingPtr Tile::getTopUseThing(TilePtr tile) {
-    if (!tile) return {};
-    typedef void*(gameCall* GetTopUseThing)(
+    if (!tile) return 0;
+    typedef void(gameCall* GetTopUseThing)(
     uintptr_t RCX,
-    ThingPtr *result
+    ThingPtr *RDX
     );
     auto function = reinterpret_cast<GetTopUseThing>(ClassMemberFunctions["Tile.getTopUseThing"]);
     return g_dispatcher->scheduleEventEx([function, tile]() {
         ThingPtr result;
-        function(reinterpret_cast<uintptr_t>(tile.address), &result);
+        function(tile.address, &result);
         return result;
     });
 }
 
 std::vector<ItemPtr> Tile::getItems(TilePtr tile) {
     if (!tile) return {};
-    typedef void*(gameCall* GetItems)(
+    typedef void(gameCall* GetItems)(
         uintptr_t RCX,
-        std::vector<ItemPtr> *result
+        std::vector<ItemPtr> *RDX
     );
     auto function = reinterpret_cast<GetItems>(ClassMemberFunctions["Tile.getItems"]);
     return g_dispatcher->scheduleEventEx([function, tile]() {
         std::vector<ItemPtr> result;
-        function(reinterpret_cast<uintptr_t>(tile.address), &result);
+        function(tile.address, &result);
         return result;
     });
 }

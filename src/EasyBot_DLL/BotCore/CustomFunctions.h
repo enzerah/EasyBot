@@ -1,11 +1,8 @@
 #ifndef CUSTOM_FUNCTIONS_H
 #define CUSTOM_FUNCTIONS_H
-#include <mutex>
-#include <stdint.h>
-#include <string>
-#include <vector>
-#include "../../../const.h"
 #define g_custom CustomFunctions::getInstance()
+#include "../../const.h"
+#include "EventDispatcher.h"
 
 struct StackArgs {
     std::string* name;
@@ -32,17 +29,15 @@ struct ChannelStruct
 };
 
 class CustomFunctions{
-private:
     static CustomFunctions* instance;
     static std::mutex mutex;
     std::vector<MessageStruct> messages;
     std::vector<ChannelStruct> channels;
 
     const size_t MAX_MESSAGES = 100;
-    const size_t MAX_CHANNELS = 15;
 protected:
-        CustomFunctions();
-    ~CustomFunctions(){}
+    CustomFunctions()=default;
+    ~CustomFunctions()= default;
 public:
     CustomFunctions(CustomFunctions const&) = delete;
     void operator=(const CustomFunctions&) = delete;
@@ -50,15 +45,11 @@ public:
 
 
     void onTalk(std::string name, uint16_t level, Otc::MessageMode mode, std::string text, uint16_t channelId, const Position& pos);
-    void onOpenChannel(uint16_t channelId, std::string name);
-    void onCloseChannel(uint16_t channelId);
 
     std::vector<MessageStruct> getMessages(int messageNumber);
     void clearMessages();
     void dropMessages(int messageNumber);
-    std::vector<ChannelStruct> getChannels();
 
-    uintptr_t* getModePtr(uintptr_t mode_address);
     uintptr_t* getMessagePtr(uintptr_t message_address);
 };
 

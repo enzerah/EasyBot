@@ -67,7 +67,7 @@ public:
     void openParent(const uintptr_t &container);
     void close(const uintptr_t &container);
     void refreshContainer(const uintptr_t &container);
-    void attack(const uintptr_t &creature);
+    void attack(const uintptr_t &creature, bool cancel);
     void cancelAttack();
     void follow(const uintptr_t &creature);
     void cancelAttackAndFollow();
@@ -120,11 +120,12 @@ public:
     uint16_t getStamina(uintptr_t localPlayer);
     uintptr_t getInventoryItem(uintptr_t localPlayer, Otc::InventorySlot inventorySlot);
     bool hasEquippedItemId(uintptr_t localPlayer, uint16_t itemId, uint8_t tier);
-    uint16_t getInventoryCount(uintptr_t localPlayer, uint16_t itemId, uint8_t tier);
+    int getInventoryCount(uintptr_t localPlayer, uint16_t itemId, uint8_t tier);
     bool hasSight(uintptr_t localPlayer, const Position &pos);
     bool isAutoWalking(uintptr_t localPlayer);
     void stopAutoWalk(uintptr_t localPlayer);
     bool autoWalk(uintptr_t localPlayer, const Position& destination, bool retry = false);
+    void setLightHack(uintptr_t localPlayer, uint16_t lightLevel);
 
     // Map
     uintptr_t getTile(Position tilePos);

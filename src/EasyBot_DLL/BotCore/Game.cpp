@@ -32,11 +32,11 @@ void Game::autoWalk(const std::vector<Otc::Direction>& dirs, const Position &sta
     typedef void(gameCall* AutoWalk)(
         uintptr_t RCX,
         const std::vector<Otc::Direction> *RDX,
-        const Position R8
+        const Position *R8
         );
     auto function = reinterpret_cast<AutoWalk>(SingletonFunctions["g_game.autoWalk"].first);
     return g_dispatcher->scheduleEventEx([function, dirs, startPos]() {
-        function(SingletonFunctions["g_game.autoWalk"].second, &dirs, startPos);
+        function(SingletonFunctions["g_game.autoWalk"].second, &dirs, &startPos);
     });
 }
 
@@ -141,11 +141,11 @@ void Game::useInventoryItemWith(const uint16_t itemId, const ThingPtr &toThing) 
 }
 
 ItemPtr Game::findItemInContainers(uint32_t itemId, int subType, uint8_t tier) {
-    typedef void*(gameCall* FindItemInContainers)(
+    typedef void(gameCall* FindItemInContainers)(
         uintptr_t RCX,
-        ItemPtr* result,
-        uint32_t RDX,
-        int R8,
+        ItemPtr* RDX,
+        uint32_t R8,
+        int R9,
         uint8_t tier
         );
     auto function = reinterpret_cast<FindItemInContainers>(SingletonFunctions["g_game.findItemInContainers"].first);
@@ -206,18 +206,16 @@ void Game::refreshContainer(const ContainerPtr &container) {
     });
 }
 
-void Game::attack(const CreaturePtr &creature) {
+void Game::attack(const CreaturePtr &creature, bool cancel = false) {
+    if (!creature) return;
     typedef void(gameCall* Attack)(
         uintptr_t RCX,
-        CreaturePtr RDX
+        CreaturePtr RDX,
+        bool R8
         );
-    auto functionAddr = SingletonFunctions["g_game.attack"].first;
-    auto singletonAddr = SingletonFunctions["g_game.attack"].second;
-    auto function = reinterpret_cast<Attack>(functionAddr);
-    std::cout << "Game::attack functionAddr: " << std::hex << functionAddr << " singletonAddr: " << singletonAddr << " creatureAddr: " << (creature ? (uintptr_t)creature.address : 0) << std::endl;
-    return g_dispatcher->scheduleEventEx([function, singletonAddr, creature]() {
-        if (function)
-            function(singletonAddr, creature);
+    auto function = reinterpret_cast<Attack>(SingletonFunctions["g_game.attack"].first);
+    return g_dispatcher->scheduleEventEx([function, creature, cancel]() {
+        function(SingletonFunctions["g_game.attack"].second, creature, cancel);
     });
 }
 
@@ -232,18 +230,16 @@ void Game::cancelAttack() {
 }
 
 void Game::follow(const CreaturePtr& creature) {
+    if (!creature) return;
     typedef void(gameCall* Follow)(
         uintptr_t RCX,
-        CreaturePtr RDX
+        const CreaturePtr* RDX
         );
     auto function = reinterpret_cast<Follow>(SingletonFunctions["g_game.follow"].first);
     return g_dispatcher->scheduleEventEx([function, creature]() {
-        function(SingletonFunctions["g_game.follow"].second, creature);
+        function(SingletonFunctions["g_game.follow"].second, &creature);
     });
-}
 
-void Game::cancelFollow() {
-    attack(nullptr); // Usually follow(nullptr) or attack(nullptr) depending on implementation, client has both
 }
 
 void Game::cancelAttackAndFollow() {
@@ -405,42 +401,62 @@ void Game::changeMapAwareRange(const uint8_t xrange, const uint8_t yrange) {
 }
 
 bool Game::canPerformGameAction() {
-    typedef bool(gameCall* CanPerformGameAction)(uintptr_t RCX);
+    typedef bool(gameCall* CanPerformGameAction)(
+        uintptr_t RCX,
+        void *RDX
+        );
     auto function = reinterpret_cast<CanPerformGameAction>(SingletonFunctions["g_game.canPerformGameAction"].first);
     return g_dispatcher->scheduleEventEx([function]() {
-        return function(SingletonFunctions["g_game.canPerformGameAction"].second);
+            void* pMysteryPtr = nullptr; // 8 bytes is enough for bool/ignored param
+            auto ret = function(SingletonFunctions["g_game.canPerformGameAction"].second, &pMysteryPtr);
+            return ret;
     });
 }
 
 bool Game::isOnline() {
-    typedef bool(gameCall* IsOnline)(uintptr_t RCX);
+    typedef bool(gameCall* IsOnline)(
+       uintptr_t RCX,
+       void *RDX
+       );
     auto function = reinterpret_cast<IsOnline>(SingletonFunctions["g_game.isOnline"].first);
     return g_dispatcher->scheduleEventEx([function]() {
-        return function(SingletonFunctions["g_game.isOnline"].second);
+            void* pMysteryPtr = nullptr;
+            auto ret = function(SingletonFunctions["isOnline.isOnline"].second, &pMysteryPtr);
+            return ret;
     });
 }
 
 bool Game::isAttacking() {
-    typedef bool(gameCall* IsAttacking)(uintptr_t RCX);
+    typedef bool(gameCall* IsAttacking)(
+       uintptr_t RCX,
+       void *RDX
+       );
     auto function = reinterpret_cast<IsAttacking>(SingletonFunctions["g_game.isAttacking"].first);
     return g_dispatcher->scheduleEventEx([function]() {
-        return function(SingletonFunctions["g_game.isAttacking"].second);
+            void* pMysteryPtr = nullptr;
+            auto ret = function(SingletonFunctions["g_game.isAttacking"].second, &pMysteryPtr);
+            return ret;
     });
 }
 
 bool Game::isFollowing() {
-    typedef bool(gameCall* IsFollowing)(uintptr_t RCX);
+    typedef bool(gameCall* IsFollowing)(
+       uintptr_t RCX,
+       void *RDX
+       );
     auto function = reinterpret_cast<IsFollowing>(SingletonFunctions["g_game.isFollowing"].first);
     return g_dispatcher->scheduleEventEx([function]() {
-        return function(SingletonFunctions["g_game.isFollowing"].second);
+            void* pMysteryPtr = nullptr;
+            auto ret = function(SingletonFunctions["g_game.isFollowing"].second, &pMysteryPtr);
+            return ret;
     });
 }
 
 
 ContainerPtr Game::getContainer(int index) {
-    typedef void*(gameCall* GetContainer)(
+    typedef void(gameCall* GetContainer)(
         uintptr_t RCX,
-        ContainerPtr *result,
+        ContainerPtr *RDX,
         int idx
         );
     auto function = reinterpret_cast<GetContainer>(SingletonFunctions["g_game.getContainer"].first);
@@ -452,16 +468,16 @@ ContainerPtr Game::getContainer(int index) {
 }
 
 std::vector<ContainerPtr> Game::getContainers() {
-    typedef void*(gameCall* GetContainers)(
+    typedef void(gameCall* GetContainers)(
         uintptr_t RCX,
-        std::map<int, uintptr_t> *result
+        std::map<int, uintptr_t> *RDX
     );
     auto function = reinterpret_cast<GetContainers>(SingletonFunctions["g_game.getContainers"].first);
     return g_dispatcher->scheduleEventEx([function]() {
-        std::map<int, uintptr_t> result_map;
-        function(SingletonFunctions["g_game.getContainers"].second, &result_map);
+        std::map<int, uintptr_t> result;
+        function(SingletonFunctions["g_game.getContainers"].second, &result);
         std::vector<ContainerPtr> containers;
-        for (auto items : result_map){
+        for (auto items : result){
             containers.push_back(ContainerPtr(items.second));
         }
         return containers;
@@ -469,9 +485,9 @@ std::vector<ContainerPtr> Game::getContainers() {
 }
 
 CreaturePtr Game::getAttackingCreature() {
-    typedef void*(gameCall* GetAttackingCreature)(
+    typedef void(gameCall* GetAttackingCreature)(
         uintptr_t RCX,
-        CreaturePtr *result
+        CreaturePtr *RDX
         );
     auto function = reinterpret_cast<GetAttackingCreature>(SingletonFunctions["g_game.getAttackingCreature"].first);
     return g_dispatcher->scheduleEventEx([function]() {
@@ -482,9 +498,9 @@ CreaturePtr Game::getAttackingCreature() {
 }
 
 CreaturePtr Game::getFollowingCreature() {
-    typedef void*(gameCall* GetFollowingCreature)(
+    typedef void(gameCall* GetFollowingCreature)(
         uintptr_t RCX,
-        CreaturePtr *result
+        CreaturePtr *RDX
         );
     auto function = reinterpret_cast<GetFollowingCreature>(SingletonFunctions["g_game.getFollowingCreature"].first);
     return g_dispatcher->scheduleEventEx([function]() {
@@ -495,9 +511,9 @@ CreaturePtr Game::getFollowingCreature() {
 }
 
 LocalPlayerPtr Game::getLocalPlayer() {
-    typedef void*(gameCall* GetLocalPlayer)(
+    typedef void(gameCall* GetLocalPlayer)(
         uintptr_t RCX,
-        LocalPlayerPtr *result
+        LocalPlayerPtr *RDX
         );
     auto function = reinterpret_cast<GetLocalPlayer>(SingletonFunctions["g_game.getLocalPlayer"].first);
     return g_dispatcher->scheduleEventEx([function]() {
@@ -518,9 +534,9 @@ int Game::getClientVersion() {
 }
 
 std::string Game::getCharacterName() {
-    typedef void*(gameCall* GetCharacterName)(
+    typedef void(gameCall* GetCharacterName)(
         uintptr_t RCX,
-        std::string* result
+        std::string *RDX
         );
     auto function = reinterpret_cast<GetCharacterName>(SingletonFunctions["g_game.getCharacterName"].first);
     return g_dispatcher->scheduleEventEx([function]() {

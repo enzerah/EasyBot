@@ -42,7 +42,7 @@ enum {
     static LPCSTR callGlobalField_MASK = "xxxxx?xx????xxxx????xx????x????x";
     #define classFunctionOffset 0x50
     #define singletonFunctionOffset 0x10
-    #define globalFieldOffset 0x10
+    #define globalFieldOffset 0x14
 #elif BuildOption == BUILD_REALERA
     static const BYTE* callGlobalField_PATTERN = reinterpret_cast<const BYTE*>("\x55\x8b\xec\x8b\x45\x00\x83\x78\x00\x00\x00\x00\x8b\x00\x50\x68\x00\x00\x00\x00\xff\x35\x00\x00\x00\x00\xe8\x00\x00\x00\x00\x6a");
     static LPCSTR callGlobalField_MASK = "xxxxx?xx????xxxx????xx????x????x";

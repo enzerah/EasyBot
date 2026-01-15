@@ -5,10 +5,16 @@
 //python -m grpc_tools.protoc -IC:\Users\Wojciech\Desktop\Projects\EasyBot86 --python_out=. --grpc_python_out=. C:\Users\Wojciech\Desktop\Projects\EasyBot86\bot.proto
 int main() {
     auto localPlayer = proto->getLocalPlayer();
+    std::cout << std::hex << localPlayer << std::endl;
     auto playerPos = proto->getPosition(localPlayer);
-    auto depoPos = playerPos;
-    depoPos.y -= 2;
-    auto path = proto->findPath(playerPos, depoPos, 100, 0);
-    std::cout << path.size() << std::endl;
+    std::cout << playerPos.x << ", " << playerPos.y << ", " << playerPos.z << std::endl;
+    while (true) {
+        auto spectators = proto->getSpectators(playerPos);
+        std::cout << spectators.size() << std::endl;
+        for (auto spectator : spectators) {
+            std::cout << std::hex << spectator << std::endl;
+            std::cout << proto->getCreatureName(spectator) << std::endl;
+        }
+    }
     return 0;
 }

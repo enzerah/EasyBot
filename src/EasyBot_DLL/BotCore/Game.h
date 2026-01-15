@@ -32,10 +32,9 @@ public:
     void openParent(const ContainerPtr& container);
     void close(const ContainerPtr& container);
     void refreshContainer(const ContainerPtr& container);
-    void attack(const CreaturePtr& creature);
+    void attack(const CreaturePtr& creature, bool cancel);
     void cancelAttack();
     void follow(const CreaturePtr& creature);
-    void cancelFollow();
     void cancelAttackAndFollow();
     void talk(const std::string& message);
     void talkChannel(const Otc::MessageMode mode, const uint16_t channelId, const std::string& message);

@@ -1,11 +1,11 @@
 #ifndef TASKSCHEDULER_H
 #define TASKSCHEDULER_H
+#define g_dispatcher EventDispatcher::getInstance()
 #include <functional>
 #include <mutex>
 #include <queue>
 #include <future>
 #include <iostream>
-#define g_dispatcher EventDispatcher::getInstance()
 
 class EventDispatcher {
 protected:

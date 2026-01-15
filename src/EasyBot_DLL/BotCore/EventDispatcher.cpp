@@ -1,5 +1,4 @@
 #include "EventDispatcher.h"
-#include "Windows.h"
 
 EventDispatcher* EventDispatcher::instance{nullptr};
 std::mutex EventDispatcher::mutex;

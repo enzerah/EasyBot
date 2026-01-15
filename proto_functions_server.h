@@ -87,7 +87,6 @@ public:
 
     // --- LocalPlayer.h ---
     Status IsWalkLocked(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::BoolValue* response) override;
-    Status GetStates(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::UInt32Value* response) override;
     Status GetHealth(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::DoubleValue* response) override;
     Status GetMaxHealth(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::DoubleValue* response) override;
     Status GetFreeCapacity(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::DoubleValue* response) override;
@@ -104,6 +103,7 @@ public:
     Status IsAutoWalking(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::BoolValue* response) override;
     Status StopAutoWalk(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::Empty* response) override;
     Status AutoWalk(ServerContext* context, const bot::bot_AutoWalkRequest* request, google::protobuf::BoolValue* response) override;
+    Status SetLightHack(ServerContext* context, const bot::bot_SetLightHackRequest* request, google::protobuf::Empty* response) override;
 
     // --- Map.h ---
     Status GetTile(ServerContext* context, const bot::bot_Position* request, google::protobuf::UInt64Value* response) override;

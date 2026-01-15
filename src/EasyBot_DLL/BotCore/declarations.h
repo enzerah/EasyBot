@@ -32,20 +32,17 @@ class AttachableObject;
 
 template<typename T>
 struct SmartPtr {
-    T* address;
+    uintptr_t address;
+    uintptr_t controlBlock;
 
-    SmartPtr() : address(nullptr) {}
-    SmartPtr(std::nullptr_t) : address(nullptr) {}
-    explicit SmartPtr(uintptr_t addr) : address(reinterpret_cast<T*>(addr)) {}
+    SmartPtr() : address(0), controlBlock(0) {}
+    SmartPtr(uintptr_t addr) : address(addr), controlBlock(0) {}
 
     template<typename U>
-    SmartPtr(const SmartPtr<U>& other) : address(reinterpret_cast<T*>(other.address)) {}
+    SmartPtr(const SmartPtr<U>& other) : address(other.address), controlBlock(other.controlBlock) {}
 
-    SmartPtr& operator=(std::nullptr_t) { address = nullptr; return *this; }
-
-    operator uintptr_t() const { return reinterpret_cast<uintptr_t>(address); }
-    explicit operator bool() const { return address != nullptr; }
-    bool operator!() const { return address == nullptr; }
+    operator uintptr_t() const { return address; }
+    bool operator!() const { return address == 0; }
     bool operator==(const SmartPtr& other) const { return address == other.address; }
     bool operator!=(const SmartPtr& other) const { return address != other.address; }
 };
@@ -56,7 +53,7 @@ using TilePtr = SmartPtr<Tile>;
 using ThingPtr = SmartPtr<Thing>;
 using ItemPtr = SmartPtr<Item>;
 using ContainerPtr = SmartPtr<Container>;
-using CreaturePtr = SmartPtr<Creature>;
+using CreaturePtr = intptr_t;
 using MonsterPtr = SmartPtr<Monster>;
 using NpcPtr = SmartPtr<Npc>;
 using PlayerPtr = SmartPtr<Player>;

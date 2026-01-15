@@ -17,7 +17,7 @@ SmartPtr<T> toPtr(uint64_t val) {
 }
 
 Position toPos(const bot::bot_Position& proto) {
-    return { static_cast<int32_t>(proto.x()), static_cast<int32_t>(proto.y()), static_cast<uint8_t>(proto.z()) };
+    return { static_cast<int32_t>(proto.x()), static_cast<int32_t>(proto.y()), static_cast<int16_t>(proto.z()) };
 }
 
 void fromPos(const Position& pos, bot::bot_Position* proto) {
@@ -197,7 +197,7 @@ Status BotServiceImpl::RefreshContainer(ServerContext* context, const google::pr
 }
 
 Status BotServiceImpl::Attack(ServerContext* context, const bot::bot_AttackRequest* request, google::protobuf::Empty* response) {
-    g_game->attack(toPtr<Creature>(request->creature()));
+    g_game->attack(toPtr<Creature>(request->creature()), request->cancel());
     return Status::OK;
 }
 
@@ -385,10 +385,6 @@ Status BotServiceImpl::IsWalkLocked(ServerContext* context, const google::protob
     return Status::OK;
 }
 
-Status BotServiceImpl::GetStates(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::UInt32Value* response) {
-    response->set_value(g_localPlayer->getStates(toPtr<LocalPlayer>(request->value())));
-    return Status::OK;
-}
 
 Status BotServiceImpl::GetHealth(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::DoubleValue* response) {
     response->set_value(g_localPlayer->getHealth(toPtr<LocalPlayer>(request->value())));
@@ -467,6 +463,11 @@ Status BotServiceImpl::StopAutoWalk(ServerContext* context, const google::protob
 
 Status BotServiceImpl::AutoWalk(ServerContext* context, const bot::bot_AutoWalkRequest* request, google::protobuf::BoolValue* response) {
     response->set_value(g_localPlayer->autoWalk(toPtr<LocalPlayer>(request->localplayer()), toPos(request->destination()), request->retry()));
+    return Status::OK;
+}
+
+Status BotServiceImpl::SetLightHack(ServerContext* context, const bot::bot_SetLightHackRequest* request, google::protobuf::Empty* response) {
+    g_localPlayer->setLightHack(toPtr<LocalPlayer>(request->localplayer()), static_cast<uint16_t>(request->lightlevel()));
     return Status::OK;
 }
 

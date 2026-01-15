@@ -3,12 +3,11 @@
 #include <cstdint>
 #include <string>
 
-
 struct Position
 {
     int32_t x;
     int32_t y;
-    uint8_t z;
+    int16_t z;
 };
 
 struct Waypoint
@@ -172,7 +171,7 @@ namespace Otc
         DatLastOpt = 255
     };
 
-    enum InventorySlot {
+    enum InventorySlot : uint8_t {
         InventorySlotHead = 1,
         InventorySlotNecklace,
         InventorySlotBackpack,
@@ -191,7 +190,7 @@ namespace Otc
         LastInventorySlot
     };
 
-    enum Statistic {
+    enum Statistic : uint8_t {
         Health = 0,
         MaxHealth,
         FreeCapacity,
@@ -207,7 +206,7 @@ namespace Otc
         LastStatistic
     };
 
-    enum Skill {
+    enum Skill : uint8_t {
         Fist = 0,
         Club,
         Sword,
@@ -224,7 +223,7 @@ namespace Otc
         LastSkill
     };
 
-    enum Direction {
+    enum Direction : uint8_t {
         North = 0,
         East,
         South,
@@ -236,7 +235,7 @@ namespace Otc
         InvalidDirection
     };
 
-    enum FluidsColor {
+    enum FluidsColor : uint8_t {
         FluidTransparent = 0,
         FluidBlue,
         FluidRed,
@@ -247,7 +246,7 @@ namespace Otc
         FluidPurple
     };
 
-    enum FluidsType {
+    enum FluidsType : uint8_t {
         FluidNone = 0,
         FluidWater,
         FluidMana,
@@ -268,25 +267,25 @@ namespace Otc
         FluidMead
     };
 
-    enum FightModes {
+    enum FightModes : uint8_t {
         FightOffensive = 1,
         FightBalanced = 2,
         FightDefensive = 3
     };
 
-    enum ChaseModes {
+    enum ChaseModes : uint8_t {
         DontChase = 0,
         ChaseOpponent = 1
     };
 
-    enum PVPModes {
+    enum PVPModes : uint8_t {
         WhiteDove = 0,
         WhiteHand = 1,
         YellowHand = 2,
         RedFist = 3
     };
 
-    enum PlayerSkulls {
+    enum PlayerSkulls : uint8_t {
         SkullNone = 0,
         SkullYellow,
         SkullGreen,
@@ -296,7 +295,7 @@ namespace Otc
         SkullOrange
     };
 
-    enum PlayerShields {
+    enum PlayerShields : uint8_t {
         ShieldNone = 0,
         ShieldWhiteYellow, // 1 party leader
         ShieldWhiteBlue, // 2 party member
@@ -311,7 +310,7 @@ namespace Otc
         ShieldGray // 11 member of another party
     };
 
-    enum PlayerEmblems {
+    enum PlayerEmblems : uint8_t {
         EmblemNone = 0,
         EmblemGreen,
         EmblemRed,
@@ -320,7 +319,7 @@ namespace Otc
         EmblemOther
     };
 
-    enum CreatureIcons {
+    enum CreatureIcons : uint8_t {
         NpcIconNone = 0,
         NpcIconChat,
         NpcIconTrade,
@@ -328,7 +327,7 @@ namespace Otc
         NpcIconTradeQuest
     };
 
-    enum PlayerStates {
+    enum PlayerStates : uint32_t {
         IconNone = 0,
         IconPoison = 1,
         IconBurn = 2,
@@ -549,7 +548,7 @@ namespace Otc
         LastGameFeature = 130
     };
 
-    enum PathFindResult {
+    enum PathFindResult : uint8_t {
         PathFindResultOk = 0,
         PathFindResultSamePosition,
         PathFindResultImpossible,
@@ -557,7 +556,7 @@ namespace Otc
         PathFindResultNoWay
     };
 
-    enum PathFindFlags {
+    enum PathFindFlags : uint8_t {
         PathFindAllowNotSeenTiles = 1,
         PathFindAllowCreatures = 2,
         PathFindAllowNonPathable = 4,

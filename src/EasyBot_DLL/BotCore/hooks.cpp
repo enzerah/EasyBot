@@ -2,10 +2,7 @@
 #include "BuildConfig.h"
 #include "Creature.h"
 #include "CustomFunctions.h"
-#include "Game.h"
 #include "pattern_scan.h"
-#include "Thing.h"
-#include "Tile.h"
 
 void __stdcall hooked_bindSingletonFunction(uintptr_t a1, uintptr_t a2, uintptr_t a3) {
     CONTEXT ctx;
@@ -50,25 +47,13 @@ void __stdcall hooked_callGlobalField(uintptr_t **a1, uintptr_t **a2) {
     auto field = *reinterpret_cast<std::string*>(a2);
     if (global == "g_game") {
         if (field == "onTextMessage") {
-            uintptr_t addr_message = ebp + globalFieldOffset + 0x04;
+            uintptr_t addr_message = ebp + globalFieldOffset;
             auto ptr_messageText = g_custom->getMessagePtr(addr_message);
             auto message_address = reinterpret_cast<std::string*>(ptr_messageText);
             if (message_address->find("You see") != std::string::npos)
             {
-                std::cout << "Found " << std::endl;
                 *message_address = "ID: " + std::to_string(itemId) + "\n" + *reinterpret_cast<std::string*>(ptr_messageText);
             }
-        }
-        if (field == "onTalk") {
-            auto args = reinterpret_cast<StackArgs*>(ebp + globalFieldOffset);
-            g_custom->onTalk(
-                *args->name,
-                reinterpret_cast<uint16_t>(args->level),
-                *args->mode,
-                *args->text,
-                *args->channelId,
-                *args->pos
-            );
         }
     }
     original_callGlobalField(a1, a2);
@@ -88,15 +73,11 @@ typedef uint32_t(gameCall* GetId)(
     );
 
 
-void hooked_Look(void* self, const ThingPtr& thing, const bool isBattleList) {
-    look_original(self, thing, isBattleList);
-
-    if (!thing) return;
+void __stdcall hooked_Look(const uintptr_t& thing, const bool isBattleList) {
+    look_original(&thing, isBattleList);
     auto function = reinterpret_cast<GetId>(ClassMemberFunctions["Item.getId"]);
-    if (function) {
-        void* pMysteryPtr = nullptr;
-        itemId = function(thing, &pMysteryPtr);
-    }
-}
+    void* pMysteryPtr = nullptr;
+    itemId = function(thing, &pMysteryPtr);
 
+}
 

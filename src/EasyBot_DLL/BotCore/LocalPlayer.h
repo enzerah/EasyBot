@@ -31,11 +31,12 @@ public:
     uint16_t getStamina(LocalPlayerPtr localPlayer);
     ItemPtr getInventoryItem(LocalPlayerPtr localPlayer, Otc::InventorySlot inventorySlot);
     bool hasEquippedItemId(LocalPlayerPtr localPlayer, uint16_t itemId, uint8_t tier);
-    uint16_t getInventoryCount(LocalPlayerPtr localPlayer, uint16_t itemId, uint8_t tier);
+    int getInventoryCount(LocalPlayerPtr localPlayer, uint16_t itemId, uint8_t tier);
     bool hasSight(LocalPlayerPtr localPlayer, const Position &pos);
     bool isAutoWalking(LocalPlayerPtr localPlayer);
     void stopAutoWalk(LocalPlayerPtr localPlayer);
     bool autoWalk(LocalPlayerPtr localPlayer, const Position& destination, bool retry = false);
+    void setLightHack(LocalPlayerPtr localPlayer, uint16_t lightLevel);
 
 };
 

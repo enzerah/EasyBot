@@ -29,14 +29,9 @@ typedef int(__cdecl* mainLoop)(int a1);
 inline mainLoop original_mainLoop = nullptr;
 int __cdecl hooked_MainLoop(int a1);
 
-typedef void(__fastcall* look_t)(void* self, const ThingPtr& thing, const bool isBattleList);
+typedef void(__stdcall* look_t)(const uintptr_t *RDX,const bool isBattleList);
 inline look_t look_original = nullptr;
-void hooked_Look(void* self, const ThingPtr& thing, const bool isBattleList);
-
-
-
-
-
+void __stdcall hooked_Look(const uintptr_t& thing, const bool isBattleList);
 
 
 

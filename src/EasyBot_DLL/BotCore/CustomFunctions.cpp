@@ -1,14 +1,8 @@
 #include "CustomFunctions.h"
-#include <iostream>
-#include <utility>
-
-#include "BuildConfig.h"
 
 
 CustomFunctions* CustomFunctions::instance{nullptr};
 std::mutex CustomFunctions::mutex;
-
-CustomFunctions::CustomFunctions() = default;
 
 CustomFunctions* CustomFunctions::getInstance() {
     std::lock_guard<std::mutex> lock(mutex);
@@ -58,23 +52,8 @@ void CustomFunctions::dropMessages(int messageNumber) {
 }
 
 
-
-uintptr_t * CustomFunctions::getModePtr(uintptr_t mode_address) {
-    if (BuildOption == Miracle || BuildOption == Realera || BuildOption == Outcast
-        || BuildOption == Thirus || BuildOption == Exordion || BuildOption == Yurevo) {
-        return *reinterpret_cast<uintptr_t**>(mode_address);
-    } else if (BuildOption == Dbwots) {
-        return reinterpret_cast<uintptr_t*>(mode_address);
-    }
-    return {};
-}
-
-uintptr_t * CustomFunctions::getMessagePtr(uintptr_t message_address) {
-    if (BuildOption == Miracle || BuildOption == Realera || BuildOption == Dbwots
-        || BuildOption == Outcast || BuildOption == Thirus || BuildOption == Exordion || BuildOption == Yurevo) {
-        return *reinterpret_cast<uintptr_t**>(message_address);
-    }
-    return {};
+uintptr_t* CustomFunctions::getMessagePtr(uintptr_t message_address) {
+    return *reinterpret_cast<uintptr_t**>(message_address);
 }
 
 
