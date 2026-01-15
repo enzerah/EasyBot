@@ -32,6 +32,7 @@ std::vector<CreaturePtr> Map::getSpectators(const Position centerPos, bool multi
         const Position *R8,
         bool R9
         );
+    std::cout << sizeof(CreaturePtr) << std::endl;
     auto function = reinterpret_cast<GetSpectators>(SingletonFunctions["g_map.getSpectators"].first);
     return g_dispatcher->scheduleEventEx([function, centerPos, multiFloor]() {
         std::vector<CreaturePtr> result;

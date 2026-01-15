@@ -50,6 +50,7 @@ void __stdcall hooked_callGlobalField(uintptr_t **a1, uintptr_t **a2) {
             uintptr_t addr_message = ebp + globalFieldOffset;
             auto ptr_messageText = g_custom->getMessagePtr(addr_message);
             auto message_address = reinterpret_cast<std::string*>(ptr_messageText);
+            std::cout << *message_address << std::endl;
             if (message_address->find("You see") != std::string::npos)
             {
                 *message_address = "ID: " + std::to_string(itemId) + "\n" + *reinterpret_cast<std::string*>(ptr_messageText);

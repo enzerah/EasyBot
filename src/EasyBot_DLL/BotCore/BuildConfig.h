@@ -36,7 +36,7 @@ enum {
 #define BUILD_YUREVO 7
 
 
-#define BuildOption BUILD_MIRACLE
+#define BuildOption BUILD_EXORDION
 #if BuildOption == BUILD_MIRACLE
     static const BYTE* callGlobalField_PATTERN = reinterpret_cast<const BYTE*>("\x55\x8b\xec\x8b\x45\x00\x83\x78\x00\x00\x00\x00\x8b\x00\x50\x68\x00\x00\x00\x00\xff\x35\x00\x00\x00\x00\xe8\x00\x00\x00\x00\x6a");
     static LPCSTR callGlobalField_MASK = "xxxxx?xx????xxxx????xx????x????x";
@@ -48,31 +48,31 @@ enum {
     static LPCSTR callGlobalField_MASK = "xxxxx?xx????xxxx????xx????x????x";
     #define classFunctionOffset 0xC
     #define singletonFunctionOffset 0x10
-    #define globalFieldOffset 0x10
+    #define globalFieldOffset 0x14
 #elif BuildOption == BUILD_DBWOTS
     static const BYTE* callGlobalField_PATTERN = reinterpret_cast<const BYTE*>("\x55\x8b\xec\x8b\x45\x00\x83\x78\x00\x00\x76\x00\x8b\x00\x56\x50");
     static LPCSTR callGlobalField_MASK = "xxxxx?xx??x?xxxx";
     #define classFunctionOffset 0xC
     #define singletonFunctionOffset 0x10
-    #define globalFieldOffset 0x8
+    #define globalFieldOffset 0xC
 #elif BuildOption == BUILD_OUTCAST
     static const BYTE* callGlobalField_PATTERN = reinterpret_cast<const BYTE*>("\x55\x8b\xec\x8b\x45\x00\x83\x78\x00\x00\x72\x00\x8b\x00\x50\x68\x00\x00\x00\x00\xff\x35\x00\x00\x00\x00\xe8\x00\x00\x00\x00\x6a");
     static LPCSTR callGlobalField_MASK = "xxxxx?xx??x?xxxx????xx????x????x";
     #define classFunctionOffset 0xC
     #define singletonFunctionOffset 0x10
-    #define globalFieldOffset 0x10
+    #define globalFieldOffset 0x14
 #elif BuildOption == BUILD_THIRUS
     static const BYTE* callGlobalField_PATTERN = reinterpret_cast<const BYTE*>("\x55\x8b\xec\x8b\x45\x00\x83\x78\x00\x00\x72\x00\x8b\x00\x50\x68\x00\x00\x00\x00\xff\x35\x00\x00\x00\x00\xe8\x00\x00\x00\x00\x6a");
     static LPCSTR callGlobalField_MASK = "xxxxx?xx??x?xxxx????xx????x????x";
     #define classFunctionOffset 0xC
     #define singletonFunctionOffset 0x10
-    #define globalFieldOffset 0x10
+    #define globalFieldOffset 0x14
 #elif BuildOption == BUILD_EXORDION
     static const BYTE* callGlobalField_PATTERN = reinterpret_cast<const BYTE*>("\x55\x8b\xec\x8b\x45\x00\x83\x78\x00\x00\x00\x00\x8b\x00\x50\x68\x00\x00\x00\x00\xff\x35\x00\x00\x00\x00\xe8\x00\x00\x00\x00\x6a");
     static LPCSTR callGlobalField_MASK = "xxxxx?xx????xxxx????xx????x????x";
     #define classFunctionOffset 0x58
     #define singletonFunctionOffset 0x10
-    #define globalFieldOffset 0x10
+    #define globalFieldOffset 0x14
 #elif BuildOption == BUILD_YUREVO
     static const BYTE* callGlobalField_PATTERN = reinterpret_cast<const BYTE*>("\x55\x8b\xec\x8b\x45\x00\x83\x78\x00\x00\x00\x00\x8b\x00\x50\x68\x00\x00\x00\x00\xff\x35\x00\x00\x00\x00\xe8\x00\x00\x00\x00\x6a");
     static LPCSTR callGlobalField_MASK = "xxxxx?xx????xxxx????xx????x????x";
