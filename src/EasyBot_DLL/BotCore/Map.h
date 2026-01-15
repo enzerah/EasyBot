@@ -1,30 +1,29 @@
-//
-// Created by blazz on 30.09.2025.
-//
-
 #ifndef MAPVIEW_H
 #define MAPVIEW_H
-#include "Game.h"
 #define g_map Map::getInstance()
+#include "declarations.h"
+#include "../../const.h"
+#include "EventDispatcher.h"
+#include "hooks.h"
 
 
 
-class Map : public Game {
-private:
+class Map {
     static Map* instance;
     static std::mutex mutex;
 protected:
-    Map();
-    ~Map(){}
+    Map()=default;
+    ~Map()= default;
 public:
     Map(Map const&) = delete;
     void operator=(const Map&) = delete;
     static Map* getInstance();
 
 
-    uintptr_t getTile(Position tilePos);
-    std::vector<uintptr_t> getSpectators(const Position &centerPos, bool multiFloor = false);
-    std::vector<Otc::Direction> findPath(const Position &startPos, const Position &goalPos, int maxComplexity, int flags);
+    TilePtr getTile(Position tilePos);
+
+    std::vector<CreaturePtr> getSpectators(const Position centerPos, bool multiFloor = false);
+    std::vector<Otc::Direction> findPath(const Position startPos, const Position goalPos, int maxComplexity, int flags);
     bool isWalkable(const Position& pos, bool ignoreCreatures);
     bool isSightClear(const Position& fromPos, const Position& toPos);
 };

@@ -358,11 +358,10 @@ void BotClient::refreshContainer(const uintptr_t &container)
     Status status = stub->RefreshContainer(&context, request, &response);
 }
 
-void BotClient::attack(const uintptr_t &creature, bool cancel = false)
+void BotClient::attack(const uintptr_t &creature)
 {
     bot_AttackRequest request;
     request.set_creature(creature);
-    request.set_cancel(cancel);
     Empty response;
     ClientContext context;
     Status status = stub->Attack(&context, request, &response);

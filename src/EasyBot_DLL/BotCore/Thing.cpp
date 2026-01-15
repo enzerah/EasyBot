@@ -1,13 +1,8 @@
-//
-// Created by Wojciech on 03.10.2025.
-//
-
 #include "Thing.h"
+
 Thing* Thing::instance{nullptr};
 std::mutex Thing::mutex;
-Thing::Thing()
-{
-}
+
 
 Thing* Thing::getInstance()
 {
@@ -19,162 +14,107 @@ Thing* Thing::getInstance()
     return instance;
 }
 
-uint32_t Thing::getId(uintptr_t thing) {
+uint32_t Thing::getId(ThingPtr thing) {
     if (!thing) return 0;
     typedef uint32_t(gameCall* GetId)(
-        uintptr_t *RCX,
-        void *RDX
+        uintptr_t RCX
         );
     auto function = reinterpret_cast<GetId>(ClassMemberFunctions["Thing.getId"]);
-    return g_dispatcher->scheduleEventEx([function, &thing]() {
-        void* pMysteryPtr = nullptr;
-        return function(&thing, &pMysteryPtr);
+    return g_dispatcher->scheduleEventEx([function, thing]() {
+        return function(reinterpret_cast<uintptr_t>(thing.address));
     });
 }
 
 
-Position Thing::getPosition(uintptr_t thing) {
+Position Thing::getPosition(ThingPtr thing) {
     if (!thing) return {};
-    typedef Position*(gameCall* GetPosition)(
+    typedef void*(gameCall* GetPosition)(
         uintptr_t RCX,
-        void *RDX
+        Position* result
         );
     auto function = reinterpret_cast<GetPosition>(ClassMemberFunctions["Thing.getPosition"]);
     return g_dispatcher->scheduleEventEx([function, thing]() {
-        void* pMysteryPtr = nullptr;
-        auto ret = function(thing, &pMysteryPtr);
-        return *ret;
+        Position result;
+        function(reinterpret_cast<uintptr_t>(thing.address), &result);
+        return result;
     });
 }
 
-uintptr_t Thing::getParentContainer(uintptr_t thing) {
-    if (!thing) return 0;
-    typedef uintptr_t(gameCall* GetParentContainer)(
+ContainerPtr Thing::getParentContainer(ThingPtr thing) {
+    if (!thing) return {};
+    typedef void*(gameCall* GetParentContainer)(
         uintptr_t RCX,
-        void *RDX
+        ContainerPtr *result
         );
     auto function = reinterpret_cast<GetParentContainer>(ClassMemberFunctions["Thing.getParentContainer"]);
     return g_dispatcher->scheduleEventEx([function, thing]() {
-        void* pMysteryPtr = nullptr;
-        return function(thing, &pMysteryPtr);
+        ContainerPtr result;
+        function(reinterpret_cast<uintptr_t>(thing.address), &result);
+        return result;
     });
 }
 
-bool Thing::isItem(uintptr_t thing) {
+bool Thing::isItem(ThingPtr thing) {
     if (!thing) return 0;
-    typedef bool(gameCall* IsItem)(
-        uintptr_t RCX,
-        void *RDX
-        );
+    typedef bool(gameCall* IsItem)(uintptr_t RCX);
     auto function = reinterpret_cast<IsItem>(ClassMemberFunctions["Thing.isItem"]);
-    return g_dispatcher->scheduleEventEx([function, thing]() {
-        void* pMysteryPtr = nullptr;
-        return function(thing, &pMysteryPtr);
-    });
+    return g_dispatcher->scheduleEventEx([function, thing]() { return function(reinterpret_cast<uintptr_t>(thing.address)); });
 }
 
-bool Thing::isMonster(uintptr_t thing) {
+bool Thing::isMonster(ThingPtr thing) {
     if (!thing) return 0;
-    typedef bool(gameCall* IsMonster)(
-        uintptr_t RCX,
-        void *RDX
-        );
+    typedef bool(gameCall* IsMonster)(uintptr_t RCX);
     auto function = reinterpret_cast<IsMonster>(ClassMemberFunctions["Thing.isMonster"]);
-    return g_dispatcher->scheduleEventEx([function, thing]() {
-        void* pMysteryPtr = nullptr;
-        return function(thing, &pMysteryPtr);
-    });
+    return g_dispatcher->scheduleEventEx([function, thing]() { return function(reinterpret_cast<uintptr_t>(thing.address)); });
 }
 
-bool Thing::isNpc(uintptr_t thing) {
+bool Thing::isNpc(ThingPtr thing) {
     if (!thing) return 0;
-    typedef bool(gameCall* IsNpc)(
-        uintptr_t RCX,
-        void *RDX
-        );
+    typedef bool(gameCall* IsNpc)(uintptr_t RCX);
     auto function = reinterpret_cast<IsNpc>(ClassMemberFunctions["Thing.isNpc"]);
-    return g_dispatcher->scheduleEventEx([function, thing]() {
-        void* pMysteryPtr = nullptr;
-        return function(thing, &pMysteryPtr);
-    });
+    return g_dispatcher->scheduleEventEx([function, thing]() { return function(reinterpret_cast<uintptr_t>(thing.address)); });
 }
 
-bool Thing::isCreature(uintptr_t thing) {
+bool Thing::isCreature(ThingPtr thing) {
     if (!thing) return 0;
-    typedef bool(gameCall* IsCreature)(
-        uintptr_t RCX,
-        void *RDX
-        );
+    typedef bool(gameCall* IsCreature)(uintptr_t RCX);
     auto function = reinterpret_cast<IsCreature>(ClassMemberFunctions["Thing.isCreature"]);
-    return g_dispatcher->scheduleEventEx([function, thing]() {
-        void* pMysteryPtr = nullptr;
-        return function(thing, &pMysteryPtr);
-    });
+    return g_dispatcher->scheduleEventEx([function, thing]() { return function(reinterpret_cast<uintptr_t>(thing.address)); });
 }
 
-bool Thing::isPlayer(uintptr_t thing) {
+bool Thing::isPlayer(ThingPtr thing) {
     if (!thing) return 0;
-    typedef bool(gameCall* IsPlayer)(
-        uintptr_t RCX,
-        void *RDX
-        );
+    typedef bool(gameCall* IsPlayer)(uintptr_t RCX);
     auto function = reinterpret_cast<IsPlayer>(ClassMemberFunctions["Thing.isPlayer"]);
-    return g_dispatcher->scheduleEventEx([function, thing]() {
-        void* pMysteryPtr = nullptr;
-        return function(thing, &pMysteryPtr);
-    });
+    return g_dispatcher->scheduleEventEx([function, thing]() { return function(reinterpret_cast<uintptr_t>(thing.address)); });
 }
 
-bool Thing::isLocalPlayer(uintptr_t thing) {
+bool Thing::isLocalPlayer(ThingPtr thing) {
     if (!thing) return 0;
-    typedef bool(gameCall* IsLocalPlayer)(
-        uintptr_t RCX,
-        void *RDX
-        );
+    typedef bool(gameCall* IsLocalPlayer)(uintptr_t RCX);
     auto function = reinterpret_cast<IsLocalPlayer>(ClassMemberFunctions["Thing.isLocalPlayer"]);
-    return g_dispatcher->scheduleEventEx([function, thing]() {
-        void* pMysteryPtr = nullptr;
-        return function(thing, &pMysteryPtr);
-    });;
+    return g_dispatcher->scheduleEventEx([function, thing]() { return function(reinterpret_cast<uintptr_t>(thing.address)); });
 }
 
-bool Thing::isContainer(uintptr_t thing) {
+bool Thing::isContainer(ThingPtr thing) {
     if (!thing) return 0;
-    typedef bool(gameCall* IsContainer)(
-        uintptr_t RCX,
-        void *RDX
-        );
+    typedef bool(gameCall* IsContainer)(uintptr_t RCX);
     auto function = reinterpret_cast<IsContainer>(ClassMemberFunctions["Thing.isContainer"]);
-    return g_dispatcher->scheduleEventEx([function, thing]() {
-        void* pMysteryPtr = nullptr;
-        return function(thing, &pMysteryPtr);
-    });
+    return g_dispatcher->scheduleEventEx([function, thing]() { return function(reinterpret_cast<uintptr_t>(thing.address)); });
 }
 
-bool Thing::isUsable(uintptr_t thing) {
+bool Thing::isUsable(ThingPtr thing) {
     if (!thing) return 0;
-    typedef bool(gameCall* IsUsable)(
-        uintptr_t RCX,
-        void *RDX
-        );
+    typedef bool(gameCall* IsUsable)(uintptr_t RCX);
     auto function = reinterpret_cast<IsUsable>(ClassMemberFunctions["Thing.isUsable"]);
-    return g_dispatcher->scheduleEventEx([function, thing]() {
-        void* pMysteryPtr = nullptr;
-        return function(thing, &pMysteryPtr);
-    });
+    return g_dispatcher->scheduleEventEx([function, thing]() { return function(reinterpret_cast<uintptr_t>(thing.address)); });
 }
 
-bool Thing::isLyingCorpse(uintptr_t thing) {
+bool Thing::isLyingCorpse(ThingPtr thing) {
     if (!thing) return 0;
-    typedef bool(gameCall* IsLyingCorpse)(
-        uintptr_t RCX,
-        void *RDX
-        );
+    typedef bool(gameCall* IsLyingCorpse)(uintptr_t RCX);
     auto function = reinterpret_cast<IsLyingCorpse>(ClassMemberFunctions["Thing.isLyingCorpse"]);
-    return g_dispatcher->scheduleEventEx([function, thing]() {
-        void* pMysteryPtr = nullptr;
-        return function(thing, &pMysteryPtr);
-    });
+    return g_dispatcher->scheduleEventEx([function, thing]() { return function(reinterpret_cast<uintptr_t>(thing.address)); });
 }
 
 

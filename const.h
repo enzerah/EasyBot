@@ -1,17 +1,14 @@
-//
-// Created by blazz on 01.10.2025.
-//
-
 #ifndef CONST_H
 #define CONST_H
 #include <cstdint>
+#include <string>
 
 
 struct Position
 {
-    uint32_t x;
-    uint32_t y;
-    uint16_t z;
+    int32_t x;
+    int32_t y;
+    uint8_t z;
 };
 
 struct Waypoint

@@ -1,15 +1,10 @@
-//
-// Created by Wojciech on 03.10.2025.
-//
-
 #include "Container.h"
+
+
 
 Container* Container::instance{nullptr};
 std::mutex Container::mutex;
 
-Container::Container()
-{
-}
 
 Container* Container::getInstance()
 {
@@ -22,147 +17,111 @@ Container* Container::getInstance()
     return instance;
 }
 
-uintptr_t Container::getItem(uintptr_t container, uint8_t slot) {
-    if (!container) return 0;
-    typedef uintptr_t*(gameCall* GetItem)(
+ItemPtr Container::getItem(ContainerPtr container, uint8_t slot) {
+    if (!container) return {};
+    typedef void*(gameCall* GetItem)(
         uintptr_t a1,
-        void *a2,
+        ItemPtr *result,
         uint8_t slot
         );
     auto function = reinterpret_cast<GetItem>(ClassMemberFunctions["Container.getItem"]);
     return g_dispatcher->scheduleEventEx([function, container, slot]() {
-        void* pMysteryPtr = nullptr;
-        auto ret = function(container, &pMysteryPtr, slot);
-        return *ret;
+        ItemPtr result;
+        function(reinterpret_cast<uintptr_t>(container.address), &result, slot);
+        return result;
     });
 }
 
 
-std::deque<uintptr_t> Container::getItems(uintptr_t container) {
+std::deque<ItemPtr> Container::getItems(ContainerPtr container) {
     if (!container) return {};
-    typedef std::deque<uintptr_t>*(gameCall* GetItems)(
+    typedef void*(gameCall* GetItems)(
         uintptr_t RCX,
-        void *RDX
+        std::deque<ItemPtr> *result
         );
     auto function = reinterpret_cast<GetItems>(ClassMemberFunctions["Container.getItems"]);
     return g_dispatcher->scheduleEventEx([function, container]() {
-        std::deque<uintptr_t> test;
-        void* pMysteryPtr = nullptr;
-        auto ret = function(container, &pMysteryPtr);
-        return *ret;
+        std::deque<ItemPtr> result;
+        function(reinterpret_cast<uintptr_t>(container.address), &result);
+        return result;
     });
 }
 
-int Container::getItemsCount(uintptr_t container) {
+int Container::getItemsCount(ContainerPtr container) {
     if (!container) return 0;
-    typedef int(gameCall* GetItemsCount)(
-        uintptr_t RCX,
-        void *RDX
-        );
+    typedef int(gameCall* GetItemsCount)(uintptr_t RCX);
     auto function = reinterpret_cast<GetItemsCount>(ClassMemberFunctions["Container.getItemsCount"]);
-    return g_dispatcher->scheduleEventEx([function, container]() {
-        void* pMysteryPtr = nullptr;
-        return function(container, &pMysteryPtr);
-    });
+    return g_dispatcher->scheduleEventEx([function, container]() { return function(reinterpret_cast<uintptr_t>(container.address)); });
 }
 
-Position Container::getSlotPosition(uintptr_t container, int slot) {
+Position Container::getSlotPosition(ContainerPtr container, int slot) {
     if (!container) return {};
-    typedef Position*(gameCall* GetSlotPosition)(
+    typedef void*(gameCall* GetSlotPosition)(
         uintptr_t RCX,
-        void *RDX,
+        Position *result,
         int slot
         );
     auto function = reinterpret_cast<GetSlotPosition>(ClassMemberFunctions["Container.getSlotPosition"]);
     return g_dispatcher->scheduleEventEx([function, container, slot]() {
-        void* pMysteryPtr = nullptr;
-        auto ret = function(container, &pMysteryPtr, slot);
-        return *ret;
+        Position result;
+        function(reinterpret_cast<uintptr_t>(container.address), &result, slot);
+        return result;
     });
 }
 
-std::string Container::getName(uintptr_t container) {
+std::string Container::getName(ContainerPtr container) {
     if (!container) return "";
-    typedef std::string*(gameCall* GetName)(
+    typedef void*(gameCall* GetName)(
         uintptr_t RCX,
-        void *RDX
+        std::string *result
         );
     auto function = reinterpret_cast<GetName>(ClassMemberFunctions["Container.getName"]);
     return g_dispatcher->scheduleEventEx([function, container]() {
-        void* pMysteryPtr = nullptr;
-        auto ret = function(container, &pMysteryPtr);
-        const char* name_data = ret->c_str();
-        char temp_buffer[256];
-        strncpy_s(temp_buffer, name_data, 255);
-        temp_buffer[255] = '\0';
-        std::string name(temp_buffer);
-        return name;
+        std::string result;
+        function(reinterpret_cast<uintptr_t>(container.address), &result);
+        return result;
     });
 }
 
-int Container::getId(uintptr_t container) {
+int Container::getId(ContainerPtr container) {
     if (!container) return 0;
-    typedef int(gameCall* GetId)(
-        uintptr_t RCX,
-        void *RDX
-        );
+    typedef int(gameCall* GetId)(uintptr_t RCX);
     auto function = reinterpret_cast<GetId>(ClassMemberFunctions["Container.getId"]);
-    return g_dispatcher->scheduleEventEx([function, container]() {
-        void* pMysteryPtr = nullptr;
-        return function(container, &pMysteryPtr);
-    });
+    return g_dispatcher->scheduleEventEx([function, container]() { return function(reinterpret_cast<uintptr_t>(container.address)); });
 }
 
-uintptr_t Container::getContainerItem(uintptr_t container) {
-    if (!container) return 0;
-    typedef uintptr_t*(gameCall* GetContainerItem)(
+ItemPtr Container::getContainerItem(ContainerPtr container) {
+    if (!container) return {};
+    typedef void*(gameCall* GetContainerItem)(
         uintptr_t RCX,
-        void *RDX
+        ItemPtr *result
         );
     auto function = reinterpret_cast<GetContainerItem>(ClassMemberFunctions["Container.getContainerItem"]);
     return g_dispatcher->scheduleEventEx([function, container]() {
-        void* pMysteryPtr = nullptr;
-        auto ret = function(container, &pMysteryPtr);
-        return *ret;
+        ItemPtr result;
+        function(reinterpret_cast<uintptr_t>(container.address), &result);
+        return result;
     });
 }
 
-bool Container::hasParent(uintptr_t container) {
+bool Container::hasParent(ContainerPtr container) {
     if (!container) return 0;
-    typedef bool(gameCall* HasParent)(
-        uintptr_t RCX,
-        void *RDX
-        );
+    typedef bool(gameCall* HasParent)(uintptr_t RCX);
     auto function = reinterpret_cast<HasParent>(ClassMemberFunctions["Container.hasParent"]);
-    return g_dispatcher->scheduleEventEx([function, container]() {
-        void* pMysteryPtr = nullptr;
-        return function(container, &pMysteryPtr);
-    });
+    return g_dispatcher->scheduleEventEx([function, container]() { return function(reinterpret_cast<uintptr_t>(container.address)); });
 }
 
-int Container::getSize(uintptr_t container) {
+int Container::getSize(ContainerPtr container) {
     if (!container) return 0;
-    typedef int(gameCall* GetSize)(
-        uintptr_t RCX,
-        void *RDX
-        );
+    typedef int(gameCall* GetSize)(uintptr_t RCX);
     auto function = reinterpret_cast<GetSize>(ClassMemberFunctions["Container.getSize"]);
-    return g_dispatcher->scheduleEventEx([function, container]() {
-        void* pMysteryPtr = nullptr;
-        return function(container, &pMysteryPtr);
-    });
+    return g_dispatcher->scheduleEventEx([function, container]() { return function(reinterpret_cast<uintptr_t>(container.address)); });
 }
 
-int Container::getFirstIndex(uintptr_t container) {
+int Container::getFirstIndex(ContainerPtr container) {
     if (!container) return 0;
-    typedef int(gameCall* GetFirstIndex)(
-        uintptr_t RCX,
-        void *RDX
-        );
+    typedef int(gameCall* GetFirstIndex)(uintptr_t RCX);
     auto function = reinterpret_cast<GetFirstIndex>(ClassMemberFunctions["Container.getFirstIndex"]);
-    return g_dispatcher->scheduleEventEx([function, container]() {
-            void* pMysteryPtr = nullptr;
-            return function(container, &pMysteryPtr);
-    });
+    return g_dispatcher->scheduleEventEx([function, container]() { return function(reinterpret_cast<uintptr_t>(container.address)); });
 }
 

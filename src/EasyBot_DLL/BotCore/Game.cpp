@@ -1,19 +1,9 @@
-//
-// Created by Wojciech on 28.09.2025.
-//
-
-
 #include "Game.h"
 
-#include <codecvt>
 
-#include "EventDispatcher.h"
-#include <unordered_map>
 Game* Game::instance{nullptr};
 std::mutex Game::mutex;
-Game::Game()
-{
-}
+
 
 Game* Game::getInstance()
 {
@@ -32,7 +22,7 @@ void Game::walk(Otc::Direction direction)
         Otc::Direction RDX
         );
     auto function = reinterpret_cast<Walk>(SingletonFunctions["g_game.walk"].first);
-    return g_dispatcher->scheduleEventEx([function, &direction]() {
+    return g_dispatcher->scheduleEventEx([function, direction]() {
         function(SingletonFunctions["g_game.walk"].second, direction);
     });
 }
@@ -45,7 +35,7 @@ void Game::autoWalk(const std::vector<Otc::Direction>& dirs, const Position &sta
         const Position R8
         );
     auto function = reinterpret_cast<AutoWalk>(SingletonFunctions["g_game.autoWalk"].first);
-    return g_dispatcher->scheduleEventEx([function, &dirs, startPos]() {
+    return g_dispatcher->scheduleEventEx([function, dirs, startPos]() {
         function(SingletonFunctions["g_game.autoWalk"].second, &dirs, startPos);
     });
 }
@@ -72,66 +62,55 @@ void Game::stop() {
     });
 }
 
-void Game::look(const uintptr_t &thing, const bool isBattleList) {
-    typedef void(gameCall* Look)(
-        uintptr_t RCX,
-        const uintptr_t *RDX,
-        const bool isBattleList
-    );
-    auto function = reinterpret_cast<Look>(SingletonFunctions["g_game.look"].first);
-    return g_dispatcher->scheduleEventEx([function, &thing, isBattleList]() {
-        function(SingletonFunctions["g_game.look"].second, &thing, isBattleList);
-    });
-}
 
-void Game::move(const uintptr_t &thing, const Position& toPos, int count) {
+void Game::move(const ThingPtr &thing, const Position& toPos, int count) {
     if (!thing) return;
     typedef void(gameCall* Move)(
         uintptr_t RCX,
-        const uintptr_t *RDX,
+        const ThingPtr *RDX,
         const Position *R8,
         int count
         );
     auto function = reinterpret_cast<Move>(SingletonFunctions["g_game.move"].first);
-    return g_dispatcher->scheduleEventEx([function, &thing, toPos, count]() {
+    return g_dispatcher->scheduleEventEx([function, thing, toPos, count]() {
         function(SingletonFunctions["g_game.move"].second, &thing, &toPos, count);
     });
 }
 
-void Game::moveToParentContainer(const uintptr_t& thing, const int count) {
+void Game::moveToParentContainer(const ThingPtr& thing, const int count) {
     if (!thing) return;
     typedef void(gameCall* MoveToParentContainer)(
         uintptr_t RCX,
-        const uintptr_t *RDX,
+        const ThingPtr *RDX,
         const int count
         );
     auto function = reinterpret_cast<MoveToParentContainer>(SingletonFunctions["g_game.moveToParentContainer"].first);
-    return g_dispatcher->scheduleEventEx([function, &thing, count]() {
+    return g_dispatcher->scheduleEventEx([function, thing, count]() {
         function(SingletonFunctions["g_game.moveToParentContainer"].second, &thing, count);
     });
 }
 
-void Game::use(const uintptr_t &thing) {
+void Game::use(const ThingPtr &thing) {
     if (!thing) return;
     typedef void(gameCall* Use)(
         uintptr_t RCX,
-        const uintptr_t *RDX
+        const ThingPtr *RDX
         );
     auto function = reinterpret_cast<Use>(SingletonFunctions["g_game.use"].first);
-    return g_dispatcher->scheduleEventEx([function, &thing]() {
+    return g_dispatcher->scheduleEventEx([function, thing]() {
         function(SingletonFunctions["g_game.use"].second, &thing);
     });
 }
 
-void Game::useWith(const uintptr_t &item, const uintptr_t &toThing) {
+void Game::useWith(const ItemPtr &item, const ThingPtr &toThing) {
     if (!item || !toThing) return;
     typedef void(gameCall* UseWith)(
         uintptr_t RCX,
-        const uintptr_t *RDX,
-        const uintptr_t *R8
+        const ItemPtr *RDX,
+        const ThingPtr *R8
         );
     auto function = reinterpret_cast<UseWith>(SingletonFunctions["g_game.useWith"].first);
-    return g_dispatcher->scheduleEventEx([function, &item, &toThing]() {
+    return g_dispatcher->scheduleEventEx([function, item, toThing]() {
         function(SingletonFunctions["g_game.useWith"].second, &item, &toThing);
     });
 }
@@ -148,95 +127,97 @@ void Game::useInventoryItem(const uint16_t itemId) {
     });
 }
 
-void Game::useInventoryItemWith(const uint16_t itemId, const uintptr_t &toThing) {
+void Game::useInventoryItemWith(const uint16_t itemId, const ThingPtr &toThing) {
     if (!toThing) return;
     typedef void(gameCall* UseInventoryItemWith)(
         uintptr_t second_param,
         const uint16_t itemId,
-        const uintptr_t *toThing
+        const ThingPtr *toThing
     );
     auto function = reinterpret_cast<UseInventoryItemWith>(SingletonFunctions["g_game.useInventoryItemWith"].first);
-    return g_dispatcher->scheduleEventEx([function, itemId, &toThing]() {
+    return g_dispatcher->scheduleEventEx([function, itemId, toThing]() {
         function(SingletonFunctions["g_game.useInventoryItemWith"].second, itemId, &toThing);
     });
 }
 
-uintptr_t Game::findItemInContainers(uint32_t itemId, int subType, uint8_t tier) {
-    typedef uintptr_t*(gameCall* FindItemInContainers)(
+ItemPtr Game::findItemInContainers(uint32_t itemId, int subType, uint8_t tier) {
+    typedef void*(gameCall* FindItemInContainers)(
         uintptr_t RCX,
-        void* result,
+        ItemPtr* result,
         uint32_t RDX,
         int R8,
         uint8_t tier
         );
     auto function = reinterpret_cast<FindItemInContainers>(SingletonFunctions["g_game.findItemInContainers"].first);
     return g_dispatcher->scheduleEventEx([function, itemId, subType, tier]() {
-        void* pMysteryPtr = nullptr;
-        auto ret = function(SingletonFunctions["g_game.findItemInContainers"].second, &pMysteryPtr, itemId, subType, tier);
-        return *ret;
+        ItemPtr result;
+        function(SingletonFunctions["g_game.findItemInContainers"].second, &result, itemId, subType, tier);
+        return result;
     });
 }
 
-int Game::open(const uintptr_t &item, const uintptr_t &previousContainer) {
+int Game::open(const ItemPtr &item, const ContainerPtr &previousContainer) {
     if (!item) return 0;
     typedef int(gameCall* Open)(
         uintptr_t RCX,
-        const uintptr_t *RDX,
-        const uintptr_t *R8
+        const ItemPtr *RDX,
+        const ContainerPtr *R8
         );
     auto function = reinterpret_cast<Open>(SingletonFunctions["g_game.open"].first);
-    return g_dispatcher->scheduleEventEx([function, &item, &previousContainer]() {
+    return g_dispatcher->scheduleEventEx([function, item, previousContainer]() {
             auto ret = function(SingletonFunctions["g_game.open"].second, &item, &previousContainer);
             return ret;
     });
 }
 
-void Game::openParent(const uintptr_t &container) {
+void Game::openParent(const ContainerPtr &container) {
     if (!container) return;
     typedef void(gameCall* OpenParent)(
         uintptr_t RCX,
-        const uintptr_t *RDX
+        const ContainerPtr *RDX
         );
     auto function = reinterpret_cast<OpenParent>(SingletonFunctions["g_game.openParent"].first);
-    return g_dispatcher->scheduleEventEx([function, &container]() {
+    return g_dispatcher->scheduleEventEx([function, container]() {
         function(SingletonFunctions["g_game.openParent"].second, &container);
     });
 }
 
-void Game::close(const uintptr_t &container) {
+void Game::close(const ContainerPtr &container) {
     if (!container) return;
     typedef void(gameCall* Close)(
         uintptr_t RCX,
-        const uintptr_t *RDX
+        const ContainerPtr *RDX
         );
     auto function = reinterpret_cast<Close>(SingletonFunctions["g_game.close"].first);
-    return g_dispatcher->scheduleEventEx([function, &container]() {
+    return g_dispatcher->scheduleEventEx([function, container]() {
         function(SingletonFunctions["g_game.close"].second, &container);
     });
 }
 
-void Game::refreshContainer(const uintptr_t &container) {
+void Game::refreshContainer(const ContainerPtr &container) {
     if (!container) return;
     typedef void(gameCall* RefreshContainer)(
         uintptr_t RCX,
-        const uintptr_t *RDX
+        const ContainerPtr *RDX
         );
     auto function = reinterpret_cast<RefreshContainer>(SingletonFunctions["g_game.refreshContainer"].first);
-    return g_dispatcher->scheduleEventEx([function, &container]() {
+    return g_dispatcher->scheduleEventEx([function, container]() {
         function(SingletonFunctions["g_game.refreshContainer"].second, &container);
     });
 }
 
-void Game::attack(const uintptr_t &creature, bool cancel = false) {
-    if (!creature) return;
+void Game::attack(const CreaturePtr &creature) {
     typedef void(gameCall* Attack)(
         uintptr_t RCX,
-        const uintptr_t RDX,
-        bool R8
+        CreaturePtr RDX
         );
-    auto function = reinterpret_cast<Attack>(SingletonFunctions["g_game.attack"].first);
-    return g_dispatcher->scheduleEventEx([function, creature, cancel]() {
-        function(SingletonFunctions["g_game.attack"].second, creature, cancel);
+    auto functionAddr = SingletonFunctions["g_game.attack"].first;
+    auto singletonAddr = SingletonFunctions["g_game.attack"].second;
+    auto function = reinterpret_cast<Attack>(functionAddr);
+    std::cout << "Game::attack functionAddr: " << std::hex << functionAddr << " singletonAddr: " << singletonAddr << " creatureAddr: " << (creature ? (uintptr_t)creature.address : 0) << std::endl;
+    return g_dispatcher->scheduleEventEx([function, singletonAddr, creature]() {
+        if (function)
+            function(singletonAddr, creature);
     });
 }
 
@@ -250,17 +231,19 @@ void Game::cancelAttack() {
     });
 }
 
-void Game::follow(const uintptr_t& creature) {
-    if (!creature) return;
+void Game::follow(const CreaturePtr& creature) {
     typedef void(gameCall* Follow)(
         uintptr_t RCX,
-        const uintptr_t RDX
+        CreaturePtr RDX
         );
     auto function = reinterpret_cast<Follow>(SingletonFunctions["g_game.follow"].first);
     return g_dispatcher->scheduleEventEx([function, creature]() {
         function(SingletonFunctions["g_game.follow"].second, creature);
     });
+}
 
+void Game::cancelFollow() {
+    attack(nullptr); // Usually follow(nullptr) or attack(nullptr) depending on implementation, client has both
 }
 
 void Game::cancelAttackAndFollow() {
@@ -307,9 +290,8 @@ void Game::talkPrivate(Otc::MessageMode msgMode,std::string receiver,std::string
         std::string *message
     );
     auto function = reinterpret_cast<TalkPrivate>(SingletonFunctions["g_game.talkPrivate"].first);
-    g_dispatcher->scheduleEventEx([function, &receiver, &message](){
-        Otc::MessageMode m = Otc::MessageMode::MessagePrivateTo;
-        function(SingletonFunctions["g_game.talkPrivate"].second, m, &receiver, &message);
+    g_dispatcher->scheduleEventEx([function, receiver, message, msgMode]() mutable {
+        function(SingletonFunctions["g_game.talkPrivate"].second, msgMode, &receiver, &message);
     });
 }
 
@@ -321,7 +303,7 @@ void Game::openPrivateChannel(const std::string& receiver) {
         const std::string& receiver
     );
     auto function = reinterpret_cast<OpenPrivateChannel>(SingletonFunctions["g_game.openPrivateChannel"].first);
-    return g_dispatcher->scheduleEventEx([function, &receiver]() {
+    return g_dispatcher->scheduleEventEx([function, receiver]() {
             function(SingletonFunctions["g_game.openPrivateChannel"].second, receiver);
     });
 }
@@ -348,10 +330,10 @@ void Game::setFightMode(Otc::FightModes mode) {
     });
 }
 
-void Game::buyItem(const uintptr_t& item, const uint16_t amount, const bool ignoreCapacity = false, const bool buyWithBackpack = false) {
+void Game::buyItem(const ItemPtr& item, const uint16_t amount, const bool ignoreCapacity, const bool buyWithBackpack) {
     typedef void(gameCall *BuyItem)(
         uintptr_t RCX,
-        const uintptr_t *item,
+        const ItemPtr *item,
         uint16_t amount,
         bool ignoreCapacity,
         bool buyWithBackpack
@@ -362,10 +344,10 @@ void Game::buyItem(const uintptr_t& item, const uint16_t amount, const bool igno
     });
 }
 
-void Game::sellItem(const uintptr_t& item, const uint16_t amount, const bool ignoreEquipped = true) {
+void Game::sellItem(const ItemPtr& item, const uint16_t amount, const bool ignoreEquipped) {
     typedef void(gameCall *SellItem)(
         uintptr_t RCX,
-        const uintptr_t *item,
+        const ItemPtr *item,
         uint16_t amount,
         bool ignoreEquipped
         );
@@ -375,11 +357,11 @@ void Game::sellItem(const uintptr_t& item, const uint16_t amount, const bool ign
     });
 }
 
-void Game::equipItem(const uintptr_t &item) {
+void Game::equipItem(const ItemPtr &item) {
     if (!item) return;
     typedef void(gameCall* EquipItem)(
         uintptr_t RCX,
-        const uintptr_t *item
+        const ItemPtr *item
         );
     auto function = reinterpret_cast<EquipItem>(SingletonFunctions["g_game.equipItem"].first);
     return g_dispatcher->scheduleEventEx([function, item]() {
@@ -423,125 +405,105 @@ void Game::changeMapAwareRange(const uint8_t xrange, const uint8_t yrange) {
 }
 
 bool Game::canPerformGameAction() {
-    typedef bool(gameCall* CanPerformGameAction)(
-        uintptr_t RCX,
-        void *RDX
-        );
+    typedef bool(gameCall* CanPerformGameAction)(uintptr_t RCX);
     auto function = reinterpret_cast<CanPerformGameAction>(SingletonFunctions["g_game.canPerformGameAction"].first);
     return g_dispatcher->scheduleEventEx([function]() {
-            void* pMysteryPtr = nullptr;
-            auto ret = function(SingletonFunctions["g_game.canPerformGameAction"].second, &pMysteryPtr);
-            return ret;
+        return function(SingletonFunctions["g_game.canPerformGameAction"].second);
     });
 }
 
 bool Game::isOnline() {
-    typedef bool(gameCall* IsOnline)(
-       uintptr_t RCX,
-       void *RDX
-       );
+    typedef bool(gameCall* IsOnline)(uintptr_t RCX);
     auto function = reinterpret_cast<IsOnline>(SingletonFunctions["g_game.isOnline"].first);
     return g_dispatcher->scheduleEventEx([function]() {
-            void* pMysteryPtr = nullptr;
-            auto ret = function(SingletonFunctions["isOnline.isOnline"].second, &pMysteryPtr);
-            return ret;
+        return function(SingletonFunctions["g_game.isOnline"].second);
     });
 }
 
 bool Game::isAttacking() {
-    typedef bool(gameCall* IsAttacking)(
-       uintptr_t RCX,
-       void *RDX
-       );
+    typedef bool(gameCall* IsAttacking)(uintptr_t RCX);
     auto function = reinterpret_cast<IsAttacking>(SingletonFunctions["g_game.isAttacking"].first);
     return g_dispatcher->scheduleEventEx([function]() {
-            void* pMysteryPtr = nullptr;
-            auto ret = function(SingletonFunctions["g_game.isAttacking"].second, &pMysteryPtr);
-            return ret;
+        return function(SingletonFunctions["g_game.isAttacking"].second);
     });
 }
 
 bool Game::isFollowing() {
-    typedef bool(gameCall* IsFollowing)(
-       uintptr_t RCX,
-       void *RDX
-       );
+    typedef bool(gameCall* IsFollowing)(uintptr_t RCX);
     auto function = reinterpret_cast<IsFollowing>(SingletonFunctions["g_game.isFollowing"].first);
     return g_dispatcher->scheduleEventEx([function]() {
-            void* pMysteryPtr = nullptr;
-            auto ret = function(SingletonFunctions["g_game.isFollowing"].second, &pMysteryPtr);
-            return ret;
+        return function(SingletonFunctions["g_game.isFollowing"].second);
     });
 }
 
 
-uintptr_t Game::getContainer(int index) {
-    typedef uintptr_t*(gameCall* GetContainer)(
+ContainerPtr Game::getContainer(int index) {
+    typedef void*(gameCall* GetContainer)(
         uintptr_t RCX,
-        void *RDX,
+        ContainerPtr *result,
         int idx
         );
     auto function = reinterpret_cast<GetContainer>(SingletonFunctions["g_game.getContainer"].first);
     return g_dispatcher->scheduleEventEx([function, index]() {
-            void* pMysteryPtr = nullptr;
-            auto ret = function(SingletonFunctions["g_game.getContainer"].second, &pMysteryPtr, index);
-            return *ret;
+            ContainerPtr result;
+            function(SingletonFunctions["g_game.getContainer"].second, &result, index);
+            return result;
     });
 }
 
-std::vector<uintptr_t> Game::getContainers() {
-    typedef std::map<int, uintptr_t>*(gameCall* GetContainers)(
+std::vector<ContainerPtr> Game::getContainers() {
+    typedef void*(gameCall* GetContainers)(
         uintptr_t RCX,
-        void *RDX
+        std::map<int, uintptr_t> *result
     );
     auto function = reinterpret_cast<GetContainers>(SingletonFunctions["g_game.getContainers"].first);
     return g_dispatcher->scheduleEventEx([function]() {
-        void *pMysteryPtr = nullptr;
-        auto ret = function(SingletonFunctions["g_game.getContainers"].second, &pMysteryPtr);
-        std::vector<uintptr_t> containers;
-        for (auto items : *ret){
-            containers.push_back(items.second);
+        std::map<int, uintptr_t> result_map;
+        function(SingletonFunctions["g_game.getContainers"].second, &result_map);
+        std::vector<ContainerPtr> containers;
+        for (auto items : result_map){
+            containers.push_back(ContainerPtr(items.second));
         }
         return containers;
     });
 }
 
-uintptr_t Game::getAttackingCreature() {
-    typedef uintptr_t*(gameCall* GetAttackingCreature)(
+CreaturePtr Game::getAttackingCreature() {
+    typedef void*(gameCall* GetAttackingCreature)(
         uintptr_t RCX,
-        void *RDX
+        CreaturePtr *result
         );
     auto function = reinterpret_cast<GetAttackingCreature>(SingletonFunctions["g_game.getAttackingCreature"].first);
     return g_dispatcher->scheduleEventEx([function]() {
-            void* pMysteryPtr = nullptr;
-            auto ret = function(SingletonFunctions["g_game.getAttackingCreature"].second, &pMysteryPtr);
-            return *ret;
+            CreaturePtr result;
+            function(SingletonFunctions["g_game.getAttackingCreature"].second, &result);
+            return result;
     });
 }
 
-uintptr_t Game::getFollowingCreature() {
-    typedef uintptr_t*(gameCall* GetFollowingCreature)(
+CreaturePtr Game::getFollowingCreature() {
+    typedef void*(gameCall* GetFollowingCreature)(
         uintptr_t RCX,
-        void *RDX
+        CreaturePtr *result
         );
     auto function = reinterpret_cast<GetFollowingCreature>(SingletonFunctions["g_game.getFollowingCreature"].first);
     return g_dispatcher->scheduleEventEx([function]() {
-            void* pMysteryPtr = nullptr;
-            auto ret = function(SingletonFunctions["g_game.getFollowingCreature"].second, &pMysteryPtr);
-            return *ret;
+            CreaturePtr result;
+            function(SingletonFunctions["g_game.getFollowingCreature"].second, &result);
+            return result;
     });
 }
 
-uintptr_t Game::getLocalPlayer() {
-    typedef uintptr_t*(gameCall* GetLocalPlayer)(
+LocalPlayerPtr Game::getLocalPlayer() {
+    typedef void*(gameCall* GetLocalPlayer)(
         uintptr_t RCX,
-        void *RDX
+        LocalPlayerPtr *result
         );
     auto function = reinterpret_cast<GetLocalPlayer>(SingletonFunctions["g_game.getLocalPlayer"].first);
     return g_dispatcher->scheduleEventEx([function]() {
-        void* pMysteryPtr = nullptr;
-        auto ret = function(SingletonFunctions["g_game.getLocalPlayer"].second, &pMysteryPtr);
-        return *ret;
+        LocalPlayerPtr result;
+        function(SingletonFunctions["g_game.getLocalPlayer"].second, &result);
+        return result;
     });
 }
 
@@ -556,13 +518,15 @@ int Game::getClientVersion() {
 }
 
 std::string Game::getCharacterName() {
-    typedef std::string*(gameCall* GetCharacterName)(
-        uintptr_t RCX
+    typedef void*(gameCall* GetCharacterName)(
+        uintptr_t RCX,
+        std::string* result
         );
     auto function = reinterpret_cast<GetCharacterName>(SingletonFunctions["g_game.getCharacterName"].first);
     return g_dispatcher->scheduleEventEx([function]() {
-        auto ret = function(SingletonFunctions["g_game.getCharacterName"].second);
-        return *ret;
+        std::string result;
+        function(SingletonFunctions["g_game.getCharacterName"].second, &result);
+        return result;
     });
 }
 

@@ -1,16 +1,11 @@
-//
-// Created by blazz on 30.09.2025.
-//
 #ifndef HOOKS_H
 #define HOOKS_H
-#include <algorithm>
-#include <cstdint>
-#include <string>
-#include <fstream>
-#include <map>
-#include <iostream>
+#include "declarations.h"
 #include "EventDispatcher.h"
-#include "MinHook.h"
+#include "CustomFunctions.h"
+#include "BuildConfig.h"
+#include <map>
+
 
 
 //static std::ofstream g_log("GameAddress.txt",  std::ios::trunc);
@@ -34,13 +29,11 @@ typedef int(__cdecl* mainLoop)(int a1);
 inline mainLoop original_mainLoop = nullptr;
 int __cdecl hooked_MainLoop(int a1);
 
-typedef void(__stdcall* look_t)(const uintptr_t *RDX,const bool isBattleList);
+typedef void(__fastcall* look_t)(void* self, const ThingPtr& thing, const bool isBattleList);
 inline look_t look_original = nullptr;
-void __stdcall hooked_Look(const uintptr_t& thing, const bool isBattleList);
+void hooked_Look(void* self, const ThingPtr& thing, const bool isBattleList);
 
-typedef bool(__thiscall* checkBotProtection)(uintptr_t);
-inline checkBotProtection original_checkBotProtection = nullptr;
-bool __fastcall hooked_checkBotProtection(uintptr_t);
+
 
 
 

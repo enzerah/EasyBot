@@ -1,34 +1,32 @@
-//
-// Created by Wojciech on 04.10.2025.
-//
-
 #ifndef ITEM_H
 #define ITEM_H
-#include "Map.h"
 #define g_item Item::getInstance()
+#include "declarations.h"
+#include "../../const.h"
+#include "EventDispatcher.h"
+#include "hooks.h"
 
 
-class Item : public Map {
-private:
+class Item {
     static Item* instance;
     static std::mutex mutex;
 protected:
-    Item();
-    ~Item(){}
+    Item()=default;
+    ~Item()= default;
 public:
     Item(Item const&) = delete;
     void operator=(const Item&) = delete;
     static Item* getInstance();
 
-    int getCount(uintptr_t item);
-    int getSubType(uintptr_t item);
-    uint32_t getId(uintptr_t item);
-    std::string getTooltip(uintptr_t item);
-    uint32_t getDurationTime(uintptr_t item);
-    std::string getName(uintptr_t item);
-    std::string getDescription(uintptr_t item);
-    uint8_t getTier(uintptr_t item);
-    std::string getText(uintptr_t item);
+    int getCount(ItemPtr item);
+    int getSubType(ItemPtr item);
+    uint32_t getId(ItemPtr item);
+    std::string getTooltip(ItemPtr item);
+    uint32_t getDurationTime(ItemPtr item);
+    std::string getName(ItemPtr item);
+    std::string getDescription(ItemPtr item);
+    uint8_t getTier(ItemPtr item);
+    std::string getText(ItemPtr item);
 
 
 };

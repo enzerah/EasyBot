@@ -67,7 +67,7 @@ public:
     void openParent(const uintptr_t &container);
     void close(const uintptr_t &container);
     void refreshContainer(const uintptr_t &container);
-    void attack(const uintptr_t &creature, bool cancel);
+    void attack(const uintptr_t &creature);
     void cancelAttack();
     void follow(const uintptr_t &creature);
     void cancelAttackAndFollow();

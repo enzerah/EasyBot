@@ -1,33 +1,30 @@
-//
-// Created by Wojciech on 03.10.2025.
-//
-
 #ifndef CREATURE_H
 #define CREATURE_H
 #define g_creature Creature::getInstance()
-#include <mutex>
-#include "Map.h"
+#include "declarations.h"
+#include "../../const.h"
+#include "EventDispatcher.h"
+#include "hooks.h"
 
 
-class Creature : public Map {
-private:
+class Creature {
     static Creature* instance;
     static std::mutex mutex;
 protected:
-    Creature();
-    ~Creature(){}
+    Creature()=default;
+    ~Creature()= default;
 public:
     Creature(Creature const&) = delete;
     void operator=(const Creature&) = delete;
     static Creature* getInstance();
 
-    std::string getName(uintptr_t creature);
-    uint8_t getHealthPercent(uintptr_t creature);
-    Otc::Direction getDirection(uintptr_t creature);
-    bool isDead(uintptr_t creature);
-    bool canBeSeen(uintptr_t creature);
-    bool isCovered(uintptr_t creature);
-    bool canShoot(uintptr_t creature, int distance);
+    std::string getName(CreaturePtr creature);
+    uint8_t getHealthPercent(CreaturePtr creature);
+    Otc::Direction getDirection(CreaturePtr creature);
+    bool isDead(CreaturePtr creature);
+    bool canBeSeen(CreaturePtr creature);
+    bool isCovered(CreaturePtr creature);
+    bool canShoot(CreaturePtr creature, int distance);
 
 };
 

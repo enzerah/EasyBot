@@ -50,13 +50,12 @@ void __stdcall hooked_callGlobalField(uintptr_t **a1, uintptr_t **a2) {
     auto field = *reinterpret_cast<std::string*>(a2);
     if (global == "g_game") {
         if (field == "onTextMessage") {
-            uintptr_t addr_mode = ebp + globalFieldOffset;
             uintptr_t addr_message = ebp + globalFieldOffset + 0x04;
-            auto ptr_messageMode = g_custom->getModePtr(addr_mode);
             auto ptr_messageText = g_custom->getMessagePtr(addr_message);
-            if (*ptr_messageMode == Otc::MessageLook)
+            auto message_address = reinterpret_cast<std::string*>(ptr_messageText);
+            if (message_address->find("You see") != std::string::npos)
             {
-                auto message_address = reinterpret_cast<std::string*>(ptr_messageText);
+                std::cout << "Found " << std::endl;
                 *message_address = "ID: " + std::to_string(itemId) + "\n" + *reinterpret_cast<std::string*>(ptr_messageText);
             }
         }
@@ -83,23 +82,21 @@ int hooked_MainLoop(int a1) {
     return result;
 }
 
-typedef uint32_t(__thiscall* GetId)(
+typedef uint32_t(gameCall* GetId)(
     uintptr_t RCX,
     void *RDX
     );
 
 
-void __stdcall hooked_Look(const uintptr_t& thing, const bool isBattleList) {
-    look_original(&thing, isBattleList);
+void hooked_Look(void* self, const ThingPtr& thing, const bool isBattleList) {
+    look_original(self, thing, isBattleList);
+
+    if (!thing) return;
     auto function = reinterpret_cast<GetId>(ClassMemberFunctions["Item.getId"]);
-    void* pMysteryPtr = nullptr;
-    itemId = function(thing, &pMysteryPtr);
-
+    if (function) {
+        void* pMysteryPtr = nullptr;
+        itemId = function(thing, &pMysteryPtr);
+    }
 }
 
-
-
-bool __fastcall hooked_checkBotProtection(uintptr_t a1) {
-    return true;
-}
 

@@ -1,13 +1,9 @@
-//
-// Created by Wojciech on 04.10.2025.
-//
-
 #include "Item.h"
+
+
 Item* Item::instance{nullptr};
 std::mutex Item::mutex;
-Item::Item()
-{
-}
+
 
 Item* Item::getInstance()
 {
@@ -19,139 +15,93 @@ Item* Item::getInstance()
     return instance;
 }
 
-std::string Item::getName(uintptr_t item) {
-    if (!item) return 0;
-    typedef std::string*(gameCall* GetName)(
+std::string Item::getName(ItemPtr item) {
+    if (!item) return "";
+    typedef void*(gameCall* GetName)(
         uintptr_t RCX,
-        void *RDX
+        std::string *result
         );
     auto function = reinterpret_cast<GetName>(ClassMemberFunctions["Item.getName"]);
     return g_dispatcher->scheduleEventEx([function, item]() {
-        void* pMysteryPtr = nullptr;
-        auto ret = function(item, &pMysteryPtr);
-        const char* name_data = ret->c_str();
-        char temp_buffer[256];
-        strncpy_s(temp_buffer, name_data, 255);
-        temp_buffer[255] = '\0';
-        std::string name(temp_buffer);
-        return name;
+        std::string result;
+        function(reinterpret_cast<uintptr_t>(item.address), &result);
+        return result;
     });
 }
 
-std::string Item::getDescription(uintptr_t item) {
-    if (!item) return 0;
-    typedef std::string*(gameCall* GetDescription)(
+std::string Item::getDescription(ItemPtr item) {
+    if (!item) return "";
+    typedef void*(gameCall* GetDescription)(
         uintptr_t RCX,
-        void *RDX
+        std::string *result
         );
     auto function = reinterpret_cast<GetDescription>(ClassMemberFunctions["Item.getDescription"]);
     return g_dispatcher->scheduleEventEx([function, item]() {
-        void* pMysteryPtr = nullptr;
-        auto ret = function(item, &pMysteryPtr);
-        const char* name_data = ret->c_str();
-        char temp_buffer[256];
-        strncpy_s(temp_buffer, name_data, 255);
-        temp_buffer[255] = '\0';
-        std::string name(temp_buffer);
-        return name;
+        std::string result;
+        function(reinterpret_cast<uintptr_t>(item.address), &result);
+        return result;
     });
 }
 
-int Item::getCount(uintptr_t item) {
+int Item::getCount(ItemPtr item) {
     if (!item) return 0;
-    typedef int(gameCall* GetCount)(
-        uintptr_t RCX,
-        void *RDX
-        );
+    typedef int(gameCall* GetCount)(uintptr_t RCX);
     auto function = reinterpret_cast<GetCount>(ClassMemberFunctions["Item.getCount"]);
-    return g_dispatcher->scheduleEventEx([function, item]() {
-        void* pMysteryPtr = nullptr;
-        return function(item, &pMysteryPtr);
-    });
+    return g_dispatcher->scheduleEventEx([function, item]() { return function(reinterpret_cast<uintptr_t>(item.address)); });
 }
 
-int Item::getSubType(uintptr_t item) {
+int Item::getSubType(ItemPtr item) {
     if (!item) return 0;
-    typedef int(gameCall* GetSubType)(
-        uintptr_t RCX,
-        void *RDX
-        );
+    typedef int(gameCall* GetSubType)(uintptr_t RCX);
     auto function = reinterpret_cast<GetSubType>(ClassMemberFunctions["Item.getSubType"]);
-    return g_dispatcher->scheduleEventEx([function, item]() {
-        void* pMysteryPtr = nullptr;
-        std::cout << pMysteryPtr << std::endl;
-        return function(item, &pMysteryPtr);
-    });
+    return g_dispatcher->scheduleEventEx([function, item]() { return function(reinterpret_cast<uintptr_t>(item.address)); });
 }
 
-uint32_t Item::getId(uintptr_t item) {
+uint32_t Item::getId(ItemPtr item) {
     if (!item) return 0;
-    typedef uint32_t(gameCall* GetId)(
-        uintptr_t RCX,
-        void *RDX
-        );
+    typedef uint32_t(gameCall* GetId)(uintptr_t RCX);
     auto function = reinterpret_cast<GetId>(ClassMemberFunctions["Item.getId"]);
-    return g_dispatcher->scheduleEventEx([function, item]() {
-        void* pMysteryPtr = nullptr;
-        return function(item, &pMysteryPtr);
-    });
+    return g_dispatcher->scheduleEventEx([function, item]() { return function(reinterpret_cast<uintptr_t>(item.address)); });
 }
 
-std::string Item::getTooltip(uintptr_t item) {
-    if (!item) return 0;
-    typedef std::string*(gameCall* GetTooltip)(
+std::string Item::getTooltip(ItemPtr item) {
+    if (!item) return "";
+    typedef void*(gameCall* GetTooltip)(
         uintptr_t RCX,
-        void *RDX
+        std::string *result
         );
     auto function = reinterpret_cast<GetTooltip>(ClassMemberFunctions["Item.getTooltip"]);
     return g_dispatcher->scheduleEventEx([function, item]() {
-        void* pMysteryPtr = nullptr;
-        auto res = function(item, &pMysteryPtr);
-        return *res;
+        std::string result;
+        function(reinterpret_cast<uintptr_t>(item.address), &result);
+        return result;
     });
 }
 
-uint32_t Item::getDurationTime(uintptr_t item) {
+uint32_t Item::getDurationTime(ItemPtr item) {
     if (!item) return 0;
-    typedef uint32_t(gameCall* GetDurationTime)(
-        uintptr_t RCX,
-        void *RDX
-        );
+    typedef uint32_t(gameCall* GetDurationTime)(uintptr_t RCX);
     auto function = reinterpret_cast<GetDurationTime>(ClassMemberFunctions["Item.getDurationTime"]);
-    return g_dispatcher->scheduleEventEx([function, item]() {
-        void* pMysteryPtr = nullptr;
-        return function(item, &pMysteryPtr);
-    });
+    return g_dispatcher->scheduleEventEx([function, item]() { return function(reinterpret_cast<uintptr_t>(item.address)); });
 }
 
-uint8_t Item::getTier(uintptr_t item) {
+uint8_t Item::getTier(ItemPtr item) {
     if (!item) return 0;
-    typedef uintptr_t*(gameCall* GetTier)(
-        uintptr_t RCX,
-        void *RDX
-        );
+    typedef uint8_t(gameCall* GetTier)(uintptr_t RCX);
     auto function = reinterpret_cast<GetTier>(ClassMemberFunctions["Item.getTier"]);
-    return g_dispatcher->scheduleEventEx([function, item]() {
-        void* pMysteryPtr = nullptr;
-        return *function(item, &pMysteryPtr);
-    });
+    return g_dispatcher->scheduleEventEx([function, item]() { return function(reinterpret_cast<uintptr_t>(item.address)); });
 }
 
-std::string Item::getText(uintptr_t item) {
-    if (!item) return 0;
-    typedef std::string*(gameCall* GetText)(
+std::string Item::getText(ItemPtr item) {
+    if (!item) return "";
+    typedef void*(gameCall* GetText)(
         uintptr_t RCX,
-        void *RDX
+        std::string *result
         );
     auto function = reinterpret_cast<GetText>(ClassMemberFunctions["Item.getText"]);
     return g_dispatcher->scheduleEventEx([function, item]() {
-        void* pMysteryPtr = nullptr;
-        auto ret = function(item, &pMysteryPtr);
-        const char* name_data = ret->c_str();
-        char temp_buffer[256];
-        strncpy_s(temp_buffer, name_data, 255);
-        temp_buffer[255] = '\0';
-        std::string name(temp_buffer);
-        return name;
+        std::string result;
+        function(reinterpret_cast<uintptr_t>(item.address), &result);
+        return result;
     });
 }

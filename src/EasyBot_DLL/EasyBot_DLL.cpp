@@ -1,8 +1,15 @@
 #include "../../proto_functions_server.h"
-#include "hooks.h"
-#include "MinHook.h"
-#include "BuildConfig.h"
 #include "pattern_scan.h"
+#include "MinHook.h"
+#include "hooks.h"
+
+#include "Map.h"
+#include "Thing.h"
+#include "Creature.h"
+#include "Game.h"
+#include "Item.h"
+#include "Container.h"
+
 
 DWORD WINAPI EasyBot(HMODULE hModule) {
     MH_Initialize();
@@ -12,14 +19,12 @@ DWORD WINAPI EasyBot(HMODULE hModule) {
     MH_CreateHook(reinterpret_cast<LPVOID>(bindSingletonFunction_func), &hooked_bindSingletonFunction, reinterpret_cast<LPVOID*>(&original_bindSingletonFunction));
     MH_CreateHook(reinterpret_cast<LPVOID>(callGlobalField_func), &hooked_callGlobalField, reinterpret_cast<LPVOID*>(&original_callGlobalField));
     MH_CreateHook(reinterpret_cast<LPVOID>(mainLoop_func), &hooked_MainLoop, reinterpret_cast<LPVOID*>(&original_mainLoop));
-    /*
     FILE *f;
     AllocConsole();
     freopen_s(&f, "CONOUT$", "w", stdout);
     std::cout << "Singleton " << std::hex <<bindSingletonFunction_func << std::endl;
     std::cout << "Call global " << std::hex <<callGlobalField_func << std::endl;
     std::cout << "Main Loop " << std::hex << mainLoop_func << std::endl;
-    */
     MH_EnableHook(MH_ALL_HOOKS);
     while (!SingletonFunctions["g_game.look"].first)
     {
@@ -27,22 +32,33 @@ DWORD WINAPI EasyBot(HMODULE hModule) {
     }
     MH_CreateHook(reinterpret_cast<LPVOID>(SingletonFunctions["g_game.look"].first), &hooked_Look, reinterpret_cast<LPVOID*>(&look_original));
     MH_EnableHook(reinterpret_cast<LPVOID>(SingletonFunctions["g_game.look"].first));
-
-    while (!SingletonFunctions["g_game.checkBotProtection"].first)
-    {
-        Sleep(10);
+    system("pause");
+    auto localPlayer = g_game->getLocalPlayer();
+    std::cout << "Local Player " << std::hex <<localPlayer << std::endl;
+    auto playerPos = g_thing->getPosition(localPlayer);
+    std::cout << "Player Pos " << playerPos.x << " " << playerPos.y << " " << playerPos.z << std::endl;
+    auto spectators = g_map->getSpectators(playerPos);
+    std::cout << "Total Creatures " << spectators.size() << std::endl;
+    for (auto spectator : spectators) {
+        std::cout << "Spectator " << std::hex <<spectator << std::endl;
+        auto spectatorName = g_creature->getName(spectator);
+        std::cout << "Spectator Name " << spectatorName << std::endl;
+        if (spectatorName == "Rabbit")
+        {
+            g_game->attack(spectator);
+            break;
+        }
+        std::cout << "End of function" << std::endl;
     }
-    MH_CreateHook(reinterpret_cast<LPVOID>(SingletonFunctions["g_game.checkBotProtection"].first), &hooked_checkBotProtection, reinterpret_cast<LPVOID*>(original_checkBotProtection));
-    MH_EnableHook(reinterpret_cast<LPVOID>(SingletonFunctions["g_game.checkBotProtection"].first));
 
     RunServer();
     return 0;
 }
 
-// Point 1: Move thread creation out of DllMain to avoid basic heuristics/traps
+
 struct BotLoader {
     BotLoader() {
-        CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)EasyBot, NULL, 0, NULL);
+        CreateThread(NULL, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(EasyBot), NULL, 0, NULL);
     }
 };
 static BotLoader loader;
