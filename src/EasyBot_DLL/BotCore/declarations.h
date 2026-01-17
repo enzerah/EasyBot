@@ -3,7 +3,7 @@
 #include <list>
 #include <memory>
 #include <vector>
-
+#include "BuildConfig.h"
 // core
 class Map;
 class Game;
@@ -53,7 +53,11 @@ using TilePtr = SmartPtr<Tile>;
 using ThingPtr = SmartPtr<Thing>;
 using ItemPtr = SmartPtr<Item>;
 using ContainerPtr = SmartPtr<Container>;
-using CreaturePtr = SmartPtr<Creature>;
+#if BuildOption == BUILD_DBL || BuildOption == BUILD_MIRACLE || BuildOption == BUILD_TREASURA
+    using CreaturePtr = uintptr_t;
+#elif BuildOption == BUILD_EXORDION
+    using CreaturePtr = SmartPtr<Creature>;
+#endif
 using MonsterPtr = SmartPtr<Monster>;
 using NpcPtr = SmartPtr<Npc>;
 using PlayerPtr = SmartPtr<Player>;

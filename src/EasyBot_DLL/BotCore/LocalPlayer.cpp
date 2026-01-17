@@ -241,21 +241,34 @@ void LocalPlayer::stopAutoWalk(LocalPlayerPtr localPlayer) {
 
 bool LocalPlayer::autoWalk(LocalPlayerPtr localPlayer, const Position &destination, bool retry) {
     if (!localPlayer) return 0;
-    typedef bool(gameCall* AutoWalk)(
-        uintptr_t RCX,
-        Position RDX,
-        bool R8
+    if (BuildOption == Exordion || BuildOption == Treasura) {
+        typedef bool(gameCall* AutoWalk)(
+            uintptr_t RCX,
+            Position RDX,
+            bool R8
+            );
+        auto function = reinterpret_cast<AutoWalk>(ClassMemberFunctions["LocalPlayer.autoWalk"]);
+        return g_dispatcher->scheduleEventEx([function, localPlayer, destination, retry]() {
+            return function(localPlayer.address, destination, retry);
+        });
+    }
+    if (BuildOption == Dbl) {
+        typedef bool(gameCall* AutoWalk)(
+            uintptr_t RCX,
+            const Position *RDX,
+            bool R8
         );
-    auto function = reinterpret_cast<AutoWalk>(ClassMemberFunctions["LocalPlayer.autoWalk"]);
-    return g_dispatcher->scheduleEventEx([function, localPlayer, destination, retry]() {
-        return function(localPlayer.address, destination, retry);
-    });
+        auto function = reinterpret_cast<AutoWalk>(ClassMemberFunctions["LocalPlayer.autoWalk"]);
+        return g_dispatcher->scheduleEventEx([function, localPlayer, destination, retry]() {
+            return function(localPlayer.address, &destination, retry);
+        });
+    }
 }
 
 void LocalPlayer::setLightHack(LocalPlayerPtr localPlayer, uint16_t lightLevel) {
     if (!localPlayer) return;
     g_dispatcher->scheduleEventEx([localPlayer, lightLevel]() {
-        auto lightPtr = reinterpret_cast<uint16_t*>(localPlayer.address + 0xAC);
+        auto lightPtr = reinterpret_cast<uint16_t*>(localPlayer.address + lightHackOffset);
         if (*lightPtr != lightLevel) *lightPtr = lightLevel;
     });
 }
