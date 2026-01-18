@@ -41,5 +41,6 @@ int main() {
     bool isHasted = state & Otc::PlayerStates::IconHaste;
     std::cout << isHasted << std::endl;
     std::cout << state << std::endl;
+    proto->walk(Otc::Direction::South);
     return 0;
 }
