@@ -36,7 +36,7 @@ Position Thing::getPosition(ThingPtr thing) {
         );
     auto function = reinterpret_cast<GetPosition>(ClassMemberFunctions["Thing.getPosition"]);
     return g_dispatcher->scheduleEventEx([function, thing]() {
-        Position result;
+        Position result{};
         function(thing.address, &result);
         return result;
     });

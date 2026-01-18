@@ -45,6 +45,12 @@ Status BotServiceImpl::GetItemsCount(ServerContext* context, const google::proto
     return Status::OK;
 }
 
+
+Status BotServiceImpl::GetCapacity(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::Int32Value* response) {
+    response->set_value(g_container->getCapacity(toPtr<Container>(request->value())));
+    return Status::OK;
+}
+
 Status BotServiceImpl::GetSlotPosition(ServerContext* context, const bot::bot_GetSlotPositionRequest* request, bot::bot_Position* response) {
     fromPos(g_container->getSlotPosition(toPtr<Container>(request->container()), request->slot()), response);
     return Status::OK;
@@ -67,11 +73,6 @@ Status BotServiceImpl::GetContainerItem(ServerContext* context, const google::pr
 
 Status BotServiceImpl::HasParent(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::BoolValue* response) {
     response->set_value(g_container->hasParent(toPtr<Container>(request->value())));
-    return Status::OK;
-}
-
-Status BotServiceImpl::GetSize(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::Int32Value* response) {
-    response->set_value(g_container->getSize(toPtr<Container>(request->value())));
     return Status::OK;
 }
 
@@ -380,11 +381,11 @@ Status BotServiceImpl::GetText(ServerContext* context, const google::protobuf::U
 }
 
 // ================= LocalPlayer.h =================
-Status BotServiceImpl::IsWalkLocked(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::BoolValue* response) {
-    response->set_value(g_localPlayer->isWalkLocked(toPtr<LocalPlayer>(request->value())));
+Status BotServiceImpl::GetStates(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::UInt32Value* response) {
+    auto localPlayer = toPtr<LocalPlayer>(request->value());
+    response->set_value(static_cast<uint32_t>(g_localPlayer->getStates(localPlayer)));
     return Status::OK;
 }
-
 
 Status BotServiceImpl::GetHealth(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::DoubleValue* response) {
     response->set_value(g_localPlayer->getHealth(toPtr<LocalPlayer>(request->value())));
@@ -416,11 +417,6 @@ Status BotServiceImpl::GetMaxMana(ServerContext* context, const google::protobuf
     return Status::OK;
 }
 
-Status BotServiceImpl::GetManaShield(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::UInt32Value* response) {
-    response->set_value(g_localPlayer->getManaShield(toPtr<LocalPlayer>(request->value())));
-    return Status::OK;
-}
-
 Status BotServiceImpl::GetSoul(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::UInt32Value* response) {
     response->set_value(g_localPlayer->getSoul(toPtr<LocalPlayer>(request->value())));
     return Status::OK;
@@ -433,11 +429,6 @@ Status BotServiceImpl::GetStamina(ServerContext* context, const google::protobuf
 
 Status BotServiceImpl::GetInventoryItem(ServerContext* context, const bot::bot_GetInventoryItemRequest* request, google::protobuf::UInt64Value* response) {
     response->set_value(g_localPlayer->getInventoryItem(toPtr<LocalPlayer>(request->localplayer()), static_cast<Otc::InventorySlot>(request->inventoryslot())));
-    return Status::OK;
-}
-
-Status BotServiceImpl::HasEquippedItemId(ServerContext* context, const bot::bot_HasEquippedItemIdRequest* request, google::protobuf::BoolValue* response) {
-    response->set_value(g_localPlayer->hasEquippedItemId(toPtr<LocalPlayer>(request->localplayer()), request->itemid(), request->tier()));
     return Status::OK;
 }
 
@@ -614,12 +605,22 @@ Status BotServiceImpl::DropMessages(ServerContext *context, const google::protob
 
 
 void RunServer() {
-    std::string server_address("0.0.0.0:50051");
     BotServiceImpl service;
-    grpc::ServerBuilder builder;
-    builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
-    builder.RegisterService(&service);
-    std::unique_ptr<grpc::Server> server(builder.BuildAndStart());
+    int port = 50051;
+    std::unique_ptr<grpc::Server> server;
+
+    while (true) {
+        std::string server_address("0.0.0.0:" + std::to_string(port));
+        grpc::ServerBuilder builder;
+        builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
+        builder.RegisterService(&service);
+        server = builder.BuildAndStart();
+
+        if (server) {
+            break;
+        }
+        port++;
+    }
     server->Wait();
 }
 

@@ -17,7 +17,7 @@ public:
     void operator=(const Container&) = delete;
     static Container* getInstance();
 
-    ItemPtr getItem(ContainerPtr container, uint8_t slot);
+    ItemPtr getItem(ContainerPtr container, int slot);
     std::deque<ItemPtr> getItems(ContainerPtr container);
     int getItemsCount(ContainerPtr container);
     Position getSlotPosition(ContainerPtr container, int slot);
@@ -25,7 +25,7 @@ public:
     int getId(ContainerPtr container);
     ItemPtr getContainerItem(ContainerPtr container);
     bool hasParent(ContainerPtr container);
-    int getSize(ContainerPtr container);
+    int getCapacity(ContainerPtr container);
     int getFirstIndex(ContainerPtr container);
 
 };

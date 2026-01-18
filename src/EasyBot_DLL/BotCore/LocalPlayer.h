@@ -18,20 +18,17 @@ public:
     void operator=(const LocalPlayer&) = delete;
     static LocalPlayer* getInstance();
 
-    bool isWalkLocked(LocalPlayerPtr localPlayer);
-    uint32_t getStates(LocalPlayerPtr localPlayer);
+    Otc::PlayerStates getStates(LocalPlayerPtr localPlayer);
     double getHealth(LocalPlayerPtr localPlayer);
     double getMaxHealth(LocalPlayerPtr localPlayer);
     double getFreeCapacity(LocalPlayerPtr localPlayer);
     uint16_t getLevel(LocalPlayerPtr localPlayer);
     double getMana(LocalPlayerPtr localPlayer);
     double getMaxMana(LocalPlayerPtr localPlayer);
-    uint32_t getManaShield(LocalPlayerPtr localPlayer);
     uint8_t getSoul(LocalPlayerPtr localPlayer);
     uint16_t getStamina(LocalPlayerPtr localPlayer);
     ItemPtr getInventoryItem(LocalPlayerPtr localPlayer, Otc::InventorySlot inventorySlot);
-    bool hasEquippedItemId(LocalPlayerPtr localPlayer, uint16_t itemId, uint8_t tier);
-    int getInventoryCount(LocalPlayerPtr localPlayer, uint16_t itemId, uint8_t tier);
+    int getInventoryCount(LocalPlayerPtr localPlayer, uint16_t itemId, int tier);
     bool hasSight(LocalPlayerPtr localPlayer, const Position &pos);
     bool isAutoWalking(LocalPlayerPtr localPlayer);
     void stopAutoWalk(LocalPlayerPtr localPlayer);

@@ -116,13 +116,12 @@ bool BotClient::hasParent(uintptr_t value)
     return response.value();
 }
 
-int32_t BotClient::getSize(uintptr_t value)
-{
+int32_t BotClient::getCapacity(uintptr_t container) {
     UInt64Value request;
-    request.set_value(value);
+    request.set_value(container);
     Int32Value response;
     ClientContext context;
-    Status status = stub->GetSize(&context, request, &response);
+    Status status = stub->GetCapacity(&context, request, &response);
     return response.value();
 }
 
@@ -308,7 +307,7 @@ void BotClient::useInventoryItemWith(const uint16_t itemId, const uintptr_t& toT
     Status status = stub->UseInventoryItemWith(&context, request, &response);
 }
 
-uintptr_t BotClient::findItemInContainers(uint32_t itemId, int subType, uint8_t tier)
+uintptr_t BotClient::findItemInContainers(uint32_t itemId, int subType, int tier)
 {
     bot_FindItemInContainersRequest request;
     request.set_itemid(itemId);
@@ -483,7 +482,7 @@ void BotClient::equipItem(const uintptr_t &item)
     Status status = stub->EquipItem(&context, request, &response);
 }
 
-void BotClient::equipItemId(uint16_t itemId, uint8_t tier)
+void BotClient::equipItemId(uint16_t itemId, int tier)
 {
     bot_EquipItemIdRequest request;
     request.set_itemid(itemId);
@@ -710,18 +709,7 @@ std::string BotClient::getText(uintptr_t value)
 }
 
 // LocalPlayer
-bool BotClient::isWalkLocked(uintptr_t value)
-{
-    UInt64Value request;
-    request.set_value(value);
-    google::protobuf::BoolValue response;
-    ClientContext context;
-    Status status = stub->IsWalkLocked(&context, request, &response);
-    return response.value();
-}
-
-uint32_t BotClient::getStates(uintptr_t value)
-{
+uint32_t BotClient::getStates(uintptr_t value) {
     UInt64Value request;
     request.set_value(value);
     google::protobuf::UInt32Value response;
@@ -842,7 +830,7 @@ uintptr_t BotClient::getInventoryItem(uintptr_t localPlayer, Otc::InventorySlot 
     return response.value();
 }
 
-bool BotClient::hasEquippedItemId(uintptr_t localPlayer, uint16_t itemId, uint8_t tier)
+bool BotClient::hasEquippedItemId(uintptr_t localPlayer, uint16_t itemId, int tier)
 {
     bot_HasEquippedItemIdRequest request;
     request.set_localplayer(localPlayer);
@@ -854,7 +842,7 @@ bool BotClient::hasEquippedItemId(uintptr_t localPlayer, uint16_t itemId, uint8_
     return response.value();
 }
 
-int BotClient::getInventoryCount(uintptr_t localPlayer, uint16_t itemId, uint8_t tier)
+int BotClient::getInventoryCount(uintptr_t localPlayer, uint16_t itemId, int tier)
 {
     bot_GetInventoryCountRequest request;
     request.set_localplayer(localPlayer);

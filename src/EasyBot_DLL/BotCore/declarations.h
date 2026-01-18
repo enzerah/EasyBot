@@ -53,10 +53,10 @@ using TilePtr = SmartPtr<Tile>;
 using ThingPtr = SmartPtr<Thing>;
 using ItemPtr = SmartPtr<Item>;
 using ContainerPtr = SmartPtr<Container>;
-#if BuildOption == BUILD_DBL || BuildOption == BUILD_MIRACLE || BuildOption == BUILD_TREASURA
-    using CreaturePtr = uintptr_t;
-#elif BuildOption == BUILD_EXORDION
+#if BuildOption == BUILD_EXORDION
     using CreaturePtr = SmartPtr<Creature>;
+#else
+    using CreaturePtr = uintptr_t;
 #endif
 using MonsterPtr = SmartPtr<Monster>;
 using NpcPtr = SmartPtr<Npc>;

@@ -18,7 +18,7 @@ public:
     Status GetContainerId(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::Int32Value* response) override;
     Status GetContainerItem(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::UInt64Value* response) override;
     Status HasParent(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::BoolValue* response) override;
-    Status GetSize(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::Int32Value* response) override;
+    Status GetCapacity(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::Int32Value* response) override;
     Status GetFirstIndex(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::Int32Value* response) override;
 
     // --- Creature.h ---
@@ -86,18 +86,16 @@ public:
     Status GetText(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::StringValue* response) override;
 
     // --- LocalPlayer.h ---
-    Status IsWalkLocked(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::BoolValue* response) override;
+    Status GetStates(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::UInt32Value* response) override;
     Status GetHealth(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::DoubleValue* response) override;
     Status GetMaxHealth(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::DoubleValue* response) override;
     Status GetFreeCapacity(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::DoubleValue* response) override;
     Status GetLevel(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::UInt32Value* response) override;
     Status GetMana(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::DoubleValue* response) override;
     Status GetMaxMana(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::DoubleValue* response) override;
-    Status GetManaShield(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::UInt32Value* response) override;
     Status GetSoul(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::UInt32Value* response) override;
     Status GetStamina(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::UInt32Value* response) override;
     Status GetInventoryItem(ServerContext* context, const bot::bot_GetInventoryItemRequest* request, google::protobuf::UInt64Value* response) override;
-    Status HasEquippedItemId(ServerContext* context, const bot::bot_HasEquippedItemIdRequest* request, google::protobuf::BoolValue* response) override;
     Status GetInventoryCount(ServerContext* context, const bot::bot_GetInventoryCountRequest* request, google::protobuf::UInt32Value* response) override;
     Status HasSight(ServerContext* context, const bot::bot_HasSightRequest* request, google::protobuf::BoolValue* response) override;
     Status IsAutoWalking(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::BoolValue* response) override;

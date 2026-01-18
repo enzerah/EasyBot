@@ -17,12 +17,12 @@ Container* Container::getInstance()
     return instance;
 }
 
-ItemPtr Container::getItem(ContainerPtr container, uint8_t slot) {
+ItemPtr Container::getItem(ContainerPtr container, int slot) {
     if (!container) return 0;
     typedef void(gameCall* GetItem)(
         uintptr_t RCX,
         ItemPtr *RDX,
-        uint8_t slot
+        int slot
         );
     auto function = reinterpret_cast<GetItem>(ClassMemberFunctions["Container.getItem"]);
     return g_dispatcher->scheduleEventEx([function, container, slot]() {
@@ -129,13 +129,13 @@ bool Container::hasParent(ContainerPtr container) {
     });
 }
 
-int Container::getSize(ContainerPtr container) {
+int Container::getCapacity(ContainerPtr container) {
     if (!container) return 0;
-    typedef int(gameCall* GetSize)(
+    typedef int(gameCall* GetCapacity)(
         uintptr_t RCX,
         void *RDX
         );
-    auto function = reinterpret_cast<GetSize>(ClassMemberFunctions["Container.getSize"]);
+    auto function = reinterpret_cast<GetCapacity>(ClassMemberFunctions["Container.getCapacity"]);
     return g_dispatcher->scheduleEventEx([function, container]() {
         void* pMysteryPtr = nullptr;
         return function(container.address, &pMysteryPtr);

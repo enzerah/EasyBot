@@ -13,29 +13,14 @@ LocalPlayer* LocalPlayer::getInstance()
     return instance;
 }
 
-bool LocalPlayer::isWalkLocked(LocalPlayerPtr localPlayer) {
-    if (!localPlayer) return 0;
-    typedef bool(gameCall* IsWalkLocked)(
-        uintptr_t RCX,
-        void *RDX
-        );
-    auto function = reinterpret_cast<IsWalkLocked>(ClassMemberFunctions["LocalPlayer.isWalkLocked"]);
-    return g_dispatcher->scheduleEventEx([function, localPlayer]() {
-        void* pMysteryPtr = nullptr;
-        return function(localPlayer.address, &pMysteryPtr);
-    });
-}
-
-uint32_t LocalPlayer::getStates(LocalPlayerPtr localPlayer) {
-    if (!localPlayer) return 0;
-    typedef uint32_t(gameCall* GetStates)(
-        uintptr_t RCX,
-        void *RDX
+Otc::PlayerStates LocalPlayer::getStates(LocalPlayerPtr localPlayer) {
+    if (!localPlayer) return Otc::IconNone;
+    typedef Otc::PlayerStates(gameCall* GetStates)(
+        uintptr_t RCX
         );
     auto function = reinterpret_cast<GetStates>(ClassMemberFunctions["LocalPlayer.getStates"]);
     return g_dispatcher->scheduleEventEx([function, localPlayer]() {
-        void* pMysteryPtr = nullptr;
-        return function(localPlayer.address, &pMysteryPtr);
+        return function(localPlayer.address);
     });
 }
 
@@ -117,19 +102,6 @@ double LocalPlayer::getMaxMana(LocalPlayerPtr localPlayer) {
     });
 }
 
-uint32_t LocalPlayer::getManaShield(LocalPlayerPtr localPlayer) {
-    if (!localPlayer) return 0;
-    typedef uint32_t(gameCall* GetManaShield)(
-        uintptr_t RCX,
-        void *RDX
-        );
-    auto function = reinterpret_cast<GetManaShield>(ClassMemberFunctions["LocalPlayer.getManaShield"]);
-    return g_dispatcher->scheduleEventEx([function, localPlayer]() {
-        void* pMysteryPtr = nullptr;
-        return function(localPlayer.address, &pMysteryPtr);
-    });
-}
-
 uint8_t LocalPlayer::getSoul(LocalPlayerPtr localPlayer) {
     if (!localPlayer) return 0;
     typedef uint8_t(gameCall* GetSoul)(
@@ -171,28 +143,13 @@ ItemPtr LocalPlayer::getInventoryItem(LocalPlayerPtr localPlayer, Otc::Inventory
     });
 }
 
-bool LocalPlayer::hasEquippedItemId(LocalPlayerPtr localPlayer, uint16_t itemId, uint8_t tier) {
-    if (!localPlayer) return 0;
-    typedef bool(gameCall* HasEquippedItemId)(
-        uintptr_t RCX,
-        void *RDX,
-        uint16_t itemId,
-        uint8_t tier
-        );
-    auto function = reinterpret_cast<HasEquippedItemId>(ClassMemberFunctions["LocalPlayer.hasEquippedItemId"]);
-    return g_dispatcher->scheduleEventEx([function, localPlayer, itemId, tier]() {
-        void* pMysteryPtr = nullptr;
-        return function(localPlayer.address, &pMysteryPtr, itemId, tier);
-    });
-}
-
-int LocalPlayer::getInventoryCount(LocalPlayerPtr localPlayer, uint16_t itemId, uint8_t tier) {
+int LocalPlayer::getInventoryCount(LocalPlayerPtr localPlayer, uint16_t itemId, int tier) {
     if (!localPlayer) return 0;
     typedef int(gameCall* GetInventoryCount)(
         uintptr_t RCX,
         void *RDX,
         uint16_t itemId,
-        uint8_t tier
+        int tier
         );
     auto function = reinterpret_cast<GetInventoryCount>(ClassMemberFunctions["LocalPlayer.getInventoryCount"]);
     return g_dispatcher->scheduleEventEx([function, localPlayer, itemId, tier]() {
@@ -241,28 +198,15 @@ void LocalPlayer::stopAutoWalk(LocalPlayerPtr localPlayer) {
 
 bool LocalPlayer::autoWalk(LocalPlayerPtr localPlayer, const Position &destination, bool retry) {
     if (!localPlayer) return 0;
-    if (BuildOption == Exordion || BuildOption == Treasura) {
-        typedef bool(gameCall* AutoWalk)(
-            uintptr_t RCX,
-            Position RDX,
-            bool R8
-            );
-        auto function = reinterpret_cast<AutoWalk>(ClassMemberFunctions["LocalPlayer.autoWalk"]);
-        return g_dispatcher->scheduleEventEx([function, localPlayer, destination, retry]() {
-            return function(localPlayer.address, destination, retry);
-        });
-    }
-    if (BuildOption == Dbl) {
-        typedef bool(gameCall* AutoWalk)(
-            uintptr_t RCX,
-            const Position *RDX,
-            bool R8
+    typedef bool(gameCall* AutoWalk)(
+        uintptr_t RCX,
+        Position RDX,
+        bool R8
         );
-        auto function = reinterpret_cast<AutoWalk>(ClassMemberFunctions["LocalPlayer.autoWalk"]);
-        return g_dispatcher->scheduleEventEx([function, localPlayer, destination, retry]() {
-            return function(localPlayer.address, &destination, retry);
-        });
-    }
+    auto function = reinterpret_cast<AutoWalk>(ClassMemberFunctions["LocalPlayer.autoWalk"]);
+    return g_dispatcher->scheduleEventEx([function, localPlayer, destination, retry]() {
+        return function(localPlayer.address, destination, retry);
+    });
 }
 
 void LocalPlayer::setLightHack(LocalPlayerPtr localPlayer, uint16_t lightLevel) {

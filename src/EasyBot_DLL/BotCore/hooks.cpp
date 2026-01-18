@@ -11,18 +11,23 @@ void __stdcall hooked_bindSingletonFunction(uintptr_t a1, uintptr_t a2, uintptr_
     uintptr_t tmp = 0;
     auto global = *reinterpret_cast<std::string*>(a1);
     auto field = *reinterpret_cast<std::string*>(a2);
+    //std::cout << global << "." << field << std::endl;
     if (global[1] != '_') {
         tmp = *reinterpret_cast<uintptr_t*>(ebp + classFunctionOffset);
+        /*
         g_log << "[Class Member Function] class: "<<  global << " function: " << field << " function_address: " << std::hex << tmp << std::endl;
         g_log.flush();
+        */
         ClassMemberFunctions[std::string(global) + "." + std::string(field)]  = tmp;
     } else {
         uintptr_t second_tmp = 0;
         tmp = *reinterpret_cast<uintptr_t*>(ebp + singletonFunctionOffset);
         second_tmp = *reinterpret_cast<uintptr_t*>(ebp + singletonFunctionOffset + 0x04);
+        /*
         g_log << "[Singleton Function] class: " << global << " function: " << field <<
             " function_address: " << std::hex << tmp<< " second_param: " << std::hex << second_tmp << std::endl;
         g_log.flush();
+        */
         SingletonFunctions[std::string(global) + "." + std::string(field)]  = {tmp, second_tmp};
     }
     original_bindSingletonFunction(a1,a2,a3);
@@ -41,19 +46,25 @@ void __stdcall hooked_callGlobalField(uintptr_t **a1, uintptr_t **a2) {
     uintptr_t ebp = ctx.Ebp;
     auto global = *reinterpret_cast<std::string*>(a1);
     auto field = *reinterpret_cast<std::string*>(a2);
-    std::cout << global << std::endl;
-    std::cout << field << std::endl;
     if (global == "g_game") {
         if (field == "onTextMessage") {
-            uintptr_t addr_message = ebp + globalFieldOffset;
-            auto ptr_messageText = g_custom->getMessagePtr(addr_message);
-            std::cout << std::hex << ptr_messageText << std::endl;
+            uintptr_t onTextMessage_address = ebp + onTextMessageOffset;
+            auto ptr_messageText = g_custom->getMessagePtr(onTextMessage_address);
             auto message_address = reinterpret_cast<std::string*>(ptr_messageText);
-            std::cout << *message_address << std::endl;
             if (message_address->find("You see") != std::string::npos)
             {
                 *message_address = "ID: " + std::to_string(itemId) + "\n" + *reinterpret_cast<std::string*>(ptr_messageText);
             }
+        } else if (field == "onTalk") {
+            auto args = reinterpret_cast<StackArgs*>(ebp + onTalkOffset);
+            g_custom->onTalk(
+                *args->name,
+                reinterpret_cast<uint16_t>(args->level),
+                *args->mode,
+                *args->text,
+                *args->channelId,
+                *args->pos
+            );
         }
     }
     original_callGlobalField(a1, a2);
