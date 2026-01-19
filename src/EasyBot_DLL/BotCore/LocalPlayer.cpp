@@ -20,7 +20,7 @@ Otc::PlayerStates LocalPlayer::getStates(LocalPlayerPtr localPlayer) {
         );
     auto function = reinterpret_cast<GetStates>(ClassMemberFunctions["LocalPlayer.getStates"]);
     return g_dispatcher->scheduleEventEx([function, localPlayer]() {
-        return function(localPlayer.address);
+        return function(localPlayer);
     });
 }
 
@@ -33,7 +33,7 @@ double LocalPlayer::getHealth(LocalPlayerPtr localPlayer) {
     auto function = reinterpret_cast<GetHealth>(ClassMemberFunctions["LocalPlayer.getHealth"]);
     return g_dispatcher->scheduleEventEx([function, localPlayer]() {
         void* pMysteryPtr = nullptr;
-        return function(localPlayer.address, &pMysteryPtr);
+        return function(localPlayer, &pMysteryPtr);
     });
 }
 
@@ -46,7 +46,7 @@ double LocalPlayer::getMaxHealth(LocalPlayerPtr localPlayer) {
     auto function = reinterpret_cast<GetMaxHealth>(ClassMemberFunctions["LocalPlayer.getMaxHealth"]);
     return g_dispatcher->scheduleEventEx([function, localPlayer]() {
         void* pMysteryPtr = nullptr;
-        return function(localPlayer.address, &pMysteryPtr);
+        return function(localPlayer, &pMysteryPtr);
     });
 }
 
@@ -59,7 +59,7 @@ double LocalPlayer::getFreeCapacity(LocalPlayerPtr localPlayer) {
     auto function = reinterpret_cast<GetFreeCapacity>(ClassMemberFunctions["LocalPlayer.getFreeCapacity"]);
     return g_dispatcher->scheduleEventEx([function, localPlayer]() {
         void* pMysteryPtr = nullptr;
-        return function(localPlayer.address, &pMysteryPtr);
+        return function(localPlayer, &pMysteryPtr);
     });
 }
 
@@ -72,7 +72,7 @@ uint16_t LocalPlayer::getLevel(LocalPlayerPtr localPlayer) {
     auto function = reinterpret_cast<GetLevel>(ClassMemberFunctions["LocalPlayer.getLevel"]);
     return g_dispatcher->scheduleEventEx([function, localPlayer]() {
         void* pMysteryPtr = nullptr;
-        return function(localPlayer.address, &pMysteryPtr);
+        return function(localPlayer, &pMysteryPtr);
     });
 }
 
@@ -85,7 +85,7 @@ double LocalPlayer::getMana(LocalPlayerPtr localPlayer) {
     auto function = reinterpret_cast<GetMana>(ClassMemberFunctions["LocalPlayer.getMana"]);
     return g_dispatcher->scheduleEventEx([function, localPlayer]() {
         void* pMysteryPtr = nullptr;
-        return function(localPlayer.address, &pMysteryPtr);
+        return function(localPlayer, &pMysteryPtr);
     });
 }
 
@@ -98,7 +98,7 @@ double LocalPlayer::getMaxMana(LocalPlayerPtr localPlayer) {
     auto function = reinterpret_cast<GetMaxMana>(ClassMemberFunctions["LocalPlayer.getMaxMana"]);
     return g_dispatcher->scheduleEventEx([function, localPlayer]() {
         void* pMysteryPtr = nullptr;
-        return function(localPlayer.address, &pMysteryPtr);
+        return function(localPlayer, &pMysteryPtr);
     });
 }
 
@@ -111,7 +111,7 @@ uint8_t LocalPlayer::getSoul(LocalPlayerPtr localPlayer) {
     auto function = reinterpret_cast<GetSoul>(ClassMemberFunctions["LocalPlayer.getSoul"]);
     return g_dispatcher->scheduleEventEx([function, localPlayer]() {
         void* pMysteryPtr = nullptr;
-        return function(localPlayer.address, &pMysteryPtr);
+        return function(localPlayer, &pMysteryPtr);
     });
 }
 
@@ -124,7 +124,7 @@ uint16_t LocalPlayer::getStamina(LocalPlayerPtr localPlayer) {
     auto function = reinterpret_cast<GetStamina>(ClassMemberFunctions["LocalPlayer.getStamina"]);
     return g_dispatcher->scheduleEventEx([function, localPlayer]() {
         void* pMysteryPtr = nullptr;
-        return function(localPlayer.address, &pMysteryPtr);
+        return function(localPlayer, &pMysteryPtr);
     });
 }
 
@@ -138,7 +138,7 @@ ItemPtr LocalPlayer::getInventoryItem(LocalPlayerPtr localPlayer, Otc::Inventory
     auto function = reinterpret_cast<GetInventoryItem>(ClassMemberFunctions["LocalPlayer.getInventoryItem"]);
     return g_dispatcher->scheduleEventEx([function, localPlayer, inventorySlot]() {
         ItemPtr result;
-        function(localPlayer.address, &result, inventorySlot);
+        function(localPlayer, &result, inventorySlot);
         return result;
     });
 }
@@ -154,7 +154,7 @@ int LocalPlayer::getInventoryCount(LocalPlayerPtr localPlayer, uint16_t itemId, 
     auto function = reinterpret_cast<GetInventoryCount>(ClassMemberFunctions["LocalPlayer.getInventoryCount"]);
     return g_dispatcher->scheduleEventEx([function, localPlayer, itemId, tier]() {
         void* pMysteryPtr = nullptr;
-        return function(localPlayer.address, &pMysteryPtr, itemId, tier);
+        return function(localPlayer, &pMysteryPtr, itemId, tier);
     });
 }
 
@@ -168,7 +168,7 @@ bool LocalPlayer::hasSight(LocalPlayerPtr localPlayer, const Position &pos) {
     auto function = reinterpret_cast<HasSight>(ClassMemberFunctions["LocalPlayer.hasSight"]);
     return g_dispatcher->scheduleEventEx([function, localPlayer, pos]() {
         void* pMysteryPtr = nullptr;
-        return function(localPlayer.address, &pMysteryPtr, &pos);
+        return function(localPlayer, &pMysteryPtr, &pos);
     });
 }
 
@@ -181,7 +181,7 @@ bool LocalPlayer::isAutoWalking(LocalPlayerPtr localPlayer) {
     auto function = reinterpret_cast<IsAutoWalking>(ClassMemberFunctions["LocalPlayer.isAutoWalking"]);
     return g_dispatcher->scheduleEventEx([function, localPlayer]() {
         void* pMysteryPtr = nullptr;
-        return function(localPlayer.address, &pMysteryPtr);
+        return function(localPlayer, &pMysteryPtr);
     });
 }
 
@@ -192,7 +192,7 @@ void LocalPlayer::stopAutoWalk(LocalPlayerPtr localPlayer) {
         );
     auto function = reinterpret_cast<StopAutoWalk>(ClassMemberFunctions["LocalPlayer.stopAutoWalk"]);
     return g_dispatcher->scheduleEventEx([function, localPlayer]() {
-        return function(localPlayer.address);
+        return function(localPlayer);
     });
 }
 
@@ -205,14 +205,14 @@ bool LocalPlayer::autoWalk(LocalPlayerPtr localPlayer, const Position &destinati
         );
     auto function = reinterpret_cast<AutoWalk>(ClassMemberFunctions["LocalPlayer.autoWalk"]);
     return g_dispatcher->scheduleEventEx([function, localPlayer, destination, retry]() {
-        return function(localPlayer.address, destination, retry);
+        return function(localPlayer, destination, retry);
     });
 }
 
 void LocalPlayer::setLightHack(LocalPlayerPtr localPlayer, uint16_t lightLevel) {
     if (!localPlayer) return;
     g_dispatcher->scheduleEventEx([localPlayer, lightLevel]() {
-        auto lightPtr = reinterpret_cast<uint16_t*>(localPlayer.address + lightHackOffset);
+        auto lightPtr = reinterpret_cast<uint16_t*>(localPlayer + lightHackOffset);
         if (*lightPtr != lightLevel) *lightPtr = lightLevel;
     });
 }

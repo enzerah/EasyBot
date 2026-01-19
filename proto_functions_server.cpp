@@ -34,8 +34,9 @@ Status BotServiceImpl::GetItem(ServerContext* context, const bot::bot_GetItemReq
 }
 
 Status BotServiceImpl::GetItems(ServerContext* context, const google::protobuf::UInt64Value* request, bot::bot_Uint64List* response) {
-    for(const auto& val : g_container->getItems(toPtr<Container>(request->value()))) {
-        response->add_items(val);
+    auto items  = g_container->getItems(toPtr<Container>(request->value()));
+    for (auto item : items) {
+        response->add_items(item);
     }
     return Status::OK;
 }

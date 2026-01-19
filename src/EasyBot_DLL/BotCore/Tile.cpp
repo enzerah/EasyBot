@@ -23,7 +23,7 @@ ThingPtr Tile::getTopThing(TilePtr tile) {
     auto function = reinterpret_cast<GetTopThing>(ClassMemberFunctions["Tile.getTopThing"]);
     return g_dispatcher->scheduleEventEx([function, tile]() {
         ThingPtr result;
-        function(tile.address, &result);
+        function(tile, &result);
         return result;
     });
 }
@@ -37,7 +37,7 @@ ThingPtr Tile::getTopUseThing(TilePtr tile) {
     auto function = reinterpret_cast<GetTopUseThing>(ClassMemberFunctions["Tile.getTopUseThing"]);
     return g_dispatcher->scheduleEventEx([function, tile]() {
         ThingPtr result;
-        function(tile.address, &result);
+        function(tile, &result);
         return result;
     });
 }
@@ -51,7 +51,7 @@ std::vector<ItemPtr> Tile::getItems(TilePtr tile) {
     auto function = reinterpret_cast<GetItems>(ClassMemberFunctions["Tile.getItems"]);
     return g_dispatcher->scheduleEventEx([function, tile]() {
         std::vector<ItemPtr> result;
-        function(tile.address, &result);
+        function(tile, &result);
         return result;
     });
 }

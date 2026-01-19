@@ -24,7 +24,7 @@ std::string Item::getName(ItemPtr item) {
     auto function = reinterpret_cast<GetName>(ClassMemberFunctions["Item.getName"]);
     return g_dispatcher->scheduleEventEx([function, item]() {
         std::string result;
-        function(item.address, &result);
+        function(item, &result);
         return result;
     });
 }
@@ -38,7 +38,7 @@ std::string Item::getDescription(ItemPtr item) {
     auto function = reinterpret_cast<GetDescription>(ClassMemberFunctions["Item.getDescription"]);
     return g_dispatcher->scheduleEventEx([function, item]() {
         std::string result;
-        function(item.address, &result);
+        function(item, &result);
         return result;
     });
 }
@@ -52,7 +52,7 @@ int Item::getCount(ItemPtr item) {
     auto function = reinterpret_cast<GetCount>(ClassMemberFunctions["Item.getCount"]);
     return g_dispatcher->scheduleEventEx([function, item]() {
         void* pMysteryPtr = nullptr;
-        return function(item.address, &pMysteryPtr);
+        return function(item, &pMysteryPtr);
     });
 }
 
@@ -65,7 +65,7 @@ int Item::getSubType(ItemPtr item) {
     auto function = reinterpret_cast<GetSubType>(ClassMemberFunctions["Item.getSubType"]);
     return g_dispatcher->scheduleEventEx([function, item]() {
         void* pMysteryPtr = nullptr;
-        return function(item.address, &pMysteryPtr);
+        return function(item, &pMysteryPtr);
     });
 }
 
@@ -78,7 +78,7 @@ uint32_t Item::getId(ItemPtr item) {
     auto function = reinterpret_cast<GetId>(ClassMemberFunctions["Item.getId"]);
     return g_dispatcher->scheduleEventEx([function, item]() {
         void* pMysteryPtr = nullptr;
-        return function(item.address, &pMysteryPtr);
+        return function(item, &pMysteryPtr);
     });
 }
 
@@ -91,7 +91,7 @@ std::string Item::getTooltip(ItemPtr item) {
     auto function = reinterpret_cast<GetTooltip>(ClassMemberFunctions["Item.getTooltip"]);
     return g_dispatcher->scheduleEventEx([function, item]() {
         std::string result;
-        function(item.address, &result);
+        function(item, &result);
         return result;
     });
 }
@@ -105,7 +105,7 @@ uint32_t Item::getDurationTime(ItemPtr item) {
     auto function = reinterpret_cast<GetDurationTime>(ClassMemberFunctions["Item.getDurationTime"]);
     return g_dispatcher->scheduleEventEx([function, item]() {
         void* pMysteryPtr = nullptr;
-        return function(item.address, &pMysteryPtr);
+        return function(item, &pMysteryPtr);
     });
 }
 
@@ -118,7 +118,7 @@ uint8_t Item::getTier(ItemPtr item) {
     auto function = reinterpret_cast<GetTier>(ClassMemberFunctions["Item.getTier"]);
     return g_dispatcher->scheduleEventEx([function, item]() {
         uint8_t result;
-        function(item.address, &result);
+        function(item, &result);
         return result;
     });
 }
@@ -132,7 +132,7 @@ std::string Item::getText(ItemPtr item) {
     auto function = reinterpret_cast<GetText>(ClassMemberFunctions["Item.getText"]);
     return g_dispatcher->scheduleEventEx([function, item]() {
         std::string result;
-        function(item.address, &result);
+        function(item, &result);
         return result;
     });
 }

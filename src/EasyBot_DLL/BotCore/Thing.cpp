@@ -23,7 +23,7 @@ uint32_t Thing::getId(ThingPtr thing) {
     auto function = reinterpret_cast<GetId>(ClassMemberFunctions["Thing.getId"]);
     return g_dispatcher->scheduleEventEx([function, thing]() {
         void* pMysteryPtr = nullptr;
-        return function(thing.address, &pMysteryPtr);
+        return function(thing, &pMysteryPtr);
     });
 }
 
@@ -37,7 +37,7 @@ Position Thing::getPosition(ThingPtr thing) {
     auto function = reinterpret_cast<GetPosition>(ClassMemberFunctions["Thing.getPosition"]);
     return g_dispatcher->scheduleEventEx([function, thing]() {
         Position result{};
-        function(thing.address, &result);
+        function(thing, &result);
         return result;
     });
 }
@@ -51,7 +51,7 @@ ContainerPtr Thing::getParentContainer(ThingPtr thing) {
     auto function = reinterpret_cast<GetParentContainer>(ClassMemberFunctions["Thing.getParentContainer"]);
     return g_dispatcher->scheduleEventEx([function, thing]() {
         ContainerPtr result;
-        function(thing.address, &result);
+        function(thing, &result);
         return result;
     });
 }
@@ -65,7 +65,7 @@ bool Thing::isItem(ThingPtr thing) {
     auto function = reinterpret_cast<IsItem>(ClassMemberFunctions["Thing.isItem"]);
     return g_dispatcher->scheduleEventEx([function, thing]() {
         void* pMysteryPtr = nullptr;
-        return function(thing.address, &pMysteryPtr);
+        return function(thing, &pMysteryPtr);
     });
 }
 
@@ -78,7 +78,7 @@ bool Thing::isMonster(ThingPtr thing) {
     auto function = reinterpret_cast<IsMonster>(ClassMemberFunctions["Thing.isMonster"]);
     return g_dispatcher->scheduleEventEx([function, thing]() {
         void* pMysteryPtr = nullptr;
-        return function(thing.address, &pMysteryPtr);
+        return function(thing, &pMysteryPtr);
     });
 }
 
@@ -91,7 +91,7 @@ bool Thing::isNpc(ThingPtr thing) {
     auto function = reinterpret_cast<IsNpc>(ClassMemberFunctions["Thing.isNpc"]);
     return g_dispatcher->scheduleEventEx([function, thing]() {
         void* pMysteryPtr = nullptr;
-        return function(thing.address, &pMysteryPtr);
+        return function(thing, &pMysteryPtr);
     });
 }
 
@@ -104,7 +104,7 @@ bool Thing::isCreature(ThingPtr thing) {
     auto function = reinterpret_cast<IsCreature>(ClassMemberFunctions["Thing.isCreature"]);
     return g_dispatcher->scheduleEventEx([function, thing]() {
         void* pMysteryPtr = nullptr;
-        return function(thing.address, &pMysteryPtr);
+        return function(thing, &pMysteryPtr);
     });
 }
 
@@ -117,7 +117,7 @@ bool Thing::isPlayer(ThingPtr thing) {
     auto function = reinterpret_cast<IsPlayer>(ClassMemberFunctions["Thing.isPlayer"]);
     return g_dispatcher->scheduleEventEx([function, thing]() {
         void* pMysteryPtr = nullptr;
-        return function(thing.address, &pMysteryPtr);
+        return function(thing, &pMysteryPtr);
     });
 }
 
@@ -130,7 +130,7 @@ bool Thing::isLocalPlayer(ThingPtr thing) {
     auto function = reinterpret_cast<IsLocalPlayer>(ClassMemberFunctions["Thing.isLocalPlayer"]);
     return g_dispatcher->scheduleEventEx([function, thing]() {
         void* pMysteryPtr = nullptr;
-        return function(thing.address, &pMysteryPtr);
+        return function(thing, &pMysteryPtr);
     });;
 }
 
@@ -143,7 +143,7 @@ bool Thing::isContainer(ThingPtr thing) {
     auto function = reinterpret_cast<IsContainer>(ClassMemberFunctions["Thing.isContainer"]);
     return g_dispatcher->scheduleEventEx([function, thing]() {
         void* pMysteryPtr = nullptr;
-        return function(thing.address, &pMysteryPtr);
+        return function(thing, &pMysteryPtr);
     });
 }
 
@@ -156,7 +156,7 @@ bool Thing::isUsable(ThingPtr thing) {
     auto function = reinterpret_cast<IsUsable>(ClassMemberFunctions["Thing.isUsable"]);
     return g_dispatcher->scheduleEventEx([function, thing]() {
         void* pMysteryPtr = nullptr;
-        return function(thing.address, &pMysteryPtr);
+        return function(thing, &pMysteryPtr);
     });
 }
 
@@ -169,7 +169,7 @@ bool Thing::isLyingCorpse(ThingPtr thing) {
     auto function = reinterpret_cast<IsLyingCorpse>(ClassMemberFunctions["Thing.isLyingCorpse"]);
     return g_dispatcher->scheduleEventEx([function, thing]() {
         void* pMysteryPtr = nullptr;
-        return function(thing.address, &pMysteryPtr);
+        return function(thing, &pMysteryPtr);
     });
 }
 

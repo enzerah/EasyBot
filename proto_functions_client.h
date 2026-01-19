@@ -22,11 +22,14 @@ private:
     static std::mutex mutex;
 protected:
     BotClient();
-    ~BotClient(){}
+    ~BotClient()= default;
 public:
     BotClient(BotClient const&) = delete;
     void operator=(const BotClient&) = delete;
     static BotClient* getInstance();
+    std::vector<int> availablePorts();
+    void connect(int port);
+    void disconnect(int port);
 
     // Functions:
     // Container

@@ -47,37 +47,22 @@ struct SmartPtr {
     bool operator!=(const SmartPtr& other) const { return address != other.address; }
 };
 
-using MapViewPtr = SmartPtr<MapView>;
-using LightViewPtr = uintptr_t; // unique_ptr is 8 bytes
-using TilePtr = SmartPtr<Tile>;
-using ThingPtr = SmartPtr<Thing>;
-using ItemPtr = SmartPtr<Item>;
-using ContainerPtr = SmartPtr<Container>;
 #if BuildOption == BUILD_EXORDION
     using CreaturePtr = SmartPtr<Creature>;
+    using ItemPtr = SmartPtr<Item>;
+    using ContainerPtr = SmartPtr<Container>;
+    using LocalPlayerPtr = SmartPtr<LocalPlayer>;
+    using ThingPtr = SmartPtr<Thing>;
+    using TilePtr = SmartPtr<Tile>;
 #else
     using CreaturePtr = uintptr_t;
+    using ItemPtr = uintptr_t;
+    using ContainerPtr = uintptr_t;
+    using LocalPlayerPtr = uintptr_t;
+    using ThingPtr = uintptr_t;
+    using TilePtr = uintptr_t;
 #endif
-using MonsterPtr = SmartPtr<Monster>;
-using NpcPtr = SmartPtr<Npc>;
-using PlayerPtr = SmartPtr<Player>;
-using LocalPlayerPtr = SmartPtr<LocalPlayer>;
-using EffectPtr = SmartPtr<Effect>;
-using MissilePtr = SmartPtr<Missile>;
-using AnimatedTextPtr = SmartPtr<AnimatedText>;
-using StaticTextPtr = SmartPtr<StaticText>;
-using ThingTypePtr = SmartPtr<ThingType>;
-using ItemTypePtr = SmartPtr<ItemType>;
-using AttachedEffectPtr = SmartPtr<AttachedEffect>;
-using AttachableObjectPtr = SmartPtr<AttachableObject>;
 
-
-using ThingList = std::vector<ThingPtr>;
-using ThingTypeList = std::vector<ThingTypePtr>;
-using ItemTypeList = std::vector<ItemTypePtr>;
-
-using TileList = std::list<TilePtr>;
-using ItemVector = std::vector<ItemPtr>;
 
 
 

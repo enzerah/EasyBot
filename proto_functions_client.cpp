@@ -1,13 +1,36 @@
 #include "proto_functions_client.h"
+#include <string>
+
 BotClient* BotClient::instance{nullptr};
 std::mutex BotClient::mutex;
 
 
 BotClient::BotClient() {
-    std::string server_address("localhost:50051");
-    std::shared_ptr<Channel> channel = grpc::CreateChannel(server_address, grpc::InsecureChannelCredentials());
+    connect(50051);
+}
+
+void BotClient::connect(int port) {
+    std::shared_ptr<Channel> channel = grpc::CreateChannel("localhost:" + std::to_string(port), grpc::InsecureChannelCredentials());
     stub = BotService::NewStub(channel);
 }
+
+void BotClient::disconnect(int port) {
+}
+/*
+std::vector<int> BotClient::availablePorts() {
+    std::vector<int> ports;
+    for (int port = 50051; port <= 50060; ++port) {
+        QTcpSocket socket;
+        socket.connectToHost("localhost", port);
+
+        if (socket.waitForConnected(10)) {
+            ports.push_back(port);
+            socket.disconnectFromHost();
+        }
+    }
+    return ports;
+}
+*/
 
 BotClient* BotClient::getInstance()
 {
@@ -32,8 +55,8 @@ uintptr_t BotClient::getItem(uintptr_t container, uint8_t slot)
     return response.value();
 }
 
-std::deque<uintptr_t> BotClient::getItems(uintptr_t value)
-{
+std::deque<uintptr_t> BotClient::getItems(uintptr_t value){
+
     UInt64Value request;
     request.set_value(value);
     bot_Uint64List response;
@@ -357,8 +380,7 @@ void BotClient::refreshContainer(const uintptr_t &container)
     Status status = stub->RefreshContainer(&context, request, &response);
 }
 
-void BotClient::attack(const uintptr_t &creature, bool cancel = false)
-{
+void BotClient::attack(const uintptr_t &creature, bool cancel = false) {
     bot_AttackRequest request;
     request.set_creature(creature);
     request.set_cancel(cancel);
@@ -830,8 +852,7 @@ uintptr_t BotClient::getInventoryItem(uintptr_t localPlayer, Otc::InventorySlot 
     return response.value();
 }
 
-bool BotClient::hasEquippedItemId(uintptr_t localPlayer, uint16_t itemId, int tier)
-{
+bool BotClient::hasEquippedItemId(uintptr_t localPlayer, uint16_t itemId, int tier) {
     bot_HasEquippedItemIdRequest request;
     request.set_localplayer(localPlayer);
     request.set_itemid(itemId);

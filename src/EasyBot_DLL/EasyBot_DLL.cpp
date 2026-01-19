@@ -6,6 +6,7 @@
 #include "LocalPlayer.h"
 #include "Thing.h"
 #include "Container.h"
+#include "Item.h"
 
 
 DWORD WINAPI EasyBot(HMODULE hModule) {
@@ -23,7 +24,7 @@ DWORD WINAPI EasyBot(HMODULE hModule) {
     std::cout << "Singleton " << std::hex <<bindSingletonFunction_func << std::endl;
     std::cout << "Call global " << std::hex <<callGlobalField_func << std::endl;
     std::cout << "Main Loop " << std::hex << mainLoop_func << std::endl;
-     */
+    */
     MH_EnableHook(MH_ALL_HOOKS);
     while (!SingletonFunctions["g_game.look"].first)
     {

@@ -37,10 +37,26 @@ int main() {
     }
     */
     auto localPlayer = proto->getLocalPlayer();
-    auto state = proto->getStates(localPlayer);
-    bool isHasted = state & Otc::PlayerStates::IconHaste;
-    std::cout << isHasted << std::endl;
-    std::cout << state << std::endl;
-    proto->walk(Otc::Direction::South);
+    std::cout << localPlayer << std::endl;
+    auto equip = proto->hasEquippedItemId(localPlayer, 3357, 0);
+    std::cout << "Has equiped: " << equip << std::endl;
+    auto health = proto->getHealth(localPlayer);
+    std::cout << "Health: " << health << std::endl;
+    auto playerPos = proto->getPosition(localPlayer);
+    std::cout << playerPos.x << ", " << playerPos.y << std::endl;
+    auto spectators = proto->getSpectators(playerPos);
+    for (auto spectator : spectators) {
+        std::cout << "Spectator: " << spectator << std::endl;
+        std::cout << proto->getCreatureName(spectator) << std::endl;
+    }
+    auto containers = proto->getContainers();
+    std::cout << "Size of containers: " << containers.size() << std::endl;
+    for (auto container : containers) {
+        auto items = proto->getItems(containers[0]);
+        std::cout << "Item Size " << items.size() << std::endl;
+        for (auto item : items) {
+            std::cout << proto->getItemId(item) << std::endl;
+        }
+    }
     return 0;
 }
