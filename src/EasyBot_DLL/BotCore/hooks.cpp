@@ -4,6 +4,8 @@
 #include "CustomFunctions.h"
 #include "pattern_scan.h"
 
+
+//static std::ofstream g_log("GameAddress.txt",  std::ios::trunc);
 void __stdcall hooked_bindSingletonFunction(uintptr_t a1, uintptr_t a2, uintptr_t a3) {
     CONTEXT ctx;
     RtlCaptureContext(&ctx);
@@ -11,24 +13,23 @@ void __stdcall hooked_bindSingletonFunction(uintptr_t a1, uintptr_t a2, uintptr_
     uintptr_t tmp = 0;
     auto global = *reinterpret_cast<std::string*>(a1);
     auto field = *reinterpret_cast<std::string*>(a2);
-    //std::cout << global << "." << field << std::endl;
     if (global[1] != '_') {
         tmp = *reinterpret_cast<uintptr_t*>(ebp + classFunctionOffset);
+        ClassMemberFunctions[std::string(global) + "." + std::string(field)]  = tmp;
         /*
         g_log << "[Class Member Function] class: "<<  global << " function: " << field << " function_address: " << std::hex << tmp << std::endl;
         g_log.flush();
         */
-        ClassMemberFunctions[std::string(global) + "." + std::string(field)]  = tmp;
     } else {
         uintptr_t second_tmp = 0;
         tmp = *reinterpret_cast<uintptr_t*>(ebp + singletonFunctionOffset);
         second_tmp = *reinterpret_cast<uintptr_t*>(ebp + singletonFunctionOffset + 0x04);
+        SingletonFunctions[std::string(global) + "." + std::string(field)]  = {tmp, second_tmp};
         /*
         g_log << "[Singleton Function] class: " << global << " function: " << field <<
-            " function_address: " << std::hex << tmp<< " second_param: " << std::hex << second_tmp << std::endl;
+        " function_address: " << std::hex << tmp<< " second_param: " << std::hex << second_tmp << std::endl;
         g_log.flush();
         */
-        SingletonFunctions[std::string(global) + "." + std::string(field)]  = {tmp, second_tmp};
     }
     original_bindSingletonFunction(a1,a2,a3);
 }

@@ -8,9 +8,6 @@
 #include <fstream>
 
 
-
-//static std::ofstream g_log("GameAddress.txt",  std::ios::trunc);
-
 inline std::map<std::string, std::pair<uintptr_t, uintptr_t>> SingletonFunctions;
 inline std::map<std::string, uintptr_t> ClassMemberFunctions;
 
