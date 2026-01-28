@@ -43,7 +43,7 @@ public:
     void setChaseMode(Otc::ChaseModes mode);
     void setFightMode(Otc::FightModes mode);
     void buyItem(const ItemPtr& item, const uint16_t amount, const bool ignoreCapacity, const bool buyWithBackpack);
-    void sellItem(const ItemPtr& item, const uint16_t amount, const bool ignoreEquipped);
+    void sellItem(const ItemPtr& item, const uint16_t amount, const bool ignoreEquipped = false);
     void equipItem(const ItemPtr& item);
     void equipItemId(uint16_t itemId, uint8_t tier);
     void mount(bool mountStatus);

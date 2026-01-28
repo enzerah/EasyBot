@@ -285,8 +285,9 @@ void Game::talkPrivate(Otc::MessageMode msgMode,std::string receiver,std::string
         std::string *message
     );
     auto function = reinterpret_cast<TalkPrivate>(SingletonFunctions["g_game.talkPrivate"].first);
-    g_dispatcher->scheduleEventEx([function, receiver, message, msgMode]() mutable {
-        function(SingletonFunctions["g_game.talkPrivate"].second, msgMode, &receiver, &message);
+    g_dispatcher->scheduleEventEx([function, receiver, message]() mutable {
+        Otc::MessageMode m = Otc::MessageMode::MessagePrivateTo;
+        function(SingletonFunctions["g_game.talkPrivate"].second, m, &receiver, &message);
     });
 }
 
