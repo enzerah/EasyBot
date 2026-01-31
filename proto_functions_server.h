@@ -23,14 +23,18 @@ public:
 
     // --- Creature.h ---
     Status GetCreatureName(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::StringValue* response) override;
+    Status GetManaPercent(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::UInt32Value* response) override;
     Status GetHealthPercent(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::UInt32Value* response) override;
+    Status GetSkull(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::UInt32Value* response) override;
     Status GetDirection(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::Int32Value* response) override;
     Status IsDead(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::BoolValue* response) override;
+    Status IsWalking(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::BoolValue* response) override;
     Status CanBeSeen(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::BoolValue* response) override;
     Status IsCovered(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::BoolValue* response) override;
     Status CanShoot(ServerContext* context, const bot::bot_CanShootRequest* request, google::protobuf::BoolValue* response) override;
 
     // --- Game.h ---
+    Status SafeLogout(ServerContext* context, const google::protobuf::Empty* request, google::protobuf::Empty* response) override;
     Status Walk(ServerContext* context, const google::protobuf::Int32Value* request, google::protobuf::Empty* response) override;
     Status AutoWalkGame(ServerContext* context, const bot::bot_AutoWalkGameRequest* request, google::protobuf::Empty* response) override;
     Status Turn(ServerContext* context, const google::protobuf::Int32Value* request, google::protobuf::Empty* response) override;
@@ -54,6 +58,8 @@ public:
     Status TalkChannel(ServerContext* context, const bot::bot_TalkChannelRequest* request, google::protobuf::Empty* response) override;
     Status TalkPrivate(ServerContext* context, const bot::bot_TalkPrivateRequest* request, google::protobuf::Empty* response) override;
     Status OpenPrivateChannel(ServerContext* context, const google::protobuf::StringValue* request, google::protobuf::Empty* response) override;
+    Status GetChaseMode(ServerContext* context, const google::protobuf::Empty* request, google::protobuf::Int32Value* response) override;
+    Status GetFightMode(ServerContext* context, const google::protobuf::Empty* request, google::protobuf::Int32Value* response) override;
     Status SetChaseMode(ServerContext* context, const google::protobuf::Int32Value* request, google::protobuf::Empty* response) override;
     Status SetFightMode(ServerContext* context, const google::protobuf::Int32Value* request, google::protobuf::Empty* response) override;
     Status BuyItem(ServerContext* context, const bot::bot_BuyItemRequest* request, google::protobuf::Empty* response) override;

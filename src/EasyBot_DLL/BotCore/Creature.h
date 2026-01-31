@@ -19,9 +19,12 @@ public:
     static Creature* getInstance();
 
     std::string getName(CreaturePtr creature);
+    uint8_t getManaPercent(CreaturePtr creature);
     uint8_t getHealthPercent(CreaturePtr creature);
+    uint8_t getSkull(CreaturePtr creature);
     Otc::Direction getDirection(CreaturePtr creature);
     bool isDead(CreaturePtr creature);
+    bool isWalking(CreaturePtr creature);
     bool canBeSeen(CreaturePtr creature);
     bool isCovered(CreaturePtr creature);
     bool canShoot(CreaturePtr creature, int distance);

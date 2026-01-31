@@ -15,6 +15,16 @@ Game* Game::getInstance()
     return instance;
 }
 
+void Game::safeLogout() {
+    typedef void(gameCall* SafeLogout)(
+    uintptr_t RCX
+    );
+    auto function = reinterpret_cast<SafeLogout>(SingletonFunctions["g_game.safeLogout"].first);
+    return g_dispatcher->scheduleEventEx([function]() {
+        function(SingletonFunctions["g_game.safeLogout"].second);
+    });
+}
+
 void Game::walk(Otc::Direction direction)
 {
     typedef bool(gameCall* Walk)(
@@ -301,6 +311,32 @@ void Game::openPrivateChannel(const std::string& receiver) {
     auto function = reinterpret_cast<OpenPrivateChannel>(SingletonFunctions["g_game.openPrivateChannel"].first);
     return g_dispatcher->scheduleEventEx([function, receiver]() {
             function(SingletonFunctions["g_game.openPrivateChannel"].second, receiver);
+    });
+}
+
+Otc::FightModes Game::getFightMode() {
+    typedef Otc::FightModes(gameCall* GetFightMode)(
+        uintptr_t RCX,
+        void *RDX
+        );
+    auto function = reinterpret_cast<GetFightMode>(SingletonFunctions["g_game.getFightMode"].first);
+    return g_dispatcher->scheduleEventEx([function]() {
+            void* pMysteryPtr = nullptr;
+            auto ret = function(SingletonFunctions["g_game.getFightMode"].second, &pMysteryPtr);
+            return ret;
+    });
+}
+
+Otc::ChaseModes Game::getChaseMode() {
+    typedef Otc::ChaseModes(gameCall* GetChaseMode)(
+        uintptr_t RCX,
+        void *RDX
+        );
+    auto function = reinterpret_cast<GetChaseMode>(SingletonFunctions["g_game.getChaseMode"].first);
+    return g_dispatcher->scheduleEventEx([function]() {
+            void* pMysteryPtr = nullptr;
+            auto ret = function(SingletonFunctions["getChaseMode.getFightMode"].second, &pMysteryPtr);
+            return ret;
     });
 }
 

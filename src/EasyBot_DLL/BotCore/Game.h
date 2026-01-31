@@ -17,6 +17,7 @@ public:
     void operator=(const Game&) = delete;
     static Game* getInstance();
 
+    void safeLogout();
     void walk(Otc::Direction direction);
     void autoWalk(const std::vector<Otc::Direction> &dirs, const Position &startPos);
     void turn(Otc::Direction direction);
@@ -40,6 +41,8 @@ public:
     void talkChannel(const Otc::MessageMode mode, const uint16_t channelId, const std::string& message);
     void talkPrivate(Otc::MessageMode msgMode, std::string receiver, std::string message);
     void openPrivateChannel(const std::string& receiver);
+    Otc::FightModes getFightMode();
+    Otc::ChaseModes getChaseMode();
     void setChaseMode(Otc::ChaseModes mode);
     void setFightMode(Otc::FightModes mode);
     void buyItem(const ItemPtr& item, const uint16_t amount, const bool ignoreCapacity, const bool buyWithBackpack);

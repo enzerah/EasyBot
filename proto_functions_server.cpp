@@ -88,10 +88,23 @@ Status BotServiceImpl::GetCreatureName(ServerContext* context, const google::pro
     return Status::OK;
 }
 
+Status BotServiceImpl::GetManaPercent(ServerContext *context, const google::protobuf::UInt64Value *request,
+    google::protobuf::UInt32Value *response) {
+    response->set_value(g_creature->getManaPercent(toPtr<Creature>(request->value())));
+    return Status::OK;
+}
+
 Status BotServiceImpl::GetHealthPercent(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::UInt32Value* response) {
     response->set_value(g_creature->getHealthPercent(toPtr<Creature>(request->value())));
     return Status::OK;
 }
+
+Status BotServiceImpl::GetSkull(ServerContext *context, const google::protobuf::UInt64Value *request,
+    google::protobuf::UInt32Value *response) {
+    response->set_value(g_creature->getSkull(toPtr<Creature>(request->value())));
+    return Status::OK;
+}
+
 
 Status BotServiceImpl::GetDirection(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::Int32Value* response) {
     response->set_value(static_cast<int32_t>(g_creature->getDirection(toPtr<Creature>(request->value()))));
@@ -100,6 +113,12 @@ Status BotServiceImpl::GetDirection(ServerContext* context, const google::protob
 
 Status BotServiceImpl::IsDead(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::BoolValue* response) {
     response->set_value(g_creature->isDead(toPtr<Creature>(request->value())));
+    return Status::OK;
+}
+
+Status BotServiceImpl::IsWalking(ServerContext *context, const google::protobuf::UInt64Value *request,
+    google::protobuf::BoolValue *response) {
+    response->set_value(g_creature->isWalking(toPtr<Creature>(request->value())));
     return Status::OK;
 }
 
@@ -115,6 +134,12 @@ Status BotServiceImpl::IsCovered(ServerContext* context, const google::protobuf:
 
 Status BotServiceImpl::CanShoot(ServerContext* context, const bot::bot_CanShootRequest* request, google::protobuf::BoolValue* response) {
     response->set_value(g_creature->canShoot(toPtr<Creature>(request->creature()), request->distance()));
+    return Status::OK;
+}
+
+Status BotServiceImpl::SafeLogout(ServerContext *context, const google::protobuf::Empty *request,
+    google::protobuf::Empty *response) {
+    g_game->safeLogout();
     return Status::OK;
 }
 
@@ -237,6 +262,19 @@ Status BotServiceImpl::OpenPrivateChannel(ServerContext* context, const google::
     g_game->openPrivateChannel(request->value());
     return Status::OK;
 }
+
+Status BotServiceImpl::GetChaseMode(ServerContext *context, const google::protobuf::Empty *request,
+    google::protobuf::Int32Value *response) {
+    response->set_value(g_game->getChaseMode());
+    return Status::OK;
+}
+
+Status BotServiceImpl::GetFightMode(ServerContext *context, const google::protobuf::Empty *request,
+    google::protobuf::Int32Value *response) {
+    response->set_value(g_game->getFightMode());
+    return Status::OK;
+}
+
 
 Status BotServiceImpl::SetChaseMode(ServerContext* context, const google::protobuf::Int32Value* request, google::protobuf::Empty* response) {
     g_game->setChaseMode(static_cast<Otc::ChaseModes>(request->value()));

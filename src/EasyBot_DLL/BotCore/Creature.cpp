@@ -28,6 +28,19 @@ std::string Creature::getName(CreaturePtr creature) {
     });
 }
 
+uint8_t Creature::getManaPercent(CreaturePtr creature) {
+    if (!creature) return 0;
+    typedef uint8_t(gameCall* GetManaPercent )(
+        uintptr_t RCX,
+        void *RDX
+        );
+    auto function = reinterpret_cast<GetManaPercent>(ClassMemberFunctions["Creature.getManaPercent "]);
+    return g_dispatcher->scheduleEventEx([function, creature]() {
+        void* pMysteryPtr = nullptr;
+        return function(creature, &pMysteryPtr);
+    });
+}
+
 uint8_t Creature::getHealthPercent(CreaturePtr creature) {
     if (!creature) return 0;
     typedef uint8_t(gameCall* GetHealthPercent)(
@@ -38,6 +51,19 @@ uint8_t Creature::getHealthPercent(CreaturePtr creature) {
     return g_dispatcher->scheduleEventEx([function, creature]() {
         void* pMysteryPtr = nullptr;
         return function(creature, &pMysteryPtr);
+    });
+}
+
+uint8_t Creature::getSkull(CreaturePtr creature) {
+    if (!creature) return {};
+    typedef Otc::Direction(gameCall* GetSkull)(
+        uintptr_t RCX,
+        void *RDX
+        );
+    auto function = reinterpret_cast<GetSkull>(ClassMemberFunctions["Creature.getSkull"]);
+    return g_dispatcher->scheduleEventEx([function, creature]() {
+            void* pMysteryPtr = nullptr;
+            return function(creature, &pMysteryPtr);
     });
 }
 
@@ -61,6 +87,19 @@ bool Creature::isDead(CreaturePtr creature) {
         void *RDX
         );
     auto function = reinterpret_cast<IsDead>(ClassMemberFunctions["Creature.isDead"]);
+    return g_dispatcher->scheduleEventEx([function, creature]() {
+            void* pMysteryPtr = nullptr;
+            return function(creature, &pMysteryPtr);
+    });
+}
+
+bool Creature::isWalking(CreaturePtr creature) {
+    if (!creature) return 0;
+    typedef bool(gameCall* IsWalking)(
+        uintptr_t RCX,
+        void *RDX
+        );
+    auto function = reinterpret_cast<IsWalking>(ClassMemberFunctions["Creature.isWalking"]);
     return g_dispatcher->scheduleEventEx([function, creature]() {
             void* pMysteryPtr = nullptr;
             return function(creature, &pMysteryPtr);

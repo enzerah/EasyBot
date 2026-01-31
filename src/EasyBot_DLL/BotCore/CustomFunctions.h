@@ -49,7 +49,6 @@ public:
     std::vector<MessageStruct> getMessages(int messageNumber);
     void clearMessages();
     void dropMessages(int messageNumber);
-
     uintptr_t* getMessagePtr(uintptr_t message_address);
 };
 
