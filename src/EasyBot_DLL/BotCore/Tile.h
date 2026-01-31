@@ -21,6 +21,7 @@ public:
     ThingPtr getTopThing(TilePtr tile);
     ThingPtr getTopUseThing(TilePtr tile);
     std::vector<ItemPtr> getItems(TilePtr tile);
+    bool isWalkable(TilePtr tile, bool ignoreMonsters);
 };
 
 

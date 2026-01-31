@@ -521,10 +521,6 @@ Status BotServiceImpl::FindPath(ServerContext* context, const bot::bot_FindPathR
     return Status::OK;
 }
 
-Status BotServiceImpl::IsWalkable(ServerContext* context, const bot::bot_IsWalkableRequest* request, google::protobuf::BoolValue* response) {
-    response->set_value(g_map->isWalkable(toPos(request->pos()), request->ignorecreatures()));
-    return Status::OK;
-}
 
 Status BotServiceImpl::IsSightClear(ServerContext* context, const bot::bot_IsSightClearRequest* request, google::protobuf::BoolValue* response) {
     response->set_value(g_map->isSightClear(toPos(request->frompos()), toPos(request->topos())));
@@ -608,6 +604,12 @@ Status BotServiceImpl::GetTileItems(ServerContext *context, const google::protob
     for(const auto& val : g_tile->getItems(toPtr<Tile>(request->value()))) {
         response->add_items(val);
     }
+    return Status::OK;
+}
+
+Status BotServiceImpl::IsWalkable(ServerContext *context, const bot::bot_IsWalkableRequest *request,
+    google::protobuf::BoolValue *response) {
+    response->set_value(g_tile->isWalkable(toPtr<Tile>(request->tile()), request->ignorecreatures()));
     return Status::OK;
 }
 

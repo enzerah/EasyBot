@@ -111,7 +111,6 @@ service BotService {
   rpc GetTile(bot_Position) returns (google.protobuf.UInt64Value);
   rpc GetSpectators(bot_GetSpectatorsRequest) returns (bot_Uint64List);
   rpc FindPath(bot_FindPathRequest) returns (bot_DirectionList);
-  rpc IsWalkable(bot_IsWalkableRequest) returns (google.protobuf.BoolValue);
   rpc IsSightClear(bot_IsSightClearRequest) returns (google.protobuf.BoolValue);
 
   // --- Thing.h ---
@@ -132,6 +131,7 @@ service BotService {
   rpc GetTopThing(google.protobuf.UInt64Value) returns (google.protobuf.UInt64Value);
   rpc GetTopUseThing(google.protobuf.UInt64Value) returns (google.protobuf.UInt64Value);
   rpc GetTileItems(google.protobuf.UInt64Value) returns (bot_Uint64List);
+  rpc IsWalkable(bot_IsWalkableRequest) returns (google.protobuf.BoolValue);
 
   // --- CustomFunctions.h ---
   rpc GetMessages(google.protobuf.UInt32Value) returns (bot_GetMessages);
@@ -302,7 +302,7 @@ message bot_FindPathRequest {
 }
 
 message bot_IsWalkableRequest {
-  bot_Position pos = 1;
+  uint64 tile = 1;
   bool ignoreCreatures = 2;
 }
 

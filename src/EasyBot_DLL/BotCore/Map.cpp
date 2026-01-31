@@ -59,20 +59,6 @@ std::vector<Otc::Direction> Map::findPath(const Position startPos, const Positio
     });
 }
 
-bool Map::isWalkable(const Position& pos, bool ignoreCreatures) {
-    typedef bool(gameCall* IsWalkable)(
-        uintptr_t RCX,
-        void *RDX,
-        const Position *fromPos,
-        bool ignoreCreatures
-        );
-    auto function = reinterpret_cast<IsWalkable>(SingletonFunctions["g_map.isWalkable"].first);
-    return g_dispatcher->scheduleEventEx([function, pos, ignoreCreatures]() {
-        void* pMysteryPtr = nullptr;
-        return function(SingletonFunctions["g_map.isWalkable"].second, &pMysteryPtr, &pos, ignoreCreatures);
-    });
-}
-
 bool Map::isSightClear(const Position& fromPos, const Position& toPos) {
     typedef bool(gameCall* IsSightClear)(
         uintptr_t RCX,

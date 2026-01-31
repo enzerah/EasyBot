@@ -113,7 +113,6 @@ public:
     Status GetTile(ServerContext* context, const bot::bot_Position* request, google::protobuf::UInt64Value* response) override;
     Status GetSpectators(ServerContext* context, const bot::bot_GetSpectatorsRequest* request, bot::bot_Uint64List* response) override;
     Status FindPath(ServerContext* context, const bot::bot_FindPathRequest* request, bot::bot_DirectionList* response) override;
-    Status IsWalkable(ServerContext* context, const bot::bot_IsWalkableRequest* request, google::protobuf::BoolValue* response) override;
     Status IsSightClear(ServerContext* context, const bot::bot_IsSightClearRequest* request, google::protobuf::BoolValue* response) override;
 
     // --- Thing.h ---
@@ -134,6 +133,8 @@ public:
     Status GetTopThing(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::UInt64Value* response) override;
     Status GetTopUseThing(ServerContext* context, const google::protobuf::UInt64Value* request, google::protobuf::UInt64Value* response) override;
     Status GetTileItems(ServerContext* context, const google::protobuf::UInt64Value* request, bot::bot_Uint64List* response) override;
+    Status IsWalkable(ServerContext* context, const bot::bot_IsWalkableRequest* request, google::protobuf::BoolValue* response) override;
+
 
     // --- CustomFunctions.h ---
     Status GetMessages(ServerContext* context, const google::protobuf::UInt32Value* request, bot::bot_GetMessages* response) override;

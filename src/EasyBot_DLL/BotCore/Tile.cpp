@@ -55,3 +55,17 @@ std::vector<ItemPtr> Tile::getItems(TilePtr tile) {
         return result;
     });
 }
+
+bool Tile::isWalkable(TilePtr tile, bool ignoreMonsters) {
+    typedef void(gameCall* IsWalkable)(
+        uintptr_t RCX,
+        bool *RDX,
+        bool ignoreCreatures
+        );
+    auto function = reinterpret_cast<IsWalkable>(ClassMemberFunctions["Tile.getItems"]);
+    return g_dispatcher->scheduleEventEx([function, tile, ignoreMonsters]() {
+        bool result;
+        function(tile, &result, ignoreMonsters);
+        return result;
+    });
+}

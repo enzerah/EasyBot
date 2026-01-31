@@ -24,7 +24,6 @@ public:
 
     std::vector<CreaturePtr> getSpectators(const Position centerPos, bool multiFloor = false);
     std::vector<Otc::Direction> findPath(const Position startPos, const Position goalPos, int maxComplexity, int flags);
-    bool isWalkable(const Position& pos, bool ignoreCreatures);
     bool isSightClear(const Position& fromPos, const Position& toPos);
 };
 
