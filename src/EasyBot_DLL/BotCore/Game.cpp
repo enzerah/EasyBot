@@ -316,26 +316,22 @@ void Game::openPrivateChannel(const std::string& receiver) {
 
 Otc::FightModes Game::getFightMode() {
     typedef Otc::FightModes(gameCall* GetFightMode)(
-        uintptr_t RCX,
-        void *RDX
+        uintptr_t RCX
         );
     auto function = reinterpret_cast<GetFightMode>(SingletonFunctions["g_game.getFightMode"].first);
     return g_dispatcher->scheduleEventEx([function]() {
-            void* pMysteryPtr = nullptr;
-            auto ret = function(SingletonFunctions["g_game.getFightMode"].second, &pMysteryPtr);
+            auto ret = function(SingletonFunctions["g_game.getFightMode"].second);
             return ret;
     });
 }
 
 Otc::ChaseModes Game::getChaseMode() {
     typedef Otc::ChaseModes(gameCall* GetChaseMode)(
-        uintptr_t RCX,
-        void *RDX
+        uintptr_t RCX
         );
     auto function = reinterpret_cast<GetChaseMode>(SingletonFunctions["g_game.getChaseMode"].first);
     return g_dispatcher->scheduleEventEx([function]() {
-            void* pMysteryPtr = nullptr;
-            auto ret = function(SingletonFunctions["getChaseMode.getFightMode"].second, &pMysteryPtr);
+            auto ret = function(SingletonFunctions["g_game.getChaseMode"].second);
             return ret;
     });
 }

@@ -21,7 +21,7 @@ public:
     std::string getName(CreaturePtr creature);
     uint8_t getManaPercent(CreaturePtr creature);
     uint8_t getHealthPercent(CreaturePtr creature);
-    uint8_t getSkull(CreaturePtr creature);
+    Otc::PlayerSkulls getSkull(CreaturePtr creature);
     Otc::Direction getDirection(CreaturePtr creature);
     bool isDead(CreaturePtr creature);
     bool isWalking(CreaturePtr creature);

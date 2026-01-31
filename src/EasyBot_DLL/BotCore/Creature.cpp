@@ -30,11 +30,11 @@ std::string Creature::getName(CreaturePtr creature) {
 
 uint8_t Creature::getManaPercent(CreaturePtr creature) {
     if (!creature) return 0;
-    typedef uint8_t(gameCall* GetManaPercent )(
+    typedef uint8_t(gameCall* GetManaPercent)(
         uintptr_t RCX,
         void *RDX
         );
-    auto function = reinterpret_cast<GetManaPercent>(ClassMemberFunctions["Creature.getManaPercent "]);
+    auto function = reinterpret_cast<GetManaPercent>(ClassMemberFunctions["Creature.getManaPercent"]);
     return g_dispatcher->scheduleEventEx([function, creature]() {
         void* pMysteryPtr = nullptr;
         return function(creature, &pMysteryPtr);
@@ -54,16 +54,14 @@ uint8_t Creature::getHealthPercent(CreaturePtr creature) {
     });
 }
 
-uint8_t Creature::getSkull(CreaturePtr creature) {
+Otc::PlayerSkulls Creature::getSkull(CreaturePtr creature) {
     if (!creature) return {};
-    typedef Otc::Direction(gameCall* GetSkull)(
-        uintptr_t RCX,
-        void *RDX
+    typedef Otc::PlayerSkulls(gameCall* GetSkull)(
+        uintptr_t RCX
         );
     auto function = reinterpret_cast<GetSkull>(ClassMemberFunctions["Creature.getSkull"]);
     return g_dispatcher->scheduleEventEx([function, creature]() {
-            void* pMysteryPtr = nullptr;
-            return function(creature, &pMysteryPtr);
+            return function(creature);
     });
 }
 

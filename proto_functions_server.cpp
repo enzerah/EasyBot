@@ -101,7 +101,7 @@ Status BotServiceImpl::GetHealthPercent(ServerContext* context, const google::pr
 
 Status BotServiceImpl::GetSkull(ServerContext *context, const google::protobuf::UInt64Value *request,
     google::protobuf::UInt32Value *response) {
-    response->set_value(g_creature->getSkull(toPtr<Creature>(request->value())));
+    response->set_value(static_cast<uint32_t>(g_creature->getSkull(toPtr<Creature>(request->value()))));
     return Status::OK;
 }
 
