@@ -16,21 +16,6 @@ void BotClient::connect(int port) {
 
 void BotClient::disconnect(int port) {
 }
-/*
-std::vector<int> BotClient::availablePorts() {
-    std::vector<int> ports;
-    for (int port = 50051; port <= 50060; ++port) {
-        QTcpSocket socket;
-        socket.connectToHost("localhost", port);
-
-        if (socket.waitForConnected(10)) {
-            ports.push_back(port);
-            socket.disconnectFromHost();
-        }
-    }
-    return ports;
-}
-*/
 
 BotClient* BotClient::getInstance()
 {
@@ -55,8 +40,8 @@ uintptr_t BotClient::getItem(uintptr_t container, uint8_t slot)
     return response.value();
 }
 
-std::deque<uintptr_t> BotClient::getItems(uintptr_t value){
-
+std::deque<uintptr_t> BotClient::getItems(uintptr_t value)
+{
     UInt64Value request;
     request.set_value(value);
     bot_Uint64List response;
@@ -169,13 +154,31 @@ std::string BotClient::getCreatureName(uintptr_t value)
     return response.value();
 }
 
-uint8_t BotClient::getHealthPercent(uintptr_t value)
+uint8_t BotClient::getHealthPercent(uintptr_t creature)
 {
     UInt64Value request;
-    request.set_value(value);
+    request.set_value(creature);
     google::protobuf::UInt32Value response;
     ClientContext context;
     Status status = stub->GetHealthPercent(&context, request, &response);
+    return response.value();
+}
+
+uint8_t BotClient::getManaPercent(uintptr_t creature) {
+    UInt64Value request;
+    request.set_value(creature);
+    google::protobuf::UInt32Value response;
+    ClientContext context;
+    Status status = stub->GetManaPercent(&context, request, &response);
+    return response.value();
+}
+
+uint8_t BotClient::getSkull(uintptr_t creature) {
+    UInt64Value request;
+    request.set_value(creature);
+    google::protobuf::UInt32Value response;
+    ClientContext context;
+    Status status = stub->GetSkull(&context, request, &response);
     return response.value();
 }
 
@@ -187,6 +190,15 @@ Otc::Direction BotClient::getDirection(uintptr_t value)
     ClientContext context;
     Status status = stub->GetDirection(&context, request, &response);
     return static_cast<Otc::Direction>(response.value());
+}
+
+bool BotClient::isWalking(uintptr_t creature) {
+    UInt64Value request;
+    request.set_value(creature);
+    google::protobuf::BoolValue response;
+    ClientContext context;
+    Status status = stub->IsWalking(&context, request, &response);
+    return response.value();
 }
 
 bool BotClient::isDead(uintptr_t value)
@@ -231,6 +243,14 @@ bool BotClient::canShoot(uintptr_t value, int distance)
 }
 
 // Game
+
+void BotClient::safeLogout() {
+    Empty request;
+    Empty response;
+    ClientContext context;
+    Status status = stub->SafeLogout(&context, request, &response);
+}
+
 void BotClient::walk(Otc::Direction direction)
 {
     Int32Value request;
@@ -452,6 +472,23 @@ void BotClient::openPrivateChannel(const std::string& receiver)
     Empty response;
     ClientContext context;
     Status status = stub->OpenPrivateChannel(&context, request, &response);
+}
+
+int BotClient::getChaseMode() {
+    Empty request;
+    Int32Value response;
+    ClientContext context;
+    Status status = stub->GetChaseMode(&context, request, &response);
+    return response.value();
+
+}
+
+int BotClient::getFightMode() {
+    Empty request;
+    Int32Value response;
+    ClientContext context;
+    Status status = stub->GetFightMode(&context, request, &response);
+    return response.value();
 }
 
 void BotClient::setChaseMode(Otc::ChaseModes mode)
@@ -979,19 +1016,6 @@ std::vector<Otc::Direction> BotClient::findPath(const Position& startPos, const 
     return {};
 }
 
-bool BotClient::isWalkable(const Position& pos, bool ignoreCreatures)
-{
-    bot_IsWalkableRequest request;
-    request.set_ignorecreatures(ignoreCreatures);
-    request.mutable_pos()->set_x(pos.x);
-    request.mutable_pos()->set_y(pos.y);
-    request.mutable_pos()->set_z(pos.z);
-    google::protobuf::BoolValue response;
-    ClientContext context;
-    Status status = stub->IsWalkable(&context, request, &response);
-    return response.value();
-}
-
 bool BotClient::isSightClear(const Position& fromPos, const Position& toPos)
 {
     bot_IsSightClearRequest request;
@@ -1171,33 +1195,18 @@ std::vector<uintptr_t> BotClient::getTileItems(uintptr_t tile) {
     return items;
 }
 
-// Custom Functions
-std::vector<MessageStruct> BotClient::getMessages(int messageNumber) {
-    google::protobuf::UInt32Value request;
-    request.set_value(messageNumber);
-    bot_GetMessages response;
+bool BotClient::isWalkable(uintptr_t tile, bool ignoreCreatures) {
+    bot_IsWalkableRequest request;
+    request.set_ignorecreatures(ignoreCreatures);
+    request.set_tile(tile);
+    google::protobuf::BoolValue response;
     ClientContext context;
-    Status status = stub->GetMessages(&context, request, &response);
-    std::vector<MessageStruct> result;
-    if (status.ok()) {
-        result.reserve(response.messages_size());
-        for (const auto& proto_msg : response.messages()) {
-            MessageStruct msg;
-            msg.name = proto_msg.name();
-            msg.text = proto_msg.text();
-            msg.level = static_cast<uint16_t>(proto_msg.level());
-            msg.channelId = static_cast<uint16_t>(proto_msg.channel_id());
-            msg.mode = static_cast<Otc::MessageMode>(proto_msg.mode());
-            const auto& proto_pos = proto_msg.pos();
-            msg.pos.x = proto_pos.x();
-            msg.pos.y = proto_pos.y();
-            msg.pos.z = proto_pos.z();
-            result.push_back(msg);
-        }
-    }
-    return result;
+    Status status = stub->IsWalkable(&context, request, &response);
+    return response.value();
+
 }
 
+// Custom Functions
 void BotClient::clearMessages() {
     Empty request;
     Empty response;
