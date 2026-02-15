@@ -7,6 +7,10 @@ on:
     branches: [ main, develop ]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  actions: write
+
 jobs:
   build:
     runs-on: windows-latest
@@ -25,15 +29,24 @@ jobs:
 
     - name: Setup vcpkg cache
       uses: actions/cache@v4
+      id: vcpkg-cache
       with:
         path: |
+          third_party/vcpkg/downloads
           third_party/vcpkg/packages
           third_party/vcpkg/installed
-          third_party/vcpkg/buildtrees
-        key: ${{ runner.os }}-vcpkg-${{ matrix.vcpkg-triplet }}-${{ hashFiles('**/vcpkg.json') }}
+        key: ${{ runner.os }}-vcpkg-${{ matrix.vcpkg-triplet }}-${{ hashFiles('**/vcpkg.json', 'third_party/vcpkg/.git/HEAD') }}
         restore-keys: |
           ${{ runner.os }}-vcpkg-${{ matrix.vcpkg-triplet }}-
           ${{ runner.os }}-vcpkg-
+
+    - name: Cache info
+      run: |
+        if ("${{ steps.vcpkg-cache.outputs.cache-hit }}" -eq "true") {
+          Write-Host "✅ vcpkg cache HIT - packages will be restored"
+        } else {
+          Write-Host "❌ vcpkg cache MISS - will build from scratch"
+        }
 
     - name: Setup vcpkg
       run: |
@@ -42,10 +55,19 @@ jobs:
           .\bootstrap-vcpkg.bat
         }
 
+    - name: Configure vcpkg binary caching
+      run: |
+        $env:VCPKG_BINARY_SOURCES = "clear;x-gha,readwrite"
+        Write-Host "VCPKG_BINARY_SOURCES set to: $env:VCPKG_BINARY_SOURCES"
+      shell: pwsh
+
     - name: Create build directory
       run: New-Item -ItemType Directory -Force -Path build
 
     - name: Configure CMake
+      env:
+        VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
+        VCPKG_FEATURE_FLAGS: "manifests,binarycaching,registries"
       run: |
         cd build
         cmake .. `
@@ -54,6 +76,8 @@ jobs:
           -DVCPKG_HOST_TRIPLET=${{ matrix.vcpkg-triplet }}
 
     - name: Build
+      env:
+        VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
       run: |
         cd build
         cmake --build . --config ${{ matrix.build-type }} --parallel 4
@@ -61,18 +85,62 @@ jobs:
     - name: Find and package artifacts
       run: |
         New-Item -ItemType Directory -Force -Path artifacts
-        Write-Host "=== Searching for DLLs and EXEs ==="
-        Get-ChildItem -Path . -Recurse -Include "*.dll","*.exe" -ErrorAction SilentlyContinue | ForEach-Object {
-          Write-Host "Found: $($_.FullName)"
-          Copy-Item $_.FullName -Destination "artifacts/$($_.Name)" -Force
+        
+        Write-Host "=== Searching for EasyBot DLL and Scripts ==="
+        
+        # Procura EasyBot.dll
+        $dllFound = $false
+        $possibleDllPaths = @(
+          "Bot/EasyBot.dll",
+          "${{ matrix.build-type }}/EasyBot.dll",
+          "Release/EasyBot.dll",
+          "build/${{ matrix.build-type }}/EasyBot.dll"
+        )
+        
+        foreach ($path in $possibleDllPaths) {
+          if (Test-Path $path) {
+            Write-Host "✅ Found EasyBot.dll at: $path"
+            Copy-Item $path -Destination "artifacts/EasyBot.dll" -Force
+            $dllFound = $true
+            break
+          }
         }
-        Write-Host "=== Contents of artifacts directory ==="
-        Get-ChildItem -Path artifacts -ErrorAction SilentlyContinue | ForEach-Object {
-          Write-Host "$($_.Name) - $($_.Length) bytes"
+        
+        # Busca recursiva se não encontrou
+        if (-not $dllFound) {
+          $found = Get-ChildItem -Path . -Recurse -Filter "EasyBot.dll" -ErrorAction SilentlyContinue | 
+                   Where-Object { $_.FullName -notlike "*vcpkg*" -and $_.FullName -notlike "*packages*" } | 
+                   Select-Object -First 1
+          if ($found) {
+            Write-Host "✅ Found EasyBot.dll at: $($found.FullName)"
+            Copy-Item $found.FullName -Destination "artifacts/EasyBot.dll" -Force
+            $dllFound = $true
+          }
         }
+        
+        # Procura EasyBot_Scripts.exe
+        $scriptsFound = $false
+        $found = Get-ChildItem -Path . -Recurse -Filter "EasyBot_Scripts.exe" -ErrorAction SilentlyContinue | 
+                 Where-Object { $_.FullName -notlike "*vcpkg*" -and $_.FullName -notlike "*packages*" } | 
+                 Select-Object -First 1
+        if ($found) {
+          Write-Host "✅ Found EasyBot_Scripts.exe at: $($found.FullName)"
+          Copy-Item $found.FullName -Destination "artifacts/EasyBot_Scripts.exe" -Force
+          $scriptsFound = $true
+        }
+        
+        Write-Host "=== Final artifacts ==="
         if ((Get-ChildItem -Path artifacts -ErrorAction SilentlyContinue | Measure-Object).Count -eq 0) {
-          Write-Host "WARNING: No artifacts found! Checking build directory structure..."
-          Get-ChildItem -Path build -Recurse | Select-Object FullName, Length | Format-Table
+          Write-Host "❌ ERROR: No artifacts found!"
+          Write-Host "=== All DLLs/EXEs (excluding vcpkg) ==="
+          Get-ChildItem -Path . -Recurse -Include "*.dll","*.exe" -ErrorAction SilentlyContinue | 
+            Where-Object { $_.FullName -notlike "*vcpkg*" -and $_.FullName -notlike "*packages*" } | 
+            ForEach-Object { Write-Host $_.FullName }
+          exit 1
+        }
+        
+        Get-ChildItem -Path artifacts | ForEach-Object {
+          Write-Host "$($_.Name) - $([math]::Round($_.Length/1MB, 2)) MB"
         }
 
     - name: Upload artifacts
