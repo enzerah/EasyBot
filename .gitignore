@@ -1,3 +1,61 @@
-.idea
-.venv
-Bot
+# IDEs
+.idea/
+.vs/
+.vscode/
+*.suo
+*.user
+*.sln.docstates
+
+# Build directories
+build/
+out/
+Bot/
+cmake-build-*/
+
+# vcpkg
+third_party/vcpkg/packages/
+third_party/vcpkg/buildtrees/
+third_party/vcpkg/downloads/
+third_party/vcpkg/installed/
+third_party/vcpkg/vcpkg.exe
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+
+# Compiled artifacts
+*.dll
+*.exe
+*.lib
+*.pdb
+*.ilk
+*.obj
+*.o
+*.so
+*.dylib
+
+# Generated files
+generated/
+*.pb.h
+*.pb.cc
+*.grpc.pb.h
+*.grpc.pb.cc
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log

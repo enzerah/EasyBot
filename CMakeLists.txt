@@ -6,7 +6,6 @@ set(VCPKG_BUILD_TYPE ${CMAKE_BUILD_TYPE})
 
 set(VCPKG_TARGET_TRIPLET "x86-windows-static" CACHE STRING "VCPKG target triplet" FORCE)
 set(VCPKG_HOST_TRIPLET "x86-windows-static" CACHE STRING "VCPKG host triplet" FORCE)
-set(GRPC_CPP_PLUGIN_EXECUTABLE "${CMAKE_SOURCE_DIR}/third_party/vcpkg/packages/grpc_x86-windows-static/tools/grpc/grpc_cpp_plugin.exe")
 
 project(EasyBot)
 set(CMAKE_CXX_STANDARD 17)
@@ -15,6 +14,17 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Protobuf CONFIG REQUIRED)
 find_package(gRPC CONFIG REQUIRED)
+
+# Find gRPC plugin
+find_program(GRPC_CPP_PLUGIN_EXECUTABLE grpc_cpp_plugin
+    PATHS
+        "${CMAKE_SOURCE_DIR}/third_party/vcpkg/packages/grpc_x86-windows-static/tools/grpc"
+        "${CMAKE_SOURCE_DIR}/third_party/vcpkg/installed/${VCPKG_TARGET_TRIPLET}/tools/grpc"
+    NO_DEFAULT_PATH
+)
+if(NOT GRPC_CPP_PLUGIN_EXECUTABLE)
+    find_program(GRPC_CPP_PLUGIN_EXECUTABLE grpc_cpp_plugin)
+endif()
 
 
 set(PROTO_FILE ${CMAKE_SOURCE_DIR}/bot.proto)

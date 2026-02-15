@@ -5,6 +5,7 @@ on:
     branches: [ main, develop ]
   pull_request:
     branches: [ main, develop ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -22,18 +23,27 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Install dependencies
-      run: |
-        choco install cmake -y
-        choco install protoc -y
+    - name: Setup vcpkg cache
+      uses: actions/cache@v4
+      with:
+        path: |
+          third_party/vcpkg/packages
+          third_party/vcpkg/installed
+          third_party/vcpkg/buildtrees
+        key: ${{ runner.os }}-vcpkg-${{ matrix.vcpkg-triplet }}-${{ hashFiles('**/vcpkg.json') }}
+        restore-keys: |
+          ${{ runner.os }}-vcpkg-${{ matrix.vcpkg-triplet }}-
+          ${{ runner.os }}-vcpkg-
 
     - name: Setup vcpkg
       run: |
         cd third_party/vcpkg
-        .\bootstrap-vcpkg.bat
+        if (-Not (Test-Path "vcpkg.exe")) {
+          .\bootstrap-vcpkg.bat
+        }
 
     - name: Create build directory
-      run: mkdir build
+      run: New-Item -ItemType Directory -Force -Path build
 
     - name: Configure CMake
       run: |
@@ -48,9 +58,16 @@ jobs:
         cd build
         cmake --build . --config ${{ matrix.build-type }} --parallel 4
 
+    - name: Package artifacts
+      run: |
+        New-Item -ItemType Directory -Force -Path artifacts
+        Get-ChildItem -Path build -Recurse -Filter "*.dll" | Copy-Item -Destination artifacts/ -Force
+        Get-ChildItem -Path build -Recurse -Filter "*.exe" | Copy-Item -Destination artifacts/ -Force
+
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       if: always()
       with:
         name: EasyBot-${{ matrix.build-type }}
-        path: build/src/**/*.dll
+        path: artifacts/
+        if-no-files-found: warn
