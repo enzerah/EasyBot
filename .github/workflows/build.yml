@@ -1,0 +1,56 @@
+name: Build EasyBot
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    strategy:
+      matrix:
+        build-type: [Release]
+        include:
+          - build-type: Release
+            vcpkg-triplet: x86-windows-static
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+
+    - name: Install dependencies
+      run: |
+        choco install cmake -y
+        choco install protoc -y
+
+    - name: Setup vcpkg
+      run: |
+        cd third_party/vcpkg
+        .\bootstrap-vcpkg.bat
+
+    - name: Create build directory
+      run: mkdir build
+
+    - name: Configure CMake
+      run: |
+        cd build
+        cmake .. `
+          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} `
+          -DVCPKG_TARGET_TRIPLET=${{ matrix.vcpkg-triplet }} `
+          -DVCPKG_HOST_TRIPLET=${{ matrix.vcpkg-triplet }}
+
+    - name: Build
+      run: |
+        cd build
+        cmake --build . --config ${{ matrix.build-type }} --parallel 4
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: EasyBot-${{ matrix.build-type }}
+        path: build/src/**/*.dll
